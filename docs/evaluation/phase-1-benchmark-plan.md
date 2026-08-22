@@ -17,9 +17,11 @@
 
 The labeled set is small by design. At roughly 40–60 held-out atomic propositions, criterion-state macro F1 carries a confidence interval wide enough that small differences are noise.
 
-Primary release gates therefore rest on metrics with many observations per assessment or with hard invariants: citation validity, unsupported-assessment rate, verifier catch rate, and deterministic aggregation correctness. Every citation is an observation, so these metrics are far better supported than per-proposition classification accuracy.
+Release gates are therefore restricted to deterministic invariants — properties the implementation controls, listed in specification section 20. Every model-behavior measurement is a reported result rather than a gate, because gating on a statistic at this sample size invites optimizing toward the threshold.
 
-Macro F1 is still reported, always with its confidence interval and support, and is read primarily as a comparison against the expression-aware one-shot B2 control rather than as an absolute capability claim.
+Grounding metrics carry the primary claim, because each citation is an observation and they are far better powered than per-proposition classification accuracy. Macro F1 is reported with its confidence interval and support, and is read as a pre-registered comparison against the expression-aware one-shot B2 control rather than as an absolute capability claim.
+
+Metrics, comparison units, statistical procedure, power, and the falsification condition are fixed in advance in [`pre-registration.md`](pre-registration.md), which is committed before any held-out run. The published report cites its commit hash.
 
 ## Benchmark Construction and Its Limits
 
@@ -54,6 +56,22 @@ Difficulty comes from Planted Distractors — specification section 8.3 — not 
 
 B1 and B2 use the same model family, patient-evidence boundary, output schema, decoding policy, and cost accounting as Full. B1 deliberately receives raw criterion text while B2 and Full receive the authored expression; results label that difference rather than claiming identical inputs.
 
+**B2 is the primary control.** It isolates the contribution of orchestration alone, so every comparison supporting the architectural claim is against B2. B1 is retained as the end-to-end improvement over a conventional prompt and is reported as secondary context: a gain over B1 conflates the value of having a structured expression with the value of orchestration, and must never be substituted for the B2 comparison.
+
+### Verifier Role Separation
+
+One verifier implementation serves two roles, per specification section 8.1. Offline **grading** runs against the final outputs of every variant with identical code and configuration, and never flows back into the system under test. **Feedback** runs inside Full's loop only, where its verdict triggers the single permitted correction.
+
+Baselines are graded by a standard they were never allowed to consult. That asymmetry is the architectural difference under measurement, and it is stated wherever results appear.
+
+Citation validity is consequently reported at three points, so the two mechanisms are separable:
+
+| Measurement point | Attributes value to |
+| --- | --- |
+| B2 | — (control) |
+| Full, before correction | Tool-mediated evidence selection and deterministic routing |
+| Full, after correction | The bounded correction loop |
+
 ## Ablations
 
 Each is a configuration flag, not a separate implementation. The first two are core. The supervisor-only ablations are reported only when the additive Trial Supervisor gate is built.
@@ -65,62 +83,92 @@ Each is a configuration flag, not a separate implementation. The first two are c
 | No evidence reuse (supervisor only) | Does cross-criterion reuse reduce cost, and at what accuracy risk? |
 | Early termination on (supervisor only) | How much cost does blocker-first termination save, and does the conclusion change? |
 
-## Track 1: Grounding and Verification — Primary Gates
+## Track 1: Deterministic Invariants — Release Gates
 
-| Metric | Gate |
+These are the only release gates. Each is a property the implementation controls, reported as pass or fail.
+
+| Invariant | Gate |
 | --- | ---: |
-| Patient and trial reference validity | 100% |
+| Patient and trial reference validity in final output | 100% |
 | Deterministic aggregation accuracy | 100% |
 | Verifier catch rate on injected faults | 100% |
-| Unsupported-assessment rate | ≤ 2% |
-| Criterion Coverage, flags off | 100% |
-| Evidence cited after `assessment_as_of` | 0 |
+| Unsupported assessments surviving verification in final output | 0 |
+| Criterion Coverage, supervisor flags off | 100% |
+| Citations dated after `assessment_as_of` in final output | 0 |
 | Infrastructure Failures scored as `unknown` | 0 |
 
-Reference validity is measured per citation. Unsupported-assessment rate is the share of `met` or `not_met` results whose citations fail verification before correction.
+Reference validity is measured per citation across every variant, using the offline grading verifier.
 
-## Track 2: Criterion State Accuracy — Reported with Intervals
+The distinction between the fourth invariant and its statistical counterpart matters. Zero unsupported assessments in final output is an invariant, structurally guaranteed by the verifier. The **pre-correction unsupported-assessment rate** is a model-behavior statistic, reported in Track 2 with a confidence interval and never gated.
 
-| Metric | Gate |
-| --- | ---: |
-| Criterion-state macro F1 | ≥ 70% |
-| `unknown` recall | ≥ 85% |
-| Patient-evidence precision | ≥ 90% |
-| Patient-evidence recall | ≥ 80% |
-| Match Conclusion accuracy | ≥ 80% |
-| Macro-F1 gain over expression-aware one-shot B2 | ≥ 5 percentage points |
-| Unsupported-assessment reduction versus B2 | ≥ 30% |
+## Track 2: Grounding — Primary Reported Results
 
-All values carry bootstrap confidence intervals. Results are reported per Criterion Category so demographic performance cannot mask biomarker, treatment, or temporal failures.
+These carry the architectural claim. Each citation is an observation, so they are better powered than state accuracy.
 
-Context-selection recall measures whether the agent's tool calls retrieved the gold Patient Evidence before assessing.
+| Metric | Unit of observation | Reported |
+| --- | --- | --- |
+| Patient-reference validity | Per citation | B2, Full pre-correction, Full post-correction |
+| Trial-reference validity | Per citation | B2, Full pre-correction, Full post-correction |
+| Unsupported-assessment rate before correction | Per `met`/`not_met` proposition | All variants |
+| Patient-evidence precision | Per cited item | All variants |
+| Patient-evidence recall | Per gold item | All variants |
+| Context-selection recall | Per proposition | Full and ablations |
 
-## Track 3: Retrieval — Additive
+Context-selection recall measures whether the agent's tool calls retrieved the gold Patient Evidence before assessing. All values carry bootstrap confidence intervals. No threshold applies.
+
+## Track 3: Criterion State Accuracy — Reported, Not Gated
+
+Criterion-state macro F1, per-state precision and recall, `unknown` recall, and Match Conclusion accuracy. No metric in this track carries a threshold.
+
+Results are reported per Criterion Category so demographic performance cannot mask biomarker, treatment, or temporal failures, and per state so imbalance stays visible.
+
+### Statistical Procedure
+
+Fixed in advance in [`pre-registration.md`](pre-registration.md):
+
+- **Design:** paired over held-out atomic propositions; every variant sees the identical proposition set.
+- **Test:** paired bootstrap, 10,000 resamples, resampled by scenario-trial pair to respect within-pair correlation. A permutation test accompanies the primary grounding comparison.
+- **Direction:** two-sided. Full may be worse than B2, and that outcome is reportable.
+- **Threshold:** none. Effect size and 95% confidence interval are published regardless of significance.
+- **Power:** at roughly 80 held-out propositions, this design reliably detects differences of about 8–12 percentage points in macro F1. Smaller differences are reported as inconclusive, not as equivalence and not as improvement.
+- **Multiplicity:** the primary comparison is Full versus B2 on citation validity. Everything else is labeled exploratory and cannot support the architectural claim.
+
+## Track 4: Cost and Value
+
+Measured from run traces, never estimated by hand. Reported per criterion assessment, never per model call: B2 issues one call per criterion while Full issues one or more per proposition plus verification and any correction, so per-call comparison would flatter Full and is prohibited.
+
+- Model calls, input and output tokens, and wall-clock latency per criterion assessment
+- Estimated cost per matching run
+- Token and model-call reduction from `evidence_reuse`, if Gate 5 is built
+- Token and latency reduction from `early_termination`, with any Match Conclusion changes reported alongside
+
+**Declared in advance:** Full is expected to cost several times B2 per criterion assessment. This is a consequence of per-proposition assessment, not a defect, and the ratio is published whether or not it is favorable.
+
+Every cost figure appears beside the grounding metric it purchased, in one paired table. No cost figure is published without its value figure, and none without its cost.
+
+Budgets are calibrated on development data and frozen before held-out evaluation. At most one correction per proposition. Hidden SDK or provider retries are prohibited; constrained-decoding retries are recorded explicitly.
+
+## Falsification Condition
+
+Declared before any held-out run:
+
+> If B2 shows no detectable difference from Full in citation validity or unsupported-assessment rate on held-out propositions, the central claim of this project is unsupported, and that conclusion is published as the headline result.
+
+Full matching B2 on macro F1 while exceeding it on grounding metrics does **not** falsify the claim, since the claim is primarily about grounding trustworthiness. That outcome is reported plainly as a grounding gain without an accuracy gain.
+
+Passing every deterministic release gate while failing this condition is a possible outcome. The gates certify software correctness, not architectural value.
+
+## Track 5: Retrieval — Additive
 
 Reported only if Gate 3 is built.
 
-| Metric | Gate |
+| Invariant | Gate |
 | --- | ---: |
 | Filter-induced loss of known relevant trials | 0 |
-| Recall@20 over authored target trials | ≥ 90% |
-| Recall@5 over authored target trials | ≥ 70% |
 
-Report BM25-only, dense-only, and RRF as three rows, plus per-channel contribution and RRF gain. The intended headline is concrete, for example how many target trials RRF placed in the top five that neither channel reached alone.
+Filter loss is a deterministic invariant and is gated. Recall figures are reported without thresholds: Recall@5 and Recall@20 over authored target trials, as three rows for BM25-only, dense-only, and RRF, plus per-channel contribution and fusion gain. The intended headline is concrete, for example how many target trials RRF placed in the top five that neither channel reached alone.
 
 Retrieval metrics stay separate from criterion-state metrics. No blended score is reported.
-
-## Track 4: Operational Cost
-
-Measured from run traces, never estimated by hand:
-
-- Latency per criterion assessment and per trial assessment
-- Model calls per trial assessment
-- Input and output tokens
-- Estimated cost per matching run
-- Token and model-call reduction from `evidence_reuse`
-- Token and latency reduction from `early_termination`, with any Match Conclusion changes reported alongside
-
-Budgets are calibrated on development data and frozen before held-out evaluation. At most one correction per proposition. Hidden SDK or provider retries are prohibited; retries from constrained decoding are recorded explicitly.
 
 ## End-to-End Held-Out Suite
 
@@ -134,11 +182,15 @@ This is system evaluation. It is not evidence of clinical generalization.
 
 Publish a failure taxonomy with at least two genuine failure cases carrying full traces, and at least three cases where Full beats the expression-aware one-shot B2 control. For each failure, record the category, the proximate cause, whether the verifier caught it, and whether the correction cycle helped.
 
+Null, inconclusive, and unfavorable results are published with the same prominence as favorable ones, including any case where B2 matches or beats Full.
+
 ## Reproducibility
 
 Each run records patient and trial hashes, partition, embedding model, language model and revision, prompt and schema versions, decoding configuration, tool and supervisor configuration, evaluator code version, seed, latency, tokens, estimated cost, and hardware profile.
 
-Frozen outputs can be re-graded without rerunning the model. Every published number links to a reproducible run artifact.
+Frozen outputs can be re-graded without rerunning the model. Every published number links to a reproducible run artifact and cites the pre-registration commit hash.
+
+Configuration is frozen before the first held-out run. If a held-out run exposes a defect requiring a configuration change, the report states what changed, why, and that affected results were re-run and labeled as a second held-out pass.
 
 ## Optional Later Work
 
