@@ -21,8 +21,8 @@ It is not a general medical chatbot. Its primary surface is a static trace repor
 3. They see hybrid retrieval producing a ranked candidate set with per-channel attribution.
 4. They see criteria decomposed into atomic propositions and assessed through tool calls.
 5. They see structured judgments with patient evidence and exact trial citations.
-6. They see the verifier reject a citation and trigger exactly one correction.
-7. They see the agent compared against a one-shot baseline, with ablations and cost.
+6. They see the verifier reproducibly reject an injected bad citation and trigger exactly one correction.
+7. They see the agent compared against deterministic, raw-text one-shot, and expression-aware one-shot baselines, with applicable ablations and cost.
 
 All of this must be reachable within five minutes and must not require credentials or a network connection.
 
@@ -32,7 +32,7 @@ Ranked by intended emphasis:
 
 - **Agent engineering.** Tool selection per proposition, explicit division of labor between model and deterministic code, bounded correction, structured degradation to `unknown`, flag-gated multi-turn strategy with measured cost effects.
 - **Grounding and verification.** Every supported assessment cites machine-verified patient evidence and exact trial source text; a deterministic verifier rejects fabricated or altered citations.
-- **Evaluation engineering.** Deterministic grading, derived gold labels, frozen held-out partitions, a one-shot baseline, four ablations, confidence intervals, failure taxonomy, and cost accounting from traces.
+- **Evaluation engineering.** Deterministic grading, derived gold labels, frozen held-out partitions, deterministic and one-shot baselines, core and conditional ablations, confidence intervals, failure taxonomy, and cost accounting from traces.
 - **Longitudinal FHIR modeling.** Preservation of clinical time, temporal precision, status, values, provenance, and unsupported content rather than flattening the record.
 - **Hybrid retrieval.** Deterministic filters plus lexical and dense channels with reciprocal-rank fusion, evaluated with per-channel attribution.
 - **Interface design.** Four deep modules behind small stable interfaces, with a thin application entry point and adapter seams for data sources and model inference.
@@ -45,7 +45,7 @@ For each assessed candidate trial:
 
 - Trial identity, recruiting status, record timestamp, and source link.
 - Retrieval rank and per-channel attribution, kept distinct from the eligibility assessment.
-- Source-aligned criteria plus their authored atomic propositions.
+- Source-aligned criteria plus their authored atomic propositions and per-proposition assessments.
 - A state for every criterion: `met`, `not_met`, `unknown`, or `not_applicable`.
 - `not_assessed` for criteria deliberately skipped under early termination, never merged into `unknown`.
 - Patient evidence references with FHIR resource identity, JSON path, clinical time, status, and value.
@@ -109,14 +109,14 @@ Any later addition must not retroactively alter frozen held-out results: a large
 
 Evaluation is designed before model or orchestration optimization. At minimum:
 
-- A deterministic structured-field baseline and a one-shot LLM baseline sharing inputs, output schema, and cost accounting.
+- A deterministic structured-field baseline, a raw-text one-shot baseline, and an expression-aware one-shot control. All model variants share the patient-evidence boundary, output schema, model family, decoding policy, and cost accounting; deliberate criterion-context differences are labeled.
 - Gold expected states derived deterministically from hidden scenario manifests. No model-generated labels, and no LLM judge in any primary metric.
 - Held-out partitions separated by both trial and scenario, frozen against all optimization.
 - Primary gates on citation validity, deterministic aggregation, verifier catch rate, unsupported-assessment rate, and criterion coverage.
 - Criterion-state macro F1, per-state precision and recall with attention to `unknown`, and per-category breakdown, all with bootstrap confidence intervals and reported support.
 - Retrieval metrics reported separately from criterion-state metrics, with per-channel attribution.
 - Latency, model calls, token usage, and estimated cost measured from run traces.
-- Four ablations: no deterministic tools, no verifier, no evidence reuse, early termination.
+- Two core ablations: no deterministic tools and no verifier. If the additive Trial Supervisor is built, also report no evidence reuse and early termination.
 - A published failure taxonomy with representative traces.
 
 Small-sample results are stated as such. No number is published without a link to a reproducible run artifact.

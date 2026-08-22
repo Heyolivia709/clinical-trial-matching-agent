@@ -8,12 +8,12 @@ Clinical trial matching is the vehicle. Agent engineering is the subject.
 
 1. A patient timeline built from a synthetic FHIR R4 Bundle with per-fact provenance.
 2. Hybrid retrieval over a frozen trial snapshot, with per-channel rank attribution.
-3. Trial criteria decomposed into independently assessable atomic propositions.
-4. An agent selecting and calling typed patient-timeline tools per proposition.
+3. Source-aligned trial criteria represented by human-reviewed expressions over independently assessable atomic propositions.
+4. An agent selecting and calling typed patient-timeline tools per proposition, followed by deterministic criterion aggregation.
 5. Dates, numbers, and Boolean aggregation routed to deterministic code, not the model.
 6. Structured judgments citing patient evidence and exact trial source text.
 7. A deterministic verifier rejecting fabricated citations and triggering exactly one correction.
-8. A measured comparison against a one-shot LLM baseline, plus ablations.
+8. A measured comparison against deterministic, raw-text one-shot, and expression-aware one-shot baselines, plus applicable ablations.
 
 It does not diagnose, determine clinical eligibility, recommend treatment, or enroll patients.
 
@@ -50,7 +50,7 @@ Criterion Reasoning Agent  <────────────┘
 Evidence Verifier
         |
         v
-Grounded Trial Report  +  Agent Trace
+Static Trace Report  +  Reproducible Run Artifacts
 ```
 
 Four deep modules behind small interfaces:
@@ -66,7 +66,7 @@ The application entry point stays thin: `match(patient, snapshot) -> MatchingRun
 
 ## Scope Boundaries
 
-In scope: four FHIR resource types, four criterion categories, hand-authored criterion expressions, two retrieval channels with fusion, a bounded per-criterion agent loop with one correction, a flag-gated multi-turn trial supervisor, deterministic evaluation, and a static trace report.
+Target scope: four evidence-bearing FHIR resource types, four criterion categories, hand-authored criterion expressions, two retrieval channels with fusion, a bounded per-proposition agent loop with one correction, a flag-gated multi-turn trial supervisor, deterministic evaluation, and a static trace report. Retrieval and the supervisor are additive gates with explicit fallbacks; the criterion agent, verifier, evaluation, and trace report are core.
 
 Out of scope: automatic criterion parsing, TREC benchmark tracks, PostgreSQL and pgvector, cross-encoder reranking, UCUM unit conversion, line-of-therapy inference, TNM derivation, HAPI FHIR, LangGraph, multi-agent orchestration, fine-tuning, and clinical validation. See specification sections 18 and 19.
 

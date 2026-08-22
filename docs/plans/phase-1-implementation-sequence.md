@@ -8,9 +8,9 @@ Gate scope classification and the cut order under schedule pressure are defined 
 
 ## Gate 1: Contracts and Fixtures — Core
 
-Implement core types, state semantics, Boolean aggregation, polarity-to-impact mapping, Match Conclusion, and test fixtures.
+Implement core types, state semantics, Boolean aggregation, polarity-to-impact mapping, Match Conclusion, and test fixtures. Freeze a minimal set of source-aligned trial records and human-reviewed Criterion Expressions so later core gates do not depend on additive retrieval.
 
-Types: `PatientTimeline`, `TrialRecord`, `EligibilityCriterion`, `CriterionExpression`, `AtomicProposition`, `PatientEvidence`, `TrialEvidence`, `CriterionAssessment`, `TrialAssessment`, `CandidateSet`, `MatchingRun`, `ReasoningTrace`, `ScenarioManifest`, `EvalCase`.
+Types: `PatientTimeline`, `TrialRecord`, `EligibilityCriterion`, `CriterionExpression`, `AtomicProposition`, `PatientEvidence`, `TrialEvidence`, `PropositionAssessment`, `CriterionAssessment`, `TrialAssessment`, `CandidateSet`, `MatchingRun`, `ReasoningTrace`, `ScenarioManifest`, `EvalCase`.
 
 **Exit criteria**
 
@@ -18,10 +18,11 @@ Types: `PatientTimeline`, `TrialRecord`, `EligibilityCriterion`, `CriterionExpre
 - `all_of`, `any_of`, and conditional truth tables pass exhaustively, including all-`not_applicable` cases
 - Inclusion and exclusion impact mapping and Match Conclusion derivation pass, including the early-termination rule
 - Every model round-trips through JSON without loss of provenance fields
+- At least two frozen trial fixtures contain source-aligned criteria and reviewed expressions covering all supported expression forms
 
 ## Gate 2: Patient Timeline and Timeline Tools — Core
 
-Parse the four supported FHIR R4 resources into the Patient Timeline. Preserve provenance, status, and Temporal Precision. Implement the five Timeline Tools. Author six synthetic scenarios with hidden manifests and Planted Distractors.
+Parse the four evidence-bearing FHIR R4 resource types into the Patient Timeline. Recognize `MedicationRequest` as Unsupported Patient Content. Preserve provenance, status, and Temporal Precision. Implement the five Timeline Tools. Author six synthetic scenarios with hidden manifests and Planted Distractors.
 
 **Exit criteria**
 
@@ -50,7 +51,7 @@ Ingest and freeze 200–500 NSCLC trials. Enforce corpus membership. Implement c
 
 ## Gate 4: Criterion Agent and Evidence Verifier — Core
 
-Implement the per-criterion agent loop, tool selection, structured output, the deterministic Evidence Verifier, and exactly one targeted correction.
+Implement the per-proposition agent loop, tool selection, structured output, the deterministic Evidence Verifier, exactly one targeted correction, and deterministic aggregation into Criterion Assessments.
 
 **Exit criteria**
 
@@ -61,7 +62,7 @@ Implement the per-criterion agent loop, tool selection, structured output, the d
 - Deterministic and model disagreement yields `unknown` with `reasoning_conflict`
 - Infrastructure Failures are recorded separately and never scored as uncertainty
 - Every run emits a readable Evidence Trajectory
-- At least one organic verifier catch and correction is captured in a committed trace
+- An injected-fault trace reproducibly shows verifier rejection and correction; organic catches are committed when observed
 
 ## Gate 5: Trial Supervisor — Additive
 
@@ -80,17 +81,18 @@ Implement trial-level assessment strategy: criterion ordering, early termination
 
 ## Gate 6: Evaluation and Baselines — Core
 
-Derive gold labels deterministically from Scenario Manifests. Implement the one-shot baseline and the ablation matrix. Publish metrics per the benchmark plan.
+Derive gold labels deterministically from Scenario Manifests. Implement the deterministic baseline, both one-shot baselines, and the core ablation matrix. Publish metrics per the benchmark plan.
 
 **Exit criteria**
 
 - Gold expected states are computed by code from manifest and expression, with no model judgment anywhere in grading
 - Development and held-out partitions are separated by both trial ID and scenario, and held-out artifacts never inform configuration
-- One-shot baseline runs on the same inputs with the same output schema and cost accounting
-- All four ablations run: no deterministic tools, no verifier, no evidence reuse, early termination
+- The raw-text and expression-aware one-shot baselines use the same patient evidence boundary, output schema, model family, and cost accounting as Full; their deliberate context differences are reported
+- Core ablations run: no deterministic tools and no verifier
+- Supervisor-only ablations run only if Gate 5 is built: no evidence reuse and early termination
 - Primary gates in the benchmark plan are met, or the shortfall is published with analysis
 - All accuracy metrics report bootstrap confidence intervals and per-state support
-- At least three cases where the agent beats the one-shot baseline, and at least two genuine failure cases, are documented with traces
+- At least three cases where Full beats the expression-aware one-shot B2 control, and at least two genuine failure cases, are documented with traces
 
 ## Gate 7: Trace Report and Portfolio Demo — Core
 
@@ -102,14 +104,14 @@ Generate the self-contained static Trace Report from frozen runs. Publish the ho
 - All eight demonstration-goal items in specification section 3 are visible within five minutes
 - Citations link to the cited FHIR JSON path and the exact trial source span
 - Verifier rejection and correction are visible, not merely logged
-- Agent and one-shot baseline appear side by side on the same criterion
+- Full, expression-aware one-shot, and raw-text one-shot results appear side by side on the same criterion
 - Latency, model calls, tokens, and cost are shown per assessment
 - Every quantitative claim in the writeup links to a reproducible run artifact
 - Clinical limitations, benchmark construction, and the derived-gold methodology are stated explicitly
 
 ## Sequencing Constraints
 
-- Gate 3 expression authoring happens only after retrieval configuration is frozen, so the assessed trial set is known.
+- Gate 1 freezes two trial fixtures and expressions for the core path. Gate 3 freezes retrieval configuration before expanding the authored set to 10–12 trials, so the additional assessed trials are known before their expressions are authored.
 - Gate 7 is built from frozen traces and must not become a dependency of any reasoning module.
 - Held-out scenarios and trials stay untouched until Gate 6.
 

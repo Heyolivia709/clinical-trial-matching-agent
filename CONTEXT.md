@@ -13,11 +13,11 @@ A source-aligned inclusion or exclusion criterion that preserves the original tr
 _Avoid_: Atomic proposition, rewritten criterion
 
 **Criterion Expression**:
-A machine-interpretable representation of the Boolean or conditional semantics within an Eligibility Criterion, composed of Atomic Propositions without replacing the source text. Supported forms are `all_of`, `any_of`, simple conditionals, simple date windows, and simple numeric comparisons.
+A machine-interpretable representation of the Boolean or conditional semantics within an Eligibility Criterion, composed of Atomic Propositions without replacing the source text.
 _Avoid_: Paraphrased criterion, flat checklist
 
 **Authored Criterion Expression**:
-A Criterion Expression hand-written as versioned JSON, optionally AI-drafted and always human-reviewed, with recorded authoring provenance and review status. Automatic parsing is out of scope, so the expression is a frozen input rather than a measured capability.
+A versioned, human-reviewed Criterion Expression with recorded authoring provenance.
 _Avoid_: Parsed criterion, ground truth, model output
 
 **Atomic Proposition**:
@@ -25,7 +25,7 @@ The smallest independently assessable clinical statement within a Criterion Expr
 _Avoid_: Eligibility criterion, source bullet
 
 **Criterion Category**:
-The clinical reasoning category assigned to an Atomic Proposition. Supported categories are demographic, disease, biomarker, and prior therapy; anything else is authored as unsupported.
+The clinical reasoning category assigned to an Atomic Proposition.
 _Avoid_: Criterion polarity, retrieval facet
 
 **Criterion Polarity**:
@@ -173,7 +173,7 @@ _Avoid_: Potential match, rejected trial
 ### Agent
 
 **Criterion Reasoning Agent**:
-The bounded reasoning process that interprets Atomic Propositions, selects Timeline Tools, routes deterministic computation to code, and produces provenance-verified Criterion Assessments with at most one correction.
+The bounded reasoning process that interprets Atomic Propositions, selects Timeline Tools, and produces provenance-verified Proposition Assessments.
 _Avoid_: General agent harness, eligibility engine
 
 **Timeline Tool**:
@@ -181,7 +181,7 @@ A typed, read-only Python function the agent may call to query the Patient Timel
 _Avoid_: Plugin, skill, retrieval call
 
 **Trial Supervisor**:
-The multi-turn layer above the Criterion Reasoning Agent that owns trial-level strategy — criterion ordering, Early Termination, and Evidence Reuse. Every behavior is a flag, default off, so it appears as an ablation rather than a confound.
+The strategy layer above the Criterion Reasoning Agent that owns criterion ordering, Early Termination, and Evidence Reuse within one trial.
 _Avoid_: Orchestrator framework, multi-agent coordinator
 
 **Early Termination**:
@@ -193,17 +193,21 @@ Reuse of already-verified Patient Evidence across criteria within the same trial
 _Avoid_: Memory, cache, cross-patient state
 
 **Correction**:
-The single targeted retry permitted after the Evidence Verifier rejects an assessment. A second failure yields `unknown` with `verification_failed`.
+A targeted revision requested after the Evidence Verifier rejects a Proposition Assessment.
 _Avoid_: Retry loop, self-healing
 
 ### Assessment
 
+**Proposition Assessment**:
+The evidence-grounded judgment for one Atomic Proposition, including its Criterion State, cited patient and trial evidence, tool calls, and verifier outcome.
+_Avoid_: Criterion Assessment, eligibility decision
+
 **Criterion Assessment**:
-The evidence-grounded judgment for one Eligibility Criterion, including its Criterion State, cited patient and trial evidence, tool calls, and verifier outcome.
+The deterministically aggregated judgment for one Eligibility Criterion, composed from its Proposition Assessments through its Criterion Expression.
 _Avoid_: Eligibility decision, clinical decision
 
 **Criterion State**:
-One of `met`, `not_met`, `unknown`, or `not_applicable`, describing whether the patient evidence supports the proposition expressed by an Eligibility Criterion. The state does not by itself describe overall trial eligibility.
+One of `met`, `not_met`, `unknown`, or `not_applicable`, describing whether patient evidence supports an Atomic Proposition or, after deterministic aggregation, an Eligibility Criterion. The state does not by itself describe overall trial eligibility.
 _Avoid_: Eligibility status, pass/fail
 
 **Met**:
@@ -277,7 +281,7 @@ An immutable benchmark item that binds versioned inputs, derived expected output
 _Avoid_: Demo case, prompt example
 
 **Derived Gold Label**:
-An expected Criterion State computed by deterministic code from the Scenario Manifest and the Authored Criterion Expression. Model-generated expected states are prohibited, because grading a model with a model measures agreement rather than correctness.
+An expected Criterion State derived from the Scenario Manifest and the Authored Criterion Expression.
 _Avoid_: Annotation, human label, LLM judgment
 
 **Scorable Assessment**:
@@ -289,7 +293,7 @@ A Criterion Assessment that remains visible for Criterion Coverage but is exclud
 _Avoid_: Dropped criterion, negative example
 
 **State Support**:
-The number of held-out labeled assessments for each Criterion State, reported to make imbalance and metric reliability visible. Given the deliberately small labeled set, support and confidence intervals accompany every accuracy figure.
+The number of labeled assessments for each Criterion State in an evaluation partition.
 _Avoid_: Overall sample count
 
 **Coordinator Review**:

@@ -19,7 +19,7 @@ The labeled set is small by design. At roughly 40–60 held-out atomic propositi
 
 Primary release gates therefore rest on metrics with many observations per assessment or with hard invariants: citation validity, unsupported-assessment rate, verifier catch rate, and deterministic aggregation correctness. Every citation is an observation, so these metrics are far better supported than per-proposition classification accuracy.
 
-Macro F1 is still reported, always with its confidence interval and support, and is read as a comparison against the one-shot baseline rather than as an absolute capability claim.
+Macro F1 is still reported, always with its confidence interval and support, and is read primarily as a comparison against the expression-aware one-shot B2 control rather than as an absolute capability claim.
 
 ## Benchmark Construction and Its Limits
 
@@ -48,21 +48,22 @@ Difficulty comes from Planted Distractors — specification section 8.3 — not 
 | Variant | Description |
 | --- | --- |
 | B0 | Deterministic structured-field checks only; unsupported semantics become `unknown` |
-| B1 | One-shot model over a flattened patient summary and raw criterion text |
+| B1 | Raw-text one-shot model over the permitted patient evidence and source criterion text; measures the end-to-end improvement over a conventional prompt |
+| B2 | Expression-aware one-shot model over the same permitted patient evidence and Authored Criterion Expression as Full, but without tool selection, deterministic routing, verification, or correction; isolates the orchestration contribution |
 | Full | Patient Timeline, authored expressions, tool selection, deterministic routing, verification, one correction |
 
-B1 uses the same inputs, the same output schema, and the same cost accounting as Full. Anything else makes the comparison meaningless.
+B1 and B2 use the same model family, patient-evidence boundary, output schema, decoding policy, and cost accounting as Full. B1 deliberately receives raw criterion text while B2 and Full receive the authored expression; results label that difference rather than claiming identical inputs.
 
 ## Ablations
 
-Each is a configuration flag, not a separate implementation.
+Each is a configuration flag, not a separate implementation. The first two are core. The supervisor-only ablations are reported only when the additive Trial Supervisor gate is built.
 
 | Ablation | Question it answers |
 | --- | --- |
 | No deterministic tools | Does routing dates, numbers, and Boolean logic out of the model matter? |
 | No verifier | What does evidence verification actually buy? |
-| No evidence reuse | Does cross-criterion reuse reduce cost, and at what accuracy risk? |
-| Early termination on | How much cost does blocker-first termination save, and does the conclusion change? |
+| No evidence reuse (supervisor only) | Does cross-criterion reuse reduce cost, and at what accuracy risk? |
+| Early termination on (supervisor only) | How much cost does blocker-first termination save, and does the conclusion change? |
 
 ## Track 1: Grounding and Verification — Primary Gates
 
@@ -87,8 +88,8 @@ Reference validity is measured per citation. Unsupported-assessment rate is the 
 | Patient-evidence precision | ≥ 90% |
 | Patient-evidence recall | ≥ 80% |
 | Match Conclusion accuracy | ≥ 80% |
-| Macro-F1 gain over one-shot B1 | ≥ 5 percentage points |
-| Unsupported-assessment reduction versus B1 | ≥ 30% |
+| Macro-F1 gain over expression-aware one-shot B2 | ≥ 5 percentage points |
+| Unsupported-assessment reduction versus B2 | ≥ 30% |
 
 All values carry bootstrap confidence intervals. Results are reported per Criterion Category so demographic performance cannot mask biomarker, treatment, or temporal failures.
 
@@ -131,7 +132,7 @@ This is system evaluation. It is not evidence of clinical generalization.
 
 ## Failure Analysis
 
-Publish a failure taxonomy with at least two genuine failure cases carrying full traces, and at least three cases where the agent beats the one-shot baseline. For each failure, record the category, the proximate cause, whether the verifier caught it, and whether the correction cycle helped.
+Publish a failure taxonomy with at least two genuine failure cases carrying full traces, and at least three cases where Full beats the expression-aware one-shot B2 control. For each failure, record the category, the proximate cause, whether the verifier caught it, and whether the correction cycle helped.
 
 ## Reproducibility
 

@@ -1,8 +1,8 @@
-# Clinical Trial Matching Agent: MVP Specification (v2)
+# Clinical Trial Matching Agent: MVP Specification (v3)
 
 **Status:** Frozen source of truth
 **Frozen on:** 2026-08-22
-**Supersedes:** v1 (frozen 2026-08-21), which scoped a twelve-gate research program with public retrieval benchmarks, an automatic criterion parser, and 500 manually labeled propositions.
+**Supersedes:** v2 (frozen 2026-08-22). Version 3 preserves the rescope while repairing core/additive dependencies, making the assessment unit explicit, and separating end-to-end and component-control baselines.
 **Change policy:** Any scope or semantic change must be recorded explicitly here and, when it reverses a rejected alternative, in an ADR. Held-out evaluation results must never drive optimization.
 
 ## 1. Objective
@@ -26,15 +26,15 @@ Every report states that recruiting status, site availability, and actual eligib
 A reviewer opening the hosted trace report, or running the project locally, must be able to observe all of the following within five minutes:
 
 1. A patient timeline built from a synthetic FHIR R4 Bundle with per-fact provenance.
-2. Hybrid retrieval selecting candidate trials from the frozen snapshot, with per-channel rank attribution.
+2. Candidate selection from the frozen snapshot; when the additive retrieval gate is built, this includes hybrid retrieval with per-channel rank attribution.
 3. A trial criterion decomposed into atomic propositions.
 4. The agent choosing and calling timeline tools per proposition.
 5. Dates, numbers, and Boolean aggregation handled by deterministic code rather than the model.
 6. A structured judgment citing patient evidence and exact trial source text.
 7. The verifier rejecting a fabricated or incorrect citation and triggering exactly one correction.
-8. A side-by-side comparison against the one-shot LLM baseline showing where the agent design pays off.
+8. A side-by-side comparison against deterministic and one-shot baselines showing where the agent design pays off.
 
-Requirement 7 must be demonstrable from both an injected-fault fixture and at least one organic run.
+Requirement 7 must be reproducibly demonstrable from an injected-fault fixture. Organic verifier catches are published when observed, but a model happening to make a particular mistake is not an acceptance criterion.
 
 ## 4. Inputs
 
@@ -75,7 +75,7 @@ Scenarios are designed as a coverage matrix, not as six arbitrary patients. Coll
 
 ## 5. FHIR Boundary
 
-The system reasons over four resource types:
+The system reasons over four evidence-bearing resource types:
 
 - `Patient`
 - `Condition`
@@ -84,7 +84,7 @@ The system reasons over four resource types:
 
 This is sufficient for demographics, disease and stage, biomarkers, ECOG, and explicit treatment exposure.
 
-`MedicationRequest` is ingested as Unsupported Patient Content and preserved for provenance, because order intent is not exposure. Notes, imaging, care plans, encounters, specimens, and arbitrary extensions are likewise preserved but cannot establish a confident assessment.
+`MedicationRequest` is recognized and preserved as Unsupported Patient Content, but it is not an evidence-bearing resource because order intent is not exposure. Other Bundle content, including notes, imaging, care plans, encounters, specimens, and arbitrary extensions, is inventoried with resource identity when possible but is not semantically normalized and cannot establish a confident assessment.
 
 Only facts with usable status and temporal semantics qualify as Patient Evidence.
 
@@ -137,7 +137,9 @@ Any criterion outside these categories or expression forms is authored as an `un
 
 ## 7. Criterion Truth and Aggregation
 
-Criterion State describes whether the patient satisfies the semantic statement of the criterion, independent of inclusion or exclusion polarity:
+The model assesses one Atomic Proposition at a time and produces a Proposition Assessment. Deterministic code aggregates Proposition Assessments through the authored Criterion Expression to produce one Criterion Assessment for the source Eligibility Criterion. The model never directly chooses the aggregate Criterion State.
+
+Criterion State describes whether the patient satisfies the semantic statement of an Atomic Proposition or, after deterministic aggregation, the complete Eligibility Criterion. At either level it is independent of inclusion or exclusion polarity:
 
 - `met`: evidence supports the semantic statement.
 - `not_met`: evidence contradicts the semantic statement.
@@ -175,11 +177,11 @@ Under early termination, any `not_assessed` criterion forces at least `insuffici
 
 ## 8. Evidence Contract
 
-Every `met` or `not_met` atomic assessment cites exact Trial Evidence and one or more Patient Evidence references with an explicit `supports` or `contradicts` relation.
+Every `met` or `not_met` Proposition Assessment cites exact Trial Evidence and one or more Patient Evidence references with an explicit `supports` or `contradicts` relation.
 
-Every `unknown` carries a structured Unknown Reason: `missing_evidence`, `conflicting_evidence`, `stale_evidence`, `ambiguous_criterion`, `unsupported_evidence_type`, `expression_unavailable`, `verification_failed`, or `reasoning_conflict`.
+Every `unknown` Proposition Assessment carries a structured Unknown Reason: `missing_evidence`, `conflicting_evidence`, `stale_evidence`, `ambiguous_criterion`, `unsupported_evidence_type`, `expression_unavailable`, `verification_failed`, or `reasoning_conflict`.
 
-Every `not_applicable` cites the Patient Evidence establishing that the conditional antecedent is false.
+Every `not_applicable` Proposition Assessment cites the Patient Evidence establishing that the conditional antecedent is false.
 
 Patient references contain FHIR resource type and ID, JSON path, Clinical Time, status, code/value, and a source-derived display. Trial references contain snapshot ID, NCT ID, polarity section, criterion ordinal and span, and exact source text.
 
@@ -236,7 +238,7 @@ Model-proposed query expansions may improve retrieval but can never independentl
 
 ## 10. Criterion Reasoning Agent
 
-One bounded, framework-independent typed Python loop, executed per criterion:
+One bounded, framework-independent typed Python loop, executed per Atomic Proposition:
 
 1. Read the frozen Criterion Expression.
 2. Classify each Atomic Proposition by Criterion Category.
@@ -246,7 +248,8 @@ One bounded, framework-independent typed Python loop, executed per criterion:
 6. Produce a structured assessment with citations.
 7. Run the Evidence Verifier.
 8. On failure, perform exactly one targeted correction.
-9. On second failure, return `unknown` with `verification_failed`.
+9. On second failure, return a Proposition Assessment of `unknown` with `verification_failed`.
+10. Aggregate verified Proposition Assessments through deterministic expression logic to produce the Criterion Assessment.
 
 The model receives the exact criterion text, the frozen expression, polarity and provenance, and tool results. It never receives the full Bundle, the full trial record, or the Scenario Manifest.
 
@@ -315,7 +318,9 @@ ClinicalTrials.gov has HTTP and fixture adapters. Model inference has hosted, lo
 
 **Eligibility Criterion** — version-scoped ID; polarity; source section, ordinal, span, exact text; Criterion Expression and Atomic Propositions; authoring provenance and review status.
 
-**Criterion Assessment** — criterion and proposition identities; Criterion Category, State, and Impact; Patient Evidence, Trial Evidence, and Evidence Relations; Unknown Reason; tool calls; deterministic computations; verifier outcome; correction record; non-evidentiary rationale.
+**Proposition Assessment** — proposition identity and category; Criterion State; Patient Evidence, Trial Evidence, and Evidence Relations; Unknown Reason; tool calls; deterministic computations; verifier outcome; correction record; non-evidentiary rationale.
+
+**Criterion Assessment** — criterion identity and polarity; complete Proposition Assessments; deterministically aggregated Criterion State and Impact; aggregation trace; coverage status.
 
 **Trial Assessment** — candidate identity and immutable Retrieval Rank; complete Criterion Assessments; blocker, unresolved, and not-assessed counts; Match Conclusion; Review Priority; Evidence Trajectory; operational measurements.
 
@@ -345,7 +350,7 @@ It presents:
 4. Per criterion: source text, atomic propositions, state, impact, and evidence
 5. Tool call sequences with arguments and results
 6. Verifier outcomes, including rejected citations and the resulting correction
-7. Side-by-side agent versus one-shot baseline on the same criterion
+7. Side-by-side Full, expression-aware one-shot, and raw-text one-shot results on the same criterion
 8. Per-assessment latency, model calls, tokens, and cost
 
 Citations link to the cited FHIR JSON path and the exact trial source span.
@@ -389,17 +394,17 @@ Not every gate is essential. If time is constrained, cut from the bottom of this
 - Gate 1 Contracts and fixtures
 - Gate 2 Patient Timeline and Timeline Tools
 - Gate 4 Criterion Agent and Evidence Verifier
-- Gate 6 Evaluation, one-shot baseline, and ablations
+- Gate 6 Evaluation, baselines, and core ablations
 - Gate 7 Trace Report, because an unseen result is not a portfolio result
 
 **Additive** — real value, but the project remains complete and honest without them:
 
-- Gate 3 Hybrid retrieval. Fallback: a fixed trial set per scenario, with retrieval declared out of scope.
+- Gate 3 Hybrid retrieval. Fallback: the frozen core trial fixtures selected in Gate 1, with retrieval declared out of scope.
 - Gate 5 Trial Supervisor. Fallback: single-turn per-criterion assessment only.
 
 **Cut order under schedule pressure:**
 
-1. Gate 5 Trial Supervisor entirely
+1. Gate 5 Trial Supervisor entirely, including its two supervisor-only ablations
 2. Dense retrieval and RRF, keeping BM25 only
 3. Scenarios from six to four
 4. Live report mode, keeping the static report
