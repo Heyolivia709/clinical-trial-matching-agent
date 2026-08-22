@@ -1,28 +1,46 @@
-# Clinical Trial Matching Agent: Frozen Phase 1 MVP Specification
+# Clinical Trial Matching Agent: MVP Specification (v2)
 
 **Status:** Frozen source of truth
-**Frozen on:** 2026-08-21
-**Change policy:** Any scope or semantic change must be recorded explicitly in this specification and, when appropriate, an ADR. Held-out evaluation results must never drive optimization.
+**Frozen on:** 2026-08-22
+**Supersedes:** v1 (frozen 2026-08-21), which scoped a twelve-gate research program with public retrieval benchmarks, an automatic criterion parser, and 500 manually labeled propositions.
+**Change policy:** Any scope or semantic change must be recorded explicitly here and, when it reverses a rejected alternative, in an ADR. Held-out evaluation results must never drive optimization.
 
 ## 1. Objective
 
-Build a research-coordinator decision-support prototype that compares a genuine synthetic FHIR R4 patient record with a broad, versioned corpus of public NSCLC clinical trials. The system retrieves candidate trials, assesses every parsed inclusion and exclusion criterion, and returns machine-verifiable patient evidence and exact trial-source citations.
+Build a portfolio system that demonstrates agent engineering: tool selection, controlled reasoning, evidence verification, bounded failure recovery, multi-turn cost control, and measured evaluation against baselines.
 
-The project exists to demonstrate agent cognition and orchestration, longitudinal FHIR modeling, hybrid retrieval, criterion-level reasoning, evidence grounding, and benchmark-first evaluation. It is not a chatbot, ordinary RAG demo, generic agent harness, or clinical product.
+Clinical trial matching is the carrier domain, not the subject. The system compares an authored synthetic FHIR R4 patient record against a frozen snapshot of public NSCLC trials, assesses individual eligibility criteria, and returns structured judgments with machine-verified patient evidence and exact trial source citations.
+
+The project is not a chatbot, an ordinary retrieval-augmented generation demo, a generic agent harness, a clinical text parser, or a clinical product.
 
 ## 2. Claims and Safety Boundary
 
 The system produces screening workflow labels for research coordinator review. It does not diagnose, recommend treatment, determine clinical eligibility, enroll patients, contact sites, or demonstrate clinical validity.
 
-Phase 1 uses only public trial records and authored synthetic patient scenarios. It does not accept real PHI, connect to a live EHR, use MIMIC, claim HIPAA compliance, or make external write operations.
+Inputs are public ClinicalTrials.gov records and authored synthetic patient scenarios only. The system does not accept real PHI, connect to a live EHR, use MIMIC, or claim HIPAA compliance. It performs no external write operations.
 
-All reports must state that current recruiting status, site availability, and actual eligibility must be verified through ClinicalTrials.gov and the study team.
+Every report states that recruiting status, site availability, and actual eligibility must be verified through ClinicalTrials.gov and the study team.
 
-## 3. Phase 1 Inputs
+## 3. Demonstration Goal
 
-### 3.1 Trial Corpus Snapshot
+A reviewer opening the hosted trace report, or running the project locally, must be able to observe all of the following within five minutes:
 
-The search universe is an immutable, versioned snapshot of full ClinicalTrials.gov records satisfying all of these study-wide conditions:
+1. A patient timeline built from a synthetic FHIR R4 Bundle with per-fact provenance.
+2. Hybrid retrieval selecting candidate trials from the frozen snapshot, with per-channel rank attribution.
+3. A trial criterion decomposed into atomic propositions.
+4. The agent choosing and calling timeline tools per proposition.
+5. Dates, numbers, and Boolean aggregation handled by deterministic code rather than the model.
+6. A structured judgment citing patient evidence and exact trial source text.
+7. The verifier rejecting a fabricated or incorrect citation and triggering exactly one correction.
+8. A side-by-side comparison against the one-shot LLM baseline showing where the agent design pays off.
+
+Requirement 7 must be demonstrable from both an injected-fault fixture and at least one organic run.
+
+## 4. Inputs
+
+### 4.1 Trial Corpus Snapshot
+
+An immutable, versioned snapshot of 200–500 full ClinicalTrials.gov records satisfying all study-wide conditions:
 
 - Interventional study
 - Overall status `RECRUITING`
@@ -31,101 +49,104 @@ The search universe is an immutable, versioned snapshot of full ClinicalTrials.g
 
 Corpus membership never uses patient-specific age, sex, biomarker, stage, histology, performance status, geography, or treatment history.
 
-Each snapshot records the ClinicalTrials.gov `dataTimestamp`, ingestion configuration, source payload hashes, parser configuration, terminology mappings, index configuration, and derived-artifact versions. Refreshing creates a new snapshot and never mutates an existing Matching Run.
+The snapshot records the ClinicalTrials.gov `dataTimestamp`, ingestion configuration, source payload hashes, terminology mappings, index configuration, and derived-artifact versions. Refreshing creates a new snapshot and never mutates an existing Matching Run. A snapshot older than thirty days receives a `stale_snapshot` warning and remains usable for reproducible historical evaluation.
 
-A snapshot older than seven days receives a `stale_snapshot` warning. It remains usable for reproducible historical evaluation.
+Corpus size is intentionally larger than the assessed subset. A corpus of a few dozen trials would make top-5 retrieval trivial and retrieval ablations uninformative; corpus growth is nearly free because only assessed trials require authored criterion expressions.
 
-### 3.2 Patient Input
+### 4.2 Patient Input
 
-The product input is a Synthea-compatible FHIR R4 `Bundle` plus an explicit `assessment_as_of` timestamp. The system derives a canonical Patient Timeline while preserving source resource identity, JSON path, codes, values, clinical status, Clinical Time, Temporal Precision, and provenance.
+A Synthea-compatible FHIR R4 `Bundle` plus an explicit `assessment_as_of` timestamp. The system derives a Patient Timeline preserving source resource identity, JSON path, codes, values, clinical status, Clinical Time, Temporal Precision, and provenance.
 
-TREC narrative topics enter only through a retrieval-benchmark adapter. They are not converted into artificial FHIR and cannot support longitudinal-reasoning claims.
+### 4.3 Authored Criterion Expressions
 
-### 3.3 Authored Synthetic Scenarios
+Criterion Expressions are hand-authored as versioned JSON for 10–12 trials in the snapshot. Automatic criterion parsing is out of scope: the subject under test is how the runtime agent finds and verifies evidence, not how well a model parses clinical text.
 
-Benchmark patients begin with reproducibly generated Synthea Bundles and may receive controlled, standards-conformant FHIR augmentations for histology, stage, biomarkers, ECOG, treatments, laboratories, progression, and missing or conflicting facts.
+Expressions may be drafted with AI assistance and must be human-reviewed before freezing. Authoring provenance and review status are recorded per expression.
 
-A hidden Scenario Manifest records authored ground truth and transformation provenance. The matching system never receives this manifest.
+Authoring order matters. Retrieval configuration is frozen before expression authoring, so the trials that surface in the assessed set are known in advance. Trials without authored expressions are reported as `expression_unavailable` and never silently omitted.
 
-## 4. FHIR Reasoning Boundary
+### 4.4 Authored Synthetic Scenarios
 
-Phase 1 reasons over:
+Six scenarios begin as reproducibly generated Synthea Bundles and receive controlled, standards-conformant FHIR augmentations for demographics, disease, stage, biomarkers, ECOG, and simple treatment history.
+
+Each scenario has a hidden Scenario Manifest recording authored facts, transformations, and Planted Distractors. The matching system never receives the manifest.
+
+Scenarios are designed as a coverage matrix, not as six arbitrary patients. Collectively they must produce every Criterion State, every Unknown Reason, and every Planted Distractor kind defined in section 8.3.
+
+## 5. FHIR Boundary
+
+The system reasons over four resource types:
 
 - `Patient`
 - `Condition`
 - `Observation`
-- `DiagnosticReport`
-- `MedicationRequest`
 - `MedicationAdministration`
-- `Procedure`
 
-`Encounter` and `Specimen` are context and provenance resources. Unsupported documents, notes, imaging pixels, care plans, and arbitrary extensions remain preserved but cannot establish a confident assessment.
+This is sufficient for demographics, disease and stage, biomarkers, ECOG, and explicit treatment exposure.
 
-Only facts with usable status and temporal semantics qualify as Patient Evidence. Medication orders and documented administrations remain distinct.
+`MedicationRequest` is ingested as Unsupported Patient Content and preserved for provenance, because order intent is not exposure. Notes, imaging, care plans, encounters, specimens, and arbitrary extensions are likewise preserved but cannot establish a confident assessment.
 
-### 4.1 Temporal Policy
+Only facts with usable status and temporal semantics qualify as Patient Evidence.
+
+### 5.1 Temporal Policy
 
 - Ignore events after `assessment_as_of`.
-- Use clinical effective, onset, performed, or administration time rather than ingestion or update time.
+- Use clinical effective, onset, or administration time rather than ingestion or update time.
 - Preserve intervals and source date precision.
 - Anchor relative windows to `assessment_as_of` unless the criterion names another anchor.
 - Treat interval endpoints as inclusive unless the source criterion says otherwise.
-- Missing precision for a required temporal comparison yields `unknown`.
+- Missing precision required for a comparison yields `unknown`.
 - Conflicting current evidence yields `unknown` when deterministic precedence cannot resolve it.
 
-### 4.2 Laboratory Policy
+### 5.2 Observation Policy
 
 - Preserve raw value, comparator, unit, reference range, status, and Clinical Time.
-- Normalize only through reviewed UCUM-compatible mappings.
-- Evaluate numeric comparators and compatible unit conversions deterministically.
-- ULN or LLN rules require the applicable reference range for that observation and patient context.
-- Corrected or amended results supersede prior versions while retaining full provenance.
-- Preliminary results cannot establish `met` or `not_met`; entered-in-error results are ignored.
+- Evaluate numeric comparators deterministically within a single unit.
+- Corrected or amended results supersede prior versions while retaining provenance.
+- `preliminary` results cannot establish `met` or `not_met`; `entered-in-error` results are ignored.
 - Qualitative values are never converted to numbers without a reviewed mapping.
+- Cross-unit conversion, UCUM normalization, and ULN/LLN derivation are out of scope and yield `unknown`.
 
-### 4.3 Treatment-History Policy
+### 5.3 Treatment-Exposure Policy
 
-- Valid `MedicationAdministration` resources establish exposure; `MedicationRequest` establishes intent only.
-- Treatment Episodes preserve source, agent, route, dose when available, status, interval, and Clinical Time.
-- Regimen and line-of-therapy derivation uses explicit scenario facts or versioned deterministic rules with defined grouping and precedence.
-- Ambiguous grouping, line number, or exposure yields `unknown`.
-- Washout uses the clinically relevant end of actual exposure or procedure interval.
-- Progression after therapy establishes temporal ordering only, not treatment failure or causality.
+- A valid `MedicationAdministration` establishes exposure.
+- Exposure preserves source, agent, route, status, interval, and Clinical Time.
+- Simple washout windows use the end of documented exposure.
+- Regimen grouping, line-of-therapy derivation, and treatment-failure inference are out of scope and yield `unknown`.
 
-### 4.4 Biomarker Policy
+### 5.4 Biomarker and Stage Policy
 
-Phase 1 supports explicit positive or negative results, reviewed gene and variant mappings, and structured quantitative biomarkers such as PD-L1 when score type, assay, specimen context, and time are sufficient.
+Supported: explicit positive or negative biomarker results with reviewed gene and variant mappings, and structured quantitative biomarkers such as PD-L1 when score type and time are sufficient. Supported stage facts are explicitly represented and reviewed.
 
-Assay-coverage inference, actionability inference, unsupported specimen interpretation, and complex discordant-test resolution are out of scope and yield `unknown`. A negative panel supports absence only for explicitly covered targets.
+Out of scope, yielding `unknown`: assay-coverage inference, actionability inference, discordant-test resolution, TNM-to-stage derivation, and histology inferred from treatment. A negative panel supports absence only for explicitly covered targets.
 
-### 4.5 Stage and Histology Policy
+## 6. Criterion Scope
 
-Phase 1 uses explicitly represented and reviewed NSCLC diagnosis, histology, stage, progression, and recurrence facts. It does not derive stage from TNM, infer histology from treatment, or upgrade approximate disease labels. Staging system, version, Clinical Time, status, and provenance remain visible.
+Four Criterion Categories are supported:
 
-## 5. Terminology Boundary
+| Category | Examples |
+| --- | --- |
+| Demographic | age, administrative sex |
+| Disease | NSCLC diagnosis, stage |
+| Biomarker | EGFR, ALK, PD-L1 explicit results |
+| Prior therapy | documented exposure to a named agent |
 
-The system preserves every original coding system, code, display, and source location. Versioned reviewed normalization is limited to ClinicalTrials.gov condition/MeSH metadata, ICD-10-CM codes present in Synthea, RxNorm medication concepts, LOINC laboratory and biomarker observations, and a small reviewed NSCLC synonym set.
+Supported expression forms: `all_of`, `any_of`, simple conditional expressions, simple date windows, and simple numeric comparisons.
 
-Full SNOMED CT and UMLS are not Phase 1 dependencies. Model-proposed synonyms may expand retrieval queries but cannot independently establish `met` or `not_met`.
-
-## 6. Criterion Representation
-
-An Eligibility Criterion remains aligned to its original inclusion or exclusion source text, ordinal, and span. A versioned offline parser derives a Parsed Criterion Representation containing polarity, parser provenance, confidence, failure reason, and a Criterion Expression.
-
-A Criterion Expression preserves `all_of`, `any_of`, and conditional structure over Atomic Propositions. Runtime matching consumes the frozen parsed representation and never reparses a trial per patient. Failed or low-confidence parsing leaves the source criterion visible and produces `unknown`.
-
-Every parsed criterion appears in the output. Administrative, unsupported, and ambiguous criteria are never silently dropped.
+Any criterion outside these categories or expression forms is authored as an `unsupported` proposition, remains visible in output, and resolves to `unknown` with reason `unsupported_evidence_type`. Criteria are never silently dropped.
 
 ## 7. Criterion Truth and Aggregation
 
-Criterion State describes whether the patient satisfies the semantic statement of the criterion, regardless of inclusion or exclusion polarity:
+Criterion State describes whether the patient satisfies the semantic statement of the criterion, independent of inclusion or exclusion polarity:
 
 - `met`: evidence supports the semantic statement.
 - `not_met`: evidence contradicts the semantic statement.
-- `unknown`: evidence is missing, stale, ambiguous, conflicting, unsupported, unparsed, or unverifiable.
+- `unknown`: evidence is missing, stale, ambiguous, conflicting, unsupported, or unverifiable.
 - `not_applicable`: an explicit conditional antecedent is demonstrably false.
 
-UI labels, if implemented, are Supported, Contradicted, Unknown, and Not Applicable. “Not Supported” is prohibited because it conflates contradiction with missing evidence.
+`not_assessed` is a separate reporting status, not a Criterion State. It marks criteria the Trial Supervisor deliberately skipped under an early-termination budget. It must never be merged into `unknown`.
+
+UI labels are Supported, Contradicted, Unknown, Not Applicable, and Not Assessed. "Not Supported" is prohibited because it conflates contradiction with missing evidence.
 
 ### 7.1 Expression Truth Tables
 
@@ -150,163 +171,238 @@ Match Conclusion is derived deterministically:
 - No blocker and at least one unresolved impact: `insufficient_information`
 - No blocker and no unresolved impact: `potential_match`
 
-Every Trial Assessment exposes blocker and unresolved counts. These conclusions are screening workflow labels, not clinical eligibility decisions.
+Under early termination, any `not_assessed` criterion forces at least `insufficient_information` unless a blocker is already present. Every Trial Assessment exposes blocker, unresolved, and not-assessed counts. These conclusions are screening workflow labels, not clinical eligibility decisions.
 
 ## 8. Evidence Contract
 
 Every `met` or `not_met` atomic assessment cites exact Trial Evidence and one or more Patient Evidence references with an explicit `supports` or `contradicts` relation.
 
-Every `unknown` includes a structured reason such as `missing_evidence`, `conflicting_evidence`, `stale_evidence`, `ambiguous_criterion`, `unsupported_evidence_type`, `unparsed_criterion`, `verification_failed`, or `reasoning_conflict`.
+Every `unknown` carries a structured Unknown Reason: `missing_evidence`, `conflicting_evidence`, `stale_evidence`, `ambiguous_criterion`, `unsupported_evidence_type`, `expression_unavailable`, `verification_failed`, or `reasoning_conflict`.
 
-Every `not_applicable` result cites the Patient Evidence establishing that the conditional antecedent is false.
+Every `not_applicable` cites the Patient Evidence establishing that the conditional antecedent is false.
 
-Patient references contain FHIR resource type and ID, JSON path, Clinical Time, status, code/value, and a source-derived display. Trial references contain snapshot ID, NCT ID, polarity section, criterion ordinal/span, and exact source text.
+Patient references contain FHIR resource type and ID, JSON path, Clinical Time, status, code/value, and a source-derived display. Trial references contain snapshot ID, NCT ID, polarity section, criterion ordinal and span, and exact source text.
 
-A deterministic verifier rejects nonexistent references, changed values, invalid spans, missing evidence relations, incorrect expression aggregation, and `met` or `not_met` results without patient evidence. Model rationale is explanatory only and never counts as evidence.
+Model rationale is explanatory only and never counts as evidence.
+
+### 8.1 Evidence Verifier
+
+A deterministic verifier rejects:
+
+- References to nonexistent FHIR resources or JSON paths
+- Cited values, statuses, or times that disagree with the timeline
+- Invalid or out-of-range trial spans, or span text that disagrees with the snapshot
+- Missing or unlabeled evidence relations
+- `met` or `not_met` without patient evidence
+- Incorrect expression aggregation
+- Evidence dated after `assessment_as_of`
+
+Verification failure triggers exactly one targeted correction. A second failure yields `unknown` with `verification_failed`. Disagreement between deterministic computation and model interpretation yields `unknown` with `reasoning_conflict`.
+
+### 8.2 Failure Separation
+
+Infrastructure Failures — unavailable model endpoint, malformed snapshot, tool exception — are recorded as failures and are never scored as correct uncertainty.
+
+### 8.3 Planted Distractors
+
+Benchmark difficulty comes from deliberately planted evidence hazards rather than clinical subtlety. Scenarios must collectively include all of:
+
+1. An `entered-in-error` biomarker or stage result
+2. A `MedicationRequest` with no corresponding `MedicationAdministration`
+3. An observation dated after `assessment_as_of`
+4. Two conflicting results for the same concept
+5. A date with year-only precision where the criterion requires a finer window
+6. A `preliminary` result relevant to a threshold comparison
+7. A semantically near but non-matching concept, such as ALK expression versus ALK rearrangement
 
 ## 9. Candidate Retrieval
 
-The Patient Retrieval Profile prioritizes disease/histology, biomarkers, stage, and prior therapies as semantic facets. Demographic and geographic handling remains structured and conservative.
+The Patient Retrieval Profile is a retrieval-oriented view of the timeline covering disease and histology, biomarkers, stage, prior therapy, demographics, and geography. Per-facet query decomposition is out of scope; the profile produces one query representation per channel.
 
-Patient-specific Candidate Filters are limited to deterministically comparable structured age, administrative sex, and explicit geography. Unknown values never remove trials. Biomarkers, stage, histology, performance status, and treatment history remain recoverable Retrieval Signals.
+Patient-specific Candidate Filters are limited to deterministically comparable structured age, administrative sex, and explicit geography. Unknown values never remove trials. Biomarkers, stage, and treatment history remain recoverable Retrieval Signals, never hard filters.
 
-Retrieval uses two granularities:
+Two channels run independently over trial-level text — title, conditions and MeSH, summary, interventions, and eligibility text:
 
-- Trial-level title, conditions/MeSH, summary, interventions, and metadata
-- Source-aligned criterion-level inclusion and exclusion chunks
+- Lexical (BM25)
+- Dense (local embeddings)
 
-Lexical and dense retrieval run independently per facet. Deterministic reciprocal-rank fusion combines channels, criterion hits aggregate to trial IDs, and a constrained local reranker processes the high-recall shortlist.
+Deterministic reciprocal-rank fusion combines the channels. Cross-encoder reranking is out of scope.
 
-Candidate Retrieval returns an immutable top 20 with per-channel ranks and scores. The top five by Retrieval Rank receive full criterion assessment. A separate Review Priority orders assessed trials by Match Conclusion and then Retrieval Rank without overwriting the original rank. Ranks 6–20 remain visible Unassessed Candidates.
+Retrieval returns an immutable top 20 with per-channel ranks and scores. The top five by Retrieval Rank are presented; the top three receive full criterion assessment. Review Priority orders assessed trials by Match Conclusion and then Retrieval Rank without overwriting Retrieval Rank. Ranks 4–20 remain visible Unassessed Candidates.
 
-No blended “AI match score” combines retrieval and eligibility reasoning.
+No blended "AI match score" combines retrieval and eligibility reasoning.
+
+Model-proposed query expansions may improve retrieval but can never independently establish a Criterion State. Whether expansions are produced deterministically or by the model is recorded in the retrieval configuration.
 
 ## 10. Criterion Reasoning Agent
 
-Phase 1 uses one bounded, framework-independent typed Python agent loop:
+One bounded, framework-independent typed Python loop, executed per criterion:
 
-1. Interpret the frozen Criterion Expression.
-2. Classify Atomic Propositions by Criterion Category.
-3. Build a source-backed Evidence Packet.
-4. Select targeted read-only Patient Timeline queries and reasoning strategies.
-5. Route structured arithmetic, dates, units, and Boolean logic to deterministic code.
-6. Use the model for semantic interpretation, reviewed-concept alignment, and evidence selection.
-7. Verify provenance and deterministic invariants.
-8. Permit one targeted correction or re-plan.
-9. Return a verified result or conservative `unknown`.
+1. Read the frozen Criterion Expression.
+2. Classify each Atomic Proposition by Criterion Category.
+3. Determine which patient information is required.
+4. Select and call Timeline Tools.
+5. Route dates, numbers, and Boolean logic to deterministic tools.
+6. Produce a structured assessment with citations.
+7. Run the Evidence Verifier.
+8. On failure, perform exactly one targeted correction.
+9. On second failure, return `unknown` with `verification_failed`.
 
-The model receives the exact criterion, frozen expression, polarity/provenance, and criterion-specific Evidence Packet—not the full Bundle, full trial record, or Scenario Manifest.
+The model receives the exact criterion text, the frozen expression, polarity and provenance, and tool results. It never receives the full Bundle, the full trial record, or the Scenario Manifest.
 
-If correction still fails, the result is `unknown` with `verification_failed`. A conflict between deterministic and semantic results becomes `unknown` with `reasoning_conflict`. Infrastructure failures remain failures and are never scored as correct uncertainty.
+Criterion assessments within a trial are independent and executed concurrently unless evidence reuse is enabled.
 
 There are no hidden model retries in evaluation. No cross-patient memory, generic agent harness, durable state machine, authorization flow, or action execution exists.
 
-## 11. Architecture
+### 10.1 Timeline Tools
 
-Phase 1 contains five deep modules:
+Typed Python tools, all read-only:
+
+| Tool | Purpose |
+| --- | --- |
+| `find_patient_facts(category, concept)` | Locate timeline facts by category and normalized concept |
+| `get_latest_observation(code, as_of)` | Retrieve the most recent qualifying observation |
+| `find_medication_exposure(concept, time_window)` | Locate documented administrations within a window |
+| `compare_numeric(value, operator, threshold)` | Deterministic numeric comparison |
+| `check_temporal_window(event_time, anchor, window)` | Deterministic temporal window evaluation |
+
+Tool calls, arguments, and results are recorded in the Reasoning Trace.
+
+## 11. Trial Supervisor
+
+A multi-turn layer above the Criterion Reasoning Agent, owning trial-level assessment strategy. Every behavior is a configuration flag, default off.
+
+| Flag | Behavior | Measured effect |
+| --- | --- | --- |
+| `order_criteria` | Assess likely-blocking exclusion criteria first | Time to first blocker |
+| `early_termination` | Stop after a blocker is confirmed; mark the remainder `not_assessed` | Token and latency reduction |
+| `evidence_reuse` | Reuse verified evidence established for an earlier criterion in the same trial | Model-call reduction |
+
+Flags are off for correctness benchmarks and on for cost benchmarks, so multi-turn behavior appears as an ablation row rather than a confound.
+
+Known hazards, which must be measured rather than assumed away:
+
+- `early_termination` forfeits full Criterion Coverage. Skipped criteria are reported as `not_assessed`, never `unknown`.
+- `order_criteria` and `evidence_reuse` introduce order dependence. Assessment order is deterministic given a fixed configuration and seed.
+- `evidence_reuse` can propagate one incorrect reading across criteria. Reused evidence carries the originating criterion ID, and reuse-induced error propagation is reported separately.
+
+## 12. Architecture
+
+Four deep modules, each hiding substantial complexity behind a small stable interface:
 
 | Module | Interface | Owned complexity |
 | --- | --- | --- |
-| Corpus Builder | `build(snapshot_request) -> TrialCorpusSnapshot` | ClinicalTrials.gov ingestion, corpus membership, source preservation, parsing, version manifests, indexing |
-| Patient Timeline Builder | `build(fhir_bundle, assessment_time) -> PatientTimeline` | FHIR validation, supported-resource interpretation, terminology, temporal precision, provenance |
-| Candidate Retriever | `retrieve(patient_timeline, snapshot_id, retrieval_config) -> CandidateSet` | Candidate Filters, facets, lexical/dense channels, RRF, criterion aggregation, reranking, retrieval trace |
-| Criterion Reasoner | `assess(patient_timeline, trial_record) -> TrialAssessment` | Evidence packets, strategy routing, deterministic/model reasoning, correction, verification, aggregation |
-| Evaluation Lab | `run(eval_manifest, system_variant) -> EvalReport` | Parser, retrieval, reasoning, ablation, cost, and reproducibility evaluation |
+| Patient Timeline | `build(bundle, as_of) -> PatientTimeline` | FHIR validation, supported-resource interpretation, terminology, temporal precision, provenance, tool surface |
+| Trial Retrieval | `retrieve(timeline, snapshot, k) -> CandidateSet` | Ingestion, corpus membership, candidate filters, BM25, embeddings, RRF, retrieval trace |
+| Criterion Agent | `assess(timeline, trial) -> TrialAssessment` | Tool selection, model reasoning, deterministic computation, verification, correction, supervisor strategy, aggregation |
+| Evaluation Lab | `run(manifest, variant) -> EvalReport` | Gold derivation, baselines, ablations, metrics, cost accounting, failure analysis |
 
-`match(request) -> MatchingRun` is a thin application entry point rather than a core domain module. A small pure Matching Policy owns the top-20/top-5 and Review Priority rules. UI and HTTP transport remain outside the domain-module model.
+The application entry point stays thin:
 
-ClinicalTrials.gov has HTTP/full-JSON and fixture adapters. Model inference has local, frozen-test, and optional hosted-upper-bound adapters. PostgreSQL and pgvector remain internal to the owning modules. Direct FHIR parsing stays concrete until a second source such as HAPI creates a real seam.
+```
+match(patient, snapshot) -> MatchingRun
+```
 
-## 12. Core Data Model
+A small pure Matching Policy owns the top-20, top-5, top-3, and Review Priority rules. Parser, terminology, evidence packet construction, and index internals are module-internal and have no separate public interface.
 
-### Patient Timeline
+ClinicalTrials.gov has HTTP and fixture adapters. Model inference has hosted, local, and frozen-replay adapters. The retrieval index sits behind a single interface so a larger backend can replace the in-process implementation without touching callers.
 
-- Patient/scenario identity
-- Source Bundle hash and normalization version
-- Assessment Time
-- Demographics and geography
-- Time-ordered clinical facts with code/value/status/interval/precision
-- Treatment Episodes
-- Provenance references and unsupported-content inventory
+## 13. Core Data Model
 
-### Trial and Trial Record
+**Patient Timeline** — scenario identity; source Bundle hash and normalization version; Assessment Time; demographics and geography; time-ordered facts with code, value, status, interval, and precision; documented medication exposures; provenance references; unsupported-content inventory.
 
-- Stable NCT trial identity
-- Snapshot-scoped record identity and source payload hash
-- Recruiting status, sites, source URL, and update date
-- Conditions/MeSH, interventions, summaries, and structured eligibility metadata
-- Source-aligned Eligibility Criteria and Parsed Criterion Representations
+**Trial Record** — stable NCT identity; snapshot-scoped record identity and source payload hash; recruiting status, sites, source URL, update date; conditions and MeSH, interventions, summaries; source-aligned Eligibility Criteria; authored Criterion Expressions with authoring provenance.
 
-### Eligibility Criterion
+**Eligibility Criterion** — version-scoped ID; polarity; source section, ordinal, span, exact text; Criterion Expression and Atomic Propositions; authoring provenance and review status.
 
-- Version-scoped criterion ID
-- Inclusion/exclusion polarity
-- Source section, ordinal/span, exact text
-- Criterion Expression and Atomic Propositions
-- Parser provenance, confidence, and failure reason
+**Criterion Assessment** — criterion and proposition identities; Criterion Category, State, and Impact; Patient Evidence, Trial Evidence, and Evidence Relations; Unknown Reason; tool calls; deterministic computations; verifier outcome; correction record; non-evidentiary rationale.
 
-### Criterion Assessment
+**Trial Assessment** — candidate identity and immutable Retrieval Rank; complete Criterion Assessments; blocker, unresolved, and not-assessed counts; Match Conclusion; Review Priority; Evidence Trajectory; operational measurements.
 
-- Criterion and atomic-proposition identities
-- Criterion Category, Criterion State, and Criterion Impact
-- Patient Evidence, Trial Evidence, and Evidence Relations
-- Unknown Reason when applicable
-- Deterministic computations, verifier outcome, and non-evidentiary rationale
+**Matching Run** — timeline, snapshot, and Assessment Time identities; frozen retrieval, embedding, model, prompt, tool, supervisor, and evaluator versions; Candidate Set with assessed and unassessed status; Trial Assessments; Reasoning Trace; warnings; latency, model calls, tokens, cost estimate, hardware profile.
 
-### Trial Assessment
+**Eval Case** — immutable versioned inputs; derived expected outputs; partition and scenario family; Scorable and Coverage-Only assessments; evidence equivalence sets; grading rules.
 
-- Candidate Trial identity and immutable Retrieval Rank
-- Complete Criterion Assessments
-- Blocker and unresolved counts
-- Match Conclusion and Review Priority
-- Evidence Trajectory and operational measurements
+## 14. Trace and Reproducibility
 
-### Matching Run
+The Reasoning Trace records filter decisions, per-channel retrieval ranks, expression provenance, proposition classification, tool calls with arguments and results, deterministic computations, model metadata, verifier outcomes, correction reason, supervisor decisions, final states, tokens, latency, and configuration versions.
 
-- Patient Timeline, Trial Corpus Snapshot, and Assessment Time identities
-- Frozen parser, terminology, embedding, reranker, model, prompt, reasoning, and evaluator versions
-- Candidate Set containing top 20 and explicit assessed/unassessed status
-- Top-five Trial Assessments
-- Reasoning Trace, warnings, latency, tokens, cost estimate, and hardware profile
+It is a read-only diagnostic artifact, not execution state, an authorization log, or a resumable checkpoint. Frozen traces can be re-graded and replayed offline.
 
-### Eval Case
+The coordinator-facing Evidence Trajectory is the concise subset explaining which criterion, evidence, tools, and verification steps produced an assessment. It never exposes hidden chain-of-thought or Scenario Manifest content.
 
-- Immutable versioned inputs and hidden expected outputs
-- Dataset partition and scenario family
-- Scorable and Coverage-Only Assessments
-- Evidence equivalence sets
-- Grading rules and expected operational behavior
+Each run records patient and trial hashes, partition, embedding, model, prompt and schema, decoding, tool and supervisor configuration, evaluator code version, seed, latency, tokens, estimated cost, and hardware profile.
 
-## 13. Reproducibility and Trace
+## 15. Trace Report Interface
 
-The Reasoning Trace records filter decisions, per-channel retrieval ranks, parser provenance, proposition classification, reasoning strategy, Patient Timeline queries, evidence IDs, deterministic computations, model metadata, verifier outcomes, correction reason, final states, tokens, latency, and configuration versions.
+The delivery surface is a self-contained static Trace Report generated from a frozen Matching Run, publishable as a hosted page and viewable offline without credentials or a server.
 
-It is a read-only diagnostic artifact, not execution state, an authorization log, or a resumable checkpoint. Evaluation may re-grade frozen outputs. The coordinator-facing Evidence Trajectory contains only concise source and decision provenance, never hidden chain-of-thought or Scenario Manifest data.
+It presents:
 
-## 14. Model Policy
+1. The patient timeline with per-fact provenance
+2. The immutable top-20 retrieval table with per-channel rank attribution
+3. The top five candidates, with the assessed top three in Review Priority order
+4. Per criterion: source text, atomic propositions, state, impact, and evidence
+5. Tool call sequences with arguments and results
+6. Verifier outcomes, including rejected citations and the resulting correction
+7. Side-by-side agent versus one-shot baseline on the same criterion
+8. Per-assessment latency, model calls, tokens, and cost
 
-Local embeddings, a local reranker, and a local instruction model are the default. Exact model, revision, quantization, runtime, prompts, schemas, decoding, and hardware are selected using development data, then frozen before held-out evaluation.
+Citations link to the cited FHIR JSON path and the exact trial source span.
 
-A hosted model may appear only as a separately labeled synthetic-data upper bound. There is no hosted fallback during a frozen local evaluation. Model licenses and limitations must be recorded.
+An optional live mode may run a new patient-trial pair locally. The report is generated from traces, so it is built last and never becomes a dependency of the reasoning modules.
 
-Plain typed Python is the Phase 1 orchestration baseline. A later LangGraph implementation may be compared behind the same Criterion Reasoner interface. It may replace the baseline only after measurable improvement. Multi-agent remains a later equal-budget ablation.
+## 16. Model Policy
 
-## 15. Optional Post-Evaluation Coordinator Interface
+Model inference sits behind an adapter with hosted, local, and frozen-replay implementations. Headline results may come from a hosted small model; the adapter interface, not the model choice, is the engineering claim. Local execution is reported when available.
 
-The coordinator interface is not a Phase 1 implementation gate. If built after benchmark completion, it provides a structured review workflow rather than chat:
+A deliberately modest model is acceptable and arguably preferable: higher fabrication rates make verifier value larger and more measurable.
 
-1. Select an Authored Synthetic Scenario and Trial Corpus Snapshot.
-2. Inspect the Patient Timeline and Assessment Time.
-3. Run matching and inspect the immutable top-20 retrieval table.
-4. Review top-five Trial Assessments in Review Priority order while preserving Retrieval Rank.
-5. Expand criteria, Atomic Propositions, evidence, unknown reasons, blockers, unresolved counts, and concise Evidence Trajectories.
-6. Open cited FHIR resources and trial source spans.
-7. Export a read-only reproducibility report.
+Exact model, revision, prompts, schemas, decoding, and hardware are selected on development data and frozen before held-out evaluation. Structured output uses constrained decoding or schema validation with recorded, non-hidden retries. Model licenses and limitations are recorded.
 
-A hosted public interface accepts only bundled synthetic scenarios and never arbitrary patient uploads. Local development may accept explicitly synthetic FHIR R4 Bundles.
+Plain typed Python is the orchestration baseline. LangGraph, multi-agent execution, and fine-tuning are out of scope.
 
-## 16. Phase 1 Stop Line
+## 17. Authoring Policy
 
-Phase 1 excludes real PHI, live EHRs, MIMIC, HAPI FHIR, full SNOMED CT/UMLS, unstructured-note reasoning, imaging interpretation, full TNM staging, assay-actionability inference, clinical validation, chat, external writes, permissions, approval workflows, HITL, idempotency, durable execution, MCP, generic agent harnesses, LangGraph, multi-agent, fine-tuning, and required UI work.
+AI assistance is permitted for drafting criterion expressions, synthetic scenario resources, distractor designs, corpus normalization, code, tests, and documentation. Every AI-drafted artifact is human-reviewed before freezing, and its authoring provenance and review status are recorded.
 
-Phase 1 is complete only through benchmark and failure-analysis gates; no calendar schedule governs implementation.
+AI-generated expected-state labels are prohibited. Using a model to produce the ground truth that scores a model measures agreement, not correctness.
+
+Expected states are instead derived deterministically by code from the hidden Scenario Manifest and the authored Criterion Expression. Because scenario facts are authored, the expected state for a supported proposition is computable rather than a matter of judgment.
+
+Propositions whose semantics cannot be operationalized this way remain visible as Coverage-Only Assessments and are excluded from accuracy metrics.
+
+This makes the benchmark a test of evidence retrieval, citation validity, and logic application — not of clinical judgment. The specification states this limitation explicitly rather than implying broader validity.
+
+## 18. Scope Line
+
+Excluded from this MVP: real PHI, live EHRs, MIMIC, HAPI FHIR, full SNOMED CT and UMLS, automatic criterion parsing, unstructured-note reasoning, imaging interpretation, TNM derivation, UCUM unit conversion, line-of-therapy inference, assay-actionability inference, cross-encoder reranking, per-facet retrieval decomposition, PostgreSQL and pgvector, TREC benchmark tracks, manual gold labeling at scale, clinical validation, chat interfaces, external writes, permissions, approval workflows, human-in-the-loop workflows, idempotency, durable execution, MCP, generic agent harnesses, LangGraph, multi-agent orchestration, and fine-tuning.
+
+Progress is governed by acceptance criteria, not a calendar.
+
+## 19. Core and Additive Scope
+
+Not every gate is essential. If time is constrained, cut from the bottom of this list.
+
+**Core** — without these the project does not demonstrate its claim:
+
+- Gate 1 Contracts and fixtures
+- Gate 2 Patient Timeline and Timeline Tools
+- Gate 4 Criterion Agent and Evidence Verifier
+- Gate 6 Evaluation, one-shot baseline, and ablations
+- Gate 7 Trace Report, because an unseen result is not a portfolio result
+
+**Additive** — real value, but the project remains complete and honest without them:
+
+- Gate 3 Hybrid retrieval. Fallback: a fixed trial set per scenario, with retrieval declared out of scope.
+- Gate 5 Trial Supervisor. Fallback: single-turn per-criterion assessment only.
+
+**Cut order under schedule pressure:**
+
+1. Gate 5 Trial Supervisor entirely
+2. Dense retrieval and RRF, keeping BM25 only
+3. Scenarios from six to four
+4. Live report mode, keeping the static report
+5. Authored trials from twelve to eight
+
+Cutting a stage requires deleting its claims from the report as well. Reduced scope stated plainly is stronger than scope implied but unmeasured.

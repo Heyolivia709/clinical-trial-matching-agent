@@ -1,54 +1,60 @@
 # Clinical Trial Matching Agent: Product and Technical Constraints
 
 **Status:** Binding project constraints
-**Date:** 2026-08-21
+**Date:** 2026-08-22
 **Primary audience:** Project contributors and portfolio reviewers
 
-The frozen Phase 1 design is specified in [`../specs/phase-1-mvp-specification.md`](../specs/phase-1-mvp-specification.md). If this constraints document and the Phase 1 specification differ in level of detail, the specification governs Phase 1 behavior. Scope changes must be recorded explicitly.
+The frozen design is specified in [`../specs/phase-1-mvp-specification.md`](../specs/phase-1-mvp-specification.md). Where this document and the specification differ in level of detail, the specification governs behavior. Scope changes must be recorded explicitly.
 
 ## Product Definition
 
-The Clinical Trial Matching Agent is a decision-support prototype for clinical research coordinators. It accepts synthetic or otherwise public patient information, retrieves candidate studies from ClinicalTrials.gov, evaluates inclusion and exclusion criteria individually, and returns evidence-grounded candidate trial reports for coordinator review.
+The Clinical Trial Matching Agent is an agent-engineering portfolio system. It accepts a synthetic patient record, retrieves candidate studies from a frozen ClinicalTrials.gov snapshot, evaluates individual inclusion and exclusion criteria, and returns evidence-grounded candidate trial reports.
 
-The product is not a general medical chatbot. Its primary interaction is a structured matching workflow and criterion review surface, not an open-ended chat interface.
+Clinical trial matching is the carrier domain. The demonstrated skills are agent tool selection, controlled reasoning, deterministic routing, evidence verification, bounded failure recovery, multi-turn cost control, and measured evaluation.
 
-## Intended User Journey
+It is not a general medical chatbot. Its primary surface is a static trace report, not an open-ended chat interface.
 
-1. A research coordinator selects or supplies a synthetic or public patient record.
-2. The system constructs a longitudinal patient timeline from the available FHIR data.
-3. The system retrieves candidate trials from a versioned ClinicalTrials.gov snapshot.
-4. The system evaluates each relevant inclusion and exclusion criterion against the patient timeline.
-5. The system produces a structured report containing ranked candidate trials, criterion-level assessments, missing information, patient evidence, and exact trial-clause citations.
-6. The coordinator independently verifies current trial status and makes all real-world decisions outside this prototype.
+## Intended Reviewer Journey
 
-A coordinator review interface is an optional post-evaluation portfolio layer, not a required Phase 1 implementation gate.
+1. A reviewer opens the hosted trace report, or runs the project locally.
+2. They see a patient timeline built from synthetic FHIR data with per-fact provenance.
+3. They see hybrid retrieval producing a ranked candidate set with per-channel attribution.
+4. They see criteria decomposed into atomic propositions and assessed through tool calls.
+5. They see structured judgments with patient evidence and exact trial citations.
+6. They see the verifier reject a citation and trigger exactly one correction.
+7. They see the agent compared against a one-shot baseline, with ablations and cost.
+
+All of this must be reachable within five minutes and must not require credentials or a network connection.
 
 ## Primary Portfolio Signals
 
-The project must demonstrate depth in the following areas:
+Ranked by intended emphasis:
 
-- Agent cognition and orchestration: decomposition of a matching task into retrieval, criterion interpretation, targeted evidence selection, temporal reasoning, consistency checking, and result synthesis.
-- Longitudinal FHIR patient modeling: preservation of clinical events, time intervals, status, values, provenance, and missing information rather than flattening the record into an untraceable summary.
-- Hybrid or advanced retrieval: deterministic metadata filters plus lexical and dense retrieval, fusion or reranking, and retrieval evaluation against published benchmarks.
-- Criterion-level reasoning: source-aligned inclusion and exclusion criteria represented by Boolean or conditional expressions over atomic propositions.
-- Evidence grounding: every supported assessment must cite both the patient evidence and the exact trial criterion from which it was derived.
-- Evaluation engineering: public benchmarks, authored synthetic cases, baselines, ablations, failure analysis, reproducible run manifests, and quality/latency/cost reporting.
-- Optional post-MVP multi-agent experimentation: multi-agent execution may be tested only after Phase 1, against the single-agent and deterministic baselines under a comparable resource budget.
+- **Agent engineering.** Tool selection per proposition, explicit division of labor between model and deterministic code, bounded correction, structured degradation to `unknown`, flag-gated multi-turn strategy with measured cost effects.
+- **Grounding and verification.** Every supported assessment cites machine-verified patient evidence and exact trial source text; a deterministic verifier rejects fabricated or altered citations.
+- **Evaluation engineering.** Deterministic grading, derived gold labels, frozen held-out partitions, a one-shot baseline, four ablations, confidence intervals, failure taxonomy, and cost accounting from traces.
+- **Longitudinal FHIR modeling.** Preservation of clinical time, temporal precision, status, values, provenance, and unsupported content rather than flattening the record.
+- **Hybrid retrieval.** Deterministic filters plus lexical and dense channels with reciprocal-rank fusion, evaluated with per-channel attribution.
+- **Interface design.** Four deep modules behind small stable interfaces, with a thin application entry point and adapter seams for data sources and model inference.
 
-The project must not derive its value from a chat UI, a conventional vector-search RAG pipeline, installing several agent skills or frameworks, or presenting framework names without measurable task improvement.
+The project must not derive its value from a chat UI, a conventional vector-search RAG pipeline, installing agent frameworks, or presenting framework names without measurable task improvement.
 
 ## Required Outputs
 
-For each candidate trial, the system must return:
+For each assessed candidate trial:
 
-- Trial identity, recruiting status, record version or update timestamp, and source link.
-- The retrieval score or ranking explanation, kept distinct from the eligibility assessment.
-- Source-aligned inclusion and exclusion criteria plus their parsed atomic propositions.
-- One of the following states for every assessed criterion: `met`, `not_met`, `unknown`, or `not_applicable`.
-- Patient evidence references with FHIR resource identity, source location, clinical time, and a concise supported excerpt or normalized fact.
-- Trial evidence references with NCT identifier, criterion section, criterion ordinal or source span, exact clause text, and record timestamp.
-- Missing or conflicting information that caused an `unknown` result.
-- A cautious trial-level conclusion such as `potential_match`, `unlikely_match`, or `insufficient_information`.
+- Trial identity, recruiting status, record timestamp, and source link.
+- Retrieval rank and per-channel attribution, kept distinct from the eligibility assessment.
+- Source-aligned criteria plus their authored atomic propositions.
+- A state for every criterion: `met`, `not_met`, `unknown`, or `not_applicable`.
+- `not_assessed` for criteria deliberately skipped under early termination, never merged into `unknown`.
+- Patient evidence references with FHIR resource identity, JSON path, clinical time, status, and value.
+- Trial evidence references with NCT identifier, section, ordinal, span, and exact clause text.
+- The tools the agent called, with arguments and results.
+- The verifier outcome and whether a correction occurred.
+- Structured reasons for every `unknown`.
+- A cautious trial-level conclusion: `potential_match`, `insufficient_information`, or `unlikely_match`.
+- Latency, model calls, tokens, and estimated cost.
 
 ### Criterion-State Semantics
 
@@ -56,82 +62,81 @@ Criterion state describes whether the proposition expressed by the criterion is 
 
 - `met`: available evidence supports the criterion proposition.
 - `not_met`: available evidence contradicts the criterion proposition.
-- `unknown`: evidence is missing, stale, ambiguous, or conflicting.
-- `not_applicable`: a conditional criterion does not apply because its explicit antecedent is false; this state must not be used as a substitute for missing information.
+- `unknown`: evidence is missing, stale, ambiguous, conflicting, or unsupported.
+- `not_applicable`: a conditional criterion does not apply because its explicit antecedent is false; never a substitute for missing information.
 
-This distinction is essential for exclusion criteria. A `met` exclusion criterion is evidence against a trial match, while a `not_met` exclusion criterion is evidence in favor of a match. Trial-level aggregation must account for criterion polarity explicitly.
+This distinction is essential for exclusion criteria. A `met` exclusion criterion is evidence against a match; a `not_met` exclusion criterion is evidence in favor. Trial-level aggregation accounts for polarity explicitly and deterministically.
 
 ## Safety and Claim Boundaries
 
-The project must state prominently that it is a research prototype and that its outputs require qualified human review.
+The project must state prominently that it is a research prototype whose outputs require qualified human review.
 
 It must not:
 
 - Diagnose a condition or recommend treatment.
 - Claim that a patient is clinically eligible or ineligible.
-- Enroll a patient automatically or contact a trial site on the user's behalf.
+- Enroll a patient or contact a trial site.
 - Make external write operations.
 - Claim clinical validity, clinical effectiveness, regulatory compliance, or production readiness.
-- Accept, persist, or transmit real protected health information in the first release.
+- Accept, persist, or transmit real protected health information.
 
-The public demo must use only synthetic or public patient descriptions. A real-world coordinator must verify recruiting status, site availability, and eligibility with the official study record and study team.
+The published demo uses only authored synthetic patients. A real coordinator must verify recruiting status, site availability, and eligibility with the official study record and study team.
 
 ## Default Data Sources and Technical Resources
 
 ### Required defaults
 
-- ClinicalTrials.gov API v2 and/or its full JSON download for trial records.
-- Synthea-generated FHIR R4 data for longitudinal synthetic patients.
-- PostgreSQL with pgvector for structured metadata, lexical search, vector retrieval, provenance, and evaluation records.
-- Local embedding and language models as the default development path.
-- TREC Clinical Trials 2021 and 2022 for retrieval and ranking evaluation.
-- TrialGPT as a published baseline or comparison point, subject to its repository, model, and dataset terms.
+- ClinicalTrials.gov API v2 or its full JSON download, frozen into a versioned local snapshot of 200–500 trials.
+- Synthea-generated FHIR R4 Bundles with controlled, standards-conformant augmentations.
+- In-process lexical and vector indexes over the frozen snapshot, behind a single interface.
+- A language model behind an adapter with hosted, local, and frozen-replay implementations.
+- Structured output enforced by constrained decoding or schema validation, with recorded retries.
 
-### Optional resources
+### Deliberately not used
 
-- A local HAPI FHIR server may be added after Phase 1 as an interoperability adapter. Direct parsing of Synthea FHIR R4 Bundles is the Phase 1 path.
-- A stronger hosted model may be used only as a clearly labeled evaluation upper bound on synthetic or public data.
-- Multi-agent orchestration may be added only after the single-agent and deterministic baselines are working and reproducible.
+- PostgreSQL and pgvector. At this corpus size an in-process index is the correct engineering choice; the index interface allows a larger backend to be substituted without touching callers.
+- Cross-encoder reranking.
+- TREC Clinical Trials 2021 and 2022. Dropped with the retrieval benchmark track; the cost of dataset and qrels handling outweighed the value at this scope.
+- TrialGPT reproduction.
+- HAPI FHIR. Direct parsing of Synthea Bundles is the implemented path.
+- MIMIC or other credentialed datasets, full SNOMED CT, real PHI, and live EHR connectivity.
 
-### Excluded from the first release
+### Permitted later additions
 
-- MIMIC or other credentialed patient datasets.
-- A complete SNOMED CT distribution.
-- Real PHI or live EHR connectivity.
-- Claims based on real patient outcomes.
+Any later addition must not retroactively alter frozen held-out results: a larger index backend, a reranker, retrieval benchmark tracks, broader FHIR coverage, additional disease areas, LangGraph behind the same agent interface, and an equal-budget multi-agent ablation.
 
 ## Evaluation Requirements
 
-Evaluation must be designed before model or orchestration optimization. At minimum, the project must include:
+Evaluation is designed before model or orchestration optimization. At minimum:
 
-- A lexical retrieval baseline.
-- A naive dense or single-pass RAG baseline.
-- A full hybrid retrieval and criterion-reasoning system.
-- TREC 2021/2022 ranking metrics such as `nDCG@10`, `P@10`, and `Recall@k`, with pooled-judgment limitations documented.
-- An authored Synthea-based criterion benchmark covering temporal windows, laboratory thresholds, prior treatment, medication state, demographics, negation, conditional applicability, missing facts, and conflicting facts.
-- Criterion-level macro F1 and per-state precision/recall, with particular attention to `unknown`.
-- Patient-evidence and trial-citation precision/recall or validity metrics.
-- Trial-level ranking or conclusion metrics kept separate from criterion-state metrics.
-- Latency, model-call count, token usage, and estimated cost measured from run traces.
-- A published failure taxonomy and representative failure cases.
+- A deterministic structured-field baseline and a one-shot LLM baseline sharing inputs, output schema, and cost accounting.
+- Gold expected states derived deterministically from hidden scenario manifests. No model-generated labels, and no LLM judge in any primary metric.
+- Held-out partitions separated by both trial and scenario, frozen against all optimization.
+- Primary gates on citation validity, deterministic aggregation, verifier catch rate, unsupported-assessment rate, and criterion coverage.
+- Criterion-state macro F1, per-state precision and recall with attention to `unknown`, and per-category breakdown, all with bootstrap confidence intervals and reported support.
+- Retrieval metrics reported separately from criterion-state metrics, with per-channel attribution.
+- Latency, model calls, token usage, and estimated cost measured from run traces.
+- Four ablations: no deterministic tools, no verifier, no evidence reuse, early termination.
+- A published failure taxonomy with representative traces.
 
-Ablations should isolate the value of longitudinal timelines, hybrid retrieval, criterion decomposition, deterministic structured reasoning, evidence verification, and orchestration. Any multi-agent experiment must use the same dataset and a comparable resource budget.
+Small-sample results are stated as such. No number is published without a link to a reproducible run artifact.
 
 ## Explicit Non-Goals
 
-The first release will not build:
+The project will not build:
 
 - A general-purpose agent harness or agent-skills platform.
 - A generic chat-with-documents application.
+- An automatic clinical criterion parser.
 - A secure action executor, approval workflow, human-in-the-loop workflow, authorization layer, idempotency mechanism, or external mutation system.
 - A production EHR integration or HIPAA compliance claim.
 - A comprehensive medical terminology platform.
-- A foundation-model training or fine-tuning pipeline.
+- A model training or fine-tuning pipeline.
 - A clinical decision support system intended for patient care.
-- A LangGraph or multi-agent implementation during Phase 1.
-- A required coordinator UI before benchmark completion.
+- A LangGraph or multi-agent implementation.
+- An interactive workflow application. The demonstration surface is a read-only static trace report.
 - Calendar-based delivery commitments; implementation proceeds through acceptance-criteria-driven gates.
 
 ## Repository Language Rule
 
-All content added to the Clinical Trial Matching Agent project repository must be written in English. This rule applies to documents, source code, identifiers, comments, docstrings, tests, fixtures, configuration descriptions, diagrams, sample data authored by the project, and user-facing interface text.
+All content added to this repository must be written in English. This applies to documents, source code, identifiers, comments, docstrings, tests, fixtures, configuration descriptions, diagrams, authored sample data, and user-facing interface text.
