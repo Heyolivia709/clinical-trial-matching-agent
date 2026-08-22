@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Candidate list — Trace Report design mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&family=Roboto+Mono:wght@400;500;700&display=swap" />
+<style>
+  body { margin: 0; background: #efeee7; color: #1c1e1a; }
+  a { color: #4a5a3f; text-decoration: underline; text-underline-offset: 2px; }
+  a:hover { color: #1c1e1a; }
+</style>
+</head>
+<body>
+<div style="width: 1180px; margin: 0 auto; padding: 56px 64px 90px; background: #f7f6f1; box-sizing: border-box; font-family: 'Roboto Mono', monospace; font-size: 13px; line-height: 1.55;">
+
+  <div style="display: flex; gap: 18px; align-items: baseline; border-bottom: 2px solid #1c1e1a; padding-bottom: 10px;">
+    <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #7d7d70;">§ 4</div>
+    <h2 style="margin: 0; font-family: Newsreader, serif; font-size: 30px; font-weight: 500;">Candidates for review</h2>
+    <div style="margin-left: auto; font-size: 11px; color: #7d7d70;">5 presented · 3 assessed · review priority order</div>
+  </div>
+
+  <p style="font-family: Newsreader, serif; font-size: 17px; line-height: 1.5; color: #3c3f37; max-width: 78ch; margin: 20px 0 0;">Match conclusion is derived deterministically from criterion impacts: any blocking impact yields unlikely match; no blocker with at least one unresolved impact yields insufficient information; neither yields potential match.</p>
+
+  <div style="margin-top: 26px; display: grid; gap: 14px;">
+
+    <div style="border: 1px solid #d8d6cb; background: #fffefa;">
+      <div style="display: grid; grid-template-columns: 92px 1fr 240px;">
+        <div style="padding: 16px 14px; border-right: 1px solid #d8d6cb; background: #f4f2ea;">
+          <div style="font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #7d7d70;">priority</div>
+          <div style="font-size: 22px; font-family: Newsreader, serif;">1</div>
+          <div style="margin-top: 10px; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #7d7d70;">retr. rank</div>
+          <div style="font-size: 16px;">4</div>
+        </div>
+        <div style="padding: 15px 18px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 12px; height: 12px; background: #9a9a8c;"></div>
+            <div style="font-size: 16px;">potential match</div>
+            <div style="font-size: 11px; color: #7d7d70;">screening workflow label</div>
+          </div>
+          <div style="font-family: Newsreader, serif; font-size: 19px; margin-top: 8px;">Third-generation TKI plus bevacizumab in stage IIIB–IV EGFR-mutant NSCLC</div>
+          <div style="font-size: 11.5px; color: #58594f; margin-top: 6px;">NCT06012993 · recruiting · record updated 2026-06-28 · 14 US sites · <a href="#ct">ClinicalTrials.gov</a></div>
+        </div>
+        <div style="padding: 15px 18px; border-left: 1px solid #d8d6cb;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; text-align: center;">
+            <div><div style="font-size: 20px;">0</div><div style="font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #7d7d70;">blocking</div></div>
+            <div><div style="font-size: 20px;">0</div><div style="font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #7d7d70;">unresolved</div></div>
+            <div><div style="font-size: 20px;">0</div><div style="font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #7d7d70;">not assessed</div></div>
+          </div>
+          <div style="margin-top: 10px; font-size: 11px; color: #58594f;">11 of 11 authored criteria assessed · coverage 100%</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="border: 1px solid #d8d6cb; background: #fffefa;">
+      <div style="display: grid; grid-template-columns: 92px 1fr 240px;">
+        <div style="padding: 16px 14px; border-right: 1px solid #d8d6cb; background: #f4f2ea;">
+          <div style="font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #7d7d70;">priority</div>
+          <div style="font-size: 22px; font-family: Newsreader, serif;">2</div>
+          <div style="margin-top: 10px; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #7d7d70;">retr. rank</div>
+          <div style="font-size: 16px;">2</div>
+        </div>
+        <div style="padding: 15px 18px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 12px; height: 12px; background: oklch(0.68 0.13 78); transform: rotate(45deg);"></div>
+            <div style="font-size: 16px;">insufficient information</div>
+            <div style="font-size: 11px; color: #7d7d70;">no blocker · unresolved present</div>
+          </div>
+          <div style="font-family: Newsreader, serif; font-size: 19px; margin-top: 8px;">Amivantamab in EGFR exon 19 deletion or L858R after TKI progression</div>
+          <div style="font-size: 11.5px; color: #58594f; margin-top: 6px;">NCT05771842 · recruiting · record updated 2026-07-01 · 22 US sites · <a href="#ct">ClinicalTrials.gov</a></div>
+          <div style="margin-top: 10px; border-top: 1px dashed #d8d6cb; padding-top: 8px; font-size: 12px;">
+            <span style="color: #7d7d70;">unresolved ·</span> INC-4 ECOG ≤ 1 <span style="color: #58594f;">(preliminary result)</span> · INC-7 radiotherapy washout <span style="color: #58594f;">(year-only precision)</span>
+          </div>
+        </div>
+        <div style="padding: 15px 18px; border-left: 1px solid #d8d6cb;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; text-align: center;">
+            <div><div style="font-size: 20px;">0</div><div style="font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #7d7d70;">blocking</div></div>
+            <div><div style="font-size: 20px; color: oklch(0.44 0.1 78);">2</div><div style="font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #7d7d70;">unresolved</div></div>
+            <div><div style="font-size: 20px;">0</div><div style="font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #7d7d70;">not assessed</div></div>
+          </div>
+          <div style="margin-top: 10px; font-size: 11px; color: #58594f;">13 of 13 authored criteria assessed · coverage 100%</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="border: 1px solid #d8d6cb; background: #fffefa;">
+      <div style="display: grid; grid-template-columns: 92px 1fr 240px;">
+        <div style="padding: 16px 14px; border-right: 1px solid #d8d6cb; background: #f4f2ea;">
+          <div style="font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #7d7d70;">priority</div>
+          <div style="font-size: 22px; font-family: Newsreader, serif;">3</div>
+          <div style="margin-top: 10px; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #7d7d70;">retr. rank</div>
+          <div style="font-size: 16px;">1</div>
+        </div>
+        <div style="padding: 15px 18px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 12px solid oklch(0.52 0.16 28);"></div>
+            <div style="font-size: 16px;">unlikely match</div>
+            <div style="font-size: 11px; color: #7d7d70;">blocker confirmed</div>
+          </div>
+          <div style="font-family: Newsreader, serif; font-size: 19px; margin-top: 8px;">Osimertinib plus savolitinib in EGFR-mutant advanced NSCLC</div>
+          <div style="font-size: 11.5px; color: #58594f; margin-top: 6px;">NCT05123456 · recruiting · record updated 2026-06-19 · 31 US sites · <a href="#ct">ClinicalTrials.gov</a></div>
+          <div style="margin-top: 10px; border-top: 1px dashed #d8d6cb; padding-top: 8px; font-size: 12px;">
+            <span style="color: #7d7d70;">blocking ·</span> EXC-7 EGFR TKI within 14 days — criterion state <span style="color: #1c1e1a;">Supported</span>; a supported exclusion counts against a match. <a href="#s6">see § 6</a>
+          </div>
+        </div>
+        <div style="padding: 15px 18px; border-left: 1px solid #d8d6cb;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; text-align: center;">
+            <div><div style="font-size: 20px; color: oklch(0.44 0.14 28);">1</div><div style="font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #7d7d70;">blocking</div></div>
+            <div><div style="font-size: 20px; color: oklch(0.44 0.1 78);">1</div><div style="font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #7d7d70;">unresolved</div></div>
+            <div><div style="font-size: 20px;">0</div><div style="font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #7d7d70;">not assessed</div></div>
+          </div>
+          <div style="margin-top: 10px; font-size: 11px; color: #58594f;">16 of 16 authored criteria assessed · coverage 100%</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="margin-top: 20px;">
+    <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">Presented but not assessed</div>
+    <div style="border: 1px solid #d8d6cb; border-top: none; background: #f4f2ea; font-size: 12.5px;">
+      <div style="padding: 11px 14px; border-bottom: 1px dashed #d8d6cb; display: grid; grid-template-columns: 116px 1fr 200px;">
+        <div>NCT05990117</div>
+        <div>Pembrolizumab combination in PD-L1 low metastatic NSCLC</div>
+        <div style="color: #58594f;">expression_unavailable · rank 3</div>
+      </div>
+      <div style="padding: 11px 14px; display: grid; grid-template-columns: 116px 1fr 200px;">
+        <div>NCT05648002</div>
+        <div>Antibody-drug conjugate in previously treated NSCLC</div>
+        <div style="color: #58594f;">unassessed candidate · rank 5</div>
+      </div>
+    </div>
+    <div style="margin-top: 8px; font-size: 11px; color: #7d7d70;">Neither trial is a match, a rejection, or a potential match. Trials without authored expressions are reported, never silently omitted.</div>
+  </div>
+
+  <div style="margin-top: 26px; border-top: 1px solid #d8d6cb; padding-top: 12px; display: flex; gap: 26px; flex-wrap: wrap; font-size: 11px; color: #7d7d70;">
+    <div style="display: flex; align-items: center; gap: 7px;"><div style="width: 11px; height: 11px; background: #9a9a8c;"></div>satisfied</div>
+    <div style="display: flex; align-items: center; gap: 7px;"><div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 10px solid oklch(0.52 0.16 28);"></div>blocking</div>
+    <div style="display: flex; align-items: center; gap: 7px;"><div style="width: 10px; height: 10px; background: oklch(0.68 0.13 78); transform: rotate(45deg);"></div>unresolved</div>
+    <div style="display: flex; align-items: center; gap: 7px;"><div style="width: 11px; height: 11px; border: 1.5px solid #9a9a8c; border-radius: 50%;"></div>neutral</div>
+    <div style="display: flex; align-items: center; gap: 7px;"><div style="width: 11px; height: 11px; border: 1.5px dashed #9a9a8c;"></div>not assessed</div>
+    <div style="color: #58594f;">Colour and shape encode criterion impact only, never criterion state.</div>
+  </div>
+
+</div>
+</body>
+</html>

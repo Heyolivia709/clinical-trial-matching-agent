@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Run overview — Trace Report design mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&family=Roboto+Mono:wght@400;500;700&display=swap" />
+<style>
+  body { margin: 0; background: #efeee7; color: #1c1e1a; }
+  a { color: #4a5a3f; text-decoration: underline; text-underline-offset: 2px; }
+  a:hover { color: #1c1e1a; }
+</style>
+</head>
+<body>
+<div style="width: 1180px; margin: 0 auto; padding: 56px 64px 90px; background: #f7f6f1; box-sizing: border-box; font-family: 'Roboto Mono', monospace; font-size: 13px; line-height: 1.55;">
+
+  <div style="display: flex; gap: 18px; align-items: baseline; border-bottom: 2px solid #1c1e1a; padding-bottom: 10px;">
+    <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #7d7d70;">§ 1</div>
+    <h2 style="margin: 0; font-family: Newsreader, serif; font-size: 30px; font-weight: 500; letter-spacing: -0.01em;">Matching run</h2>
+    <div style="margin-left: auto; font-size: 11px; color: #7d7d70;">run-2026-08-04-scn03-a1 · frozen trace</div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid #d8d6cb; border-top: none; background: #eae8de; margin-top: 0;">
+    <div style="padding: 12px 14px; border-right: 1px solid #d8d6cb;">
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70;">scenario</div>
+      <div style="font-size: 14px; margin-top: 4px;">SCN-03</div>
+      <div style="font-size: 10.5px; color: #58594f;">authored synthetic</div>
+    </div>
+    <div style="padding: 12px 14px; border-right: 1px solid #d8d6cb;">
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70;">assessment_as_of</div>
+      <div style="font-size: 14px; margin-top: 4px;">2026-08-04</div>
+      <div style="font-size: 10.5px; color: #58594f;">explicit, not "now"</div>
+    </div>
+    <div style="padding: 12px 14px; border-right: 1px solid #d8d6cb;">
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70;">corpus snapshot</div>
+      <div style="font-size: 14px; margin-top: 4px;">snap-2026-07-04</div>
+      <div style="font-size: 10.5px; color: #58594f;">412 trials · immutable</div>
+    </div>
+    <div style="padding: 12px 14px;">
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70;">supervisor flags</div>
+      <div style="font-size: 14px; margin-top: 4px;">all off</div>
+      <div style="font-size: 10.5px; color: #58594f;">coverage 100%</div>
+    </div>
+  </div>
+
+  <div style="margin-top: 22px; border: 1px solid oklch(0.45 0.05 240); background: #fff; display: grid; grid-template-columns: auto 1fr;">
+    <div style="background: oklch(0.45 0.05 240); color: #fff; padding: 12px 14px; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; writing-mode: horizontal-tb; display: flex; align-items: center;">warning</div>
+    <div style="padding: 12px 16px;">
+      <div style="font-size: 13px;"><b>stale_snapshot</b> — ClinicalTrials.gov dataTimestamp 2026-07-02 is 33 days old (threshold 30).</div>
+      <div style="font-size: 11px; color: #58594f; margin-top: 3px;">The snapshot remains usable for reproducible historical evaluation. Staleness never mutates or invalidates this run.</div>
+    </div>
+  </div>
+
+  <div style="margin-top: 30px; display: grid; grid-template-columns: 1.15fr 1fr; gap: 28px; align-items: start;">
+    <div>
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">Patient under assessment</div>
+      <div style="display: grid; grid-template-columns: 150px 1fr; row-gap: 8px; margin-top: 12px; font-size: 12.5px;">
+        <div style="color: #7d7d70;">demographics</div><div>62 y · female · Massachusetts, US</div>
+        <div style="color: #7d7d70;">disease</div><div>NSCLC, adenocarcinoma · stage IV</div>
+        <div style="color: #7d7d70;">biomarkers</div><div>EGFR L858R positive · PD-L1 TPS 15%</div>
+        <div style="color: #7d7d70;">prior therapy</div><div>osimertinib (documented exposure)</div>
+        <div style="color: #7d7d70;">bundle hash</div><div style="color: #58594f;">sha256:4f1c…9ab2</div>
+        <div style="color: #7d7d70;">timeline facts</div><div>38 evidence-bearing · 6 unsupported content</div>
+      </div>
+      <p style="font-family: Newsreader, serif; font-size: 16px; line-height: 1.55; color: #3c3f37; margin: 18px 0 0; max-width: 62ch;">This record is authored synthetic FHIR R4. No real protected health information enters the system, and no live EHR is connected.</p>
+    </div>
+    <div>
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">Frozen configuration</div>
+      <div style="display: grid; grid-template-columns: 118px 1fr; row-gap: 7px; margin-top: 12px; font-size: 12px;">
+        <div style="color: #7d7d70;">retrieval</div><div>bm25 v2 + dense e5-small · RRF k=60</div>
+        <div style="color: #7d7d70;">expressions</div><div>v3 · 12 trials · human-reviewed</div>
+        <div style="color: #7d7d70;">model</div><div>hosted-small@2026-05 · temp 0 · schema-validated</div>
+        <div style="color: #7d7d70;">tools</div><div>timeline-tools v1 · 5 read-only</div>
+        <div style="color: #7d7d70;">evaluator</div><div>eval-lab 0.9.2 · seed 17</div>
+        <div style="color: #7d7d70;">pre-reg</div><div><a href="#prereg">commit 8c2d41f</a></div>
+      </div>
+      <div style="margin-top: 18px; display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid #d8d6cb; background: #fffefa;">
+        <div style="padding: 10px 12px; border-right: 1px solid #d8d6cb;"><div style="font-size: 10px; color: #7d7d70;">latency</div><div style="font-size: 15px;">74 s</div></div>
+        <div style="padding: 10px 12px; border-right: 1px solid #d8d6cb;"><div style="font-size: 10px; color: #7d7d70;">model calls</div><div style="font-size: 15px;">96</div></div>
+        <div style="padding: 10px 12px; border-right: 1px solid #d8d6cb;"><div style="font-size: 10px; color: #7d7d70;">tokens</div><div style="font-size: 15px;">131k</div></div>
+        <div style="padding: 10px 12px;"><div style="font-size: 10px; color: #7d7d70;">est. cost</div><div style="font-size: 15px;">$0.094</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 30px;">
+    <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">Run outcome · three assessed candidates</div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid #d8d6cb; border-top: none;">
+      <div style="padding: 14px 16px; background: #fffefa; border-right: 1px solid #d8d6cb;">
+        <div style="font-size: 12px; color: #7d7d70;">NCT05771842 · rank 2</div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+          <div style="width: 11px; height: 11px; background: oklch(0.68 0.13 78); transform: rotate(45deg);"></div>
+          <div style="font-size: 14px;">insufficient information</div>
+        </div>
+        <div style="font-size: 11px; color: #58594f; margin-top: 6px;">0 blocking · 2 unresolved · 0 not assessed</div>
+      </div>
+      <div style="padding: 14px 16px; background: #fffefa; border-right: 1px solid #d8d6cb;">
+        <div style="font-size: 12px; color: #7d7d70;">NCT05123456 · rank 1</div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+          <div style="width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 12px solid oklch(0.52 0.16 28);"></div>
+          <div style="font-size: 14px;">unlikely match</div>
+        </div>
+        <div style="font-size: 11px; color: #58594f; margin-top: 6px;">1 blocking · 1 unresolved · 0 not assessed</div>
+      </div>
+      <div style="padding: 14px 16px; background: #fffefa;">
+        <div style="font-size: 12px; color: #7d7d70;">NCT06012993 · rank 4</div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+          <div style="width: 11px; height: 11px; background: #9a9a8c;"></div>
+          <div style="font-size: 14px;">potential match</div>
+        </div>
+        <div style="font-size: 11px; color: #58594f; margin-top: 6px;">0 blocking · 0 unresolved · 0 not assessed</div>
+      </div>
+    </div>
+    <div style="margin-top: 8px; font-size: 11px; color: #7d7d70;">Review priority orders assessed trials by match conclusion, then retrieval rank. Retrieval rank is immutable and never overwritten. No blended match score is computed.</div>
+  </div>
+
+  <div style="margin-top: 34px; border: 2px solid #1c1e1a; background: #fffefa; padding: 18px 20px;">
+    <div style="font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #1c1e1a;">Research prototype · requires qualified human review</div>
+    <p style="font-family: Newsreader, serif; font-size: 17px; line-height: 1.5; margin: 8px 0 0; max-width: 84ch;">This report produces screening workflow labels for research coordinator review. It does not diagnose, determine clinical eligibility, recommend treatment, or enroll patients. Recruiting status, site availability, and actual eligibility must be verified through ClinicalTrials.gov and the study team.</p>
+  </div>
+
+</div>
+</body>
+</html>

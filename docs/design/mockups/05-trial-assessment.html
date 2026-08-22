@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trial assessment — Trace Report design mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&family=Roboto+Mono:wght@400;500;700&display=swap" />
+<style>
+  body { margin: 0; background: #efeee7; color: #1c1e1a; }
+  a { color: #4a5a3f; text-decoration: underline; text-underline-offset: 2px; }
+  a:hover { color: #1c1e1a; }
+</style>
+</head>
+<body>
+<div style="width: 1180px; margin: 0 auto; padding: 56px 64px 90px; background: #f7f6f1; box-sizing: border-box; font-family: 'Roboto Mono', monospace; font-size: 13px; line-height: 1.55;">
+
+  <div style="display: flex; gap: 18px; align-items: baseline; border-bottom: 2px solid #1c1e1a; padding-bottom: 10px;">
+    <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #7d7d70;">§ 5</div>
+    <h2 style="margin: 0; font-family: Newsreader, serif; font-size: 30px; font-weight: 500;">Trial assessment</h2>
+    <div style="margin-left: auto; font-size: 11px; color: #7d7d70;">NCT05123456 · 16 criteria · coverage 100%</div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(5, 1fr); border: 1px solid #d8d6cb; border-top: none; background: #eae8de;">
+    <div style="padding: 11px 14px; border-right: 1px solid #d8d6cb;"><div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70;">conclusion</div><div style="display: flex; align-items: center; gap: 7px; margin-top: 4px;"><div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 11px solid oklch(0.52 0.16 28);"></div><div style="font-size: 14px;">unlikely match</div></div></div>
+    <div style="padding: 11px 14px; border-right: 1px solid #d8d6cb;"><div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70;">blocking</div><div style="font-size: 15px; margin-top: 4px;">1</div></div>
+    <div style="padding: 11px 14px; border-right: 1px solid #d8d6cb;"><div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70;">unresolved</div><div style="font-size: 15px; margin-top: 4px;">1</div></div>
+    <div style="padding: 11px 14px; border-right: 1px solid #d8d6cb;"><div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70;">not assessed</div><div style="font-size: 15px; margin-top: 4px;">0</div></div>
+    <div style="padding: 11px 14px;"><div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70;">retrieval rank</div><div style="font-size: 15px; margin-top: 4px;">1 · immutable</div></div>
+  </div>
+
+  <p style="font-family: Newsreader, serif; font-size: 17px; line-height: 1.5; color: #3c3f37; max-width: 78ch; margin: 20px 0 0;">Criterion state describes whether the patient satisfies the statement of the criterion. Impact adds polarity: a supported exclusion criterion is evidence against a match, while a contradicted exclusion criterion is evidence in favour.</p>
+
+  <div style="margin-top: 26px;">
+    <div style="display: grid; grid-template-columns: 84px 1fr 128px 178px 118px; background: #1c1e1a; color: #f7f6f1; font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase;">
+      <div style="padding: 8px 12px;">criterion</div>
+      <div style="padding: 8px 12px;">source text</div>
+      <div style="padding: 8px 12px;">category</div>
+      <div style="padding: 8px 12px;">state</div>
+      <div style="padding: 8px 12px;">impact</div>
+    </div>
+    <div style="border: 1px solid #d8d6cb; border-top: none;">
+
+      <div style="display: grid; grid-template-columns: 84px 1fr 128px 178px 118px; background: #fffefa; border-bottom: 1px solid #eae8de; font-size: 12.5px;">
+        <div style="padding: 11px 12px; color: #58594f;">INC-1</div>
+        <div style="padding: 11px 12px;">Histologically confirmed non-small cell lung cancer</div>
+        <div style="padding: 11px 12px; color: #58594f;">disease</div>
+        <div style="padding: 11px 12px;">Supported <span style="font-size: 10.5px; color: #7d7d70;">met</span></div>
+        <div style="padding: 11px 12px; display: flex; align-items: center; gap: 7px;"><div style="width: 10px; height: 10px; background: #9a9a8c;"></div>satisfied</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 84px 1fr 128px 178px 118px; background: #fffefa; border-bottom: 1px solid #eae8de; font-size: 12.5px;">
+        <div style="padding: 11px 12px; color: #58594f;">INC-2</div>
+        <div style="padding: 11px 12px;">Age ≥ 18 years at the time of consent</div>
+        <div style="padding: 11px 12px; color: #58594f;">demographic</div>
+        <div style="padding: 11px 12px;">Supported <span style="font-size: 10.5px; color: #7d7d70;">met</span></div>
+        <div style="padding: 11px 12px; display: flex; align-items: center; gap: 7px;"><div style="width: 10px; height: 10px; background: #9a9a8c;"></div>satisfied</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 84px 1fr 128px 178px 118px; background: #fffefa; border-bottom: 1px solid #eae8de; font-size: 12.5px;">
+        <div style="padding: 11px 12px; color: #58594f;">INC-3</div>
+        <div style="padding: 11px 12px;">Documented EGFR-activating mutation (exon 19 deletion or L858R)</div>
+        <div style="padding: 11px 12px; color: #58594f;">biomarker</div>
+        <div style="padding: 11px 12px;">Supported <span style="font-size: 10.5px; color: #7d7d70;">met</span></div>
+        <div style="padding: 11px 12px; display: flex; align-items: center; gap: 7px;"><div style="width: 10px; height: 10px; background: #9a9a8c;"></div>satisfied</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 84px 1fr 128px 178px 118px; background: #fffefa; border-bottom: 1px solid #eae8de; font-size: 12.5px;">
+        <div style="padding: 11px 12px; color: #58594f;">INC-4</div>
+        <div style="padding: 11px 12px;">ECOG performance status 0 or 1 <span style="color: #7d7d70;">· unknown reason: stale_evidence</span></div>
+        <div style="padding: 11px 12px; color: #58594f;">disease</div>
+        <div style="padding: 11px 12px;">Unknown <span style="font-size: 10.5px; color: #7d7d70;">unknown</span></div>
+        <div style="padding: 11px 12px; display: flex; align-items: center; gap: 7px;"><div style="width: 10px; height: 10px; background: oklch(0.68 0.13 78); transform: rotate(45deg);"></div>unresolved</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 84px 1fr 128px 178px 118px; background: #fffefa; border-bottom: 1px solid #eae8de; font-size: 12.5px;">
+        <div style="padding: 11px 12px; color: #58594f;">EXC-2</div>
+        <div style="padding: 11px 12px;">Known ALK rearrangement</div>
+        <div style="padding: 11px 12px; color: #58594f;">biomarker</div>
+        <div style="padding: 11px 12px;">Contradicted <span style="font-size: 10.5px; color: #7d7d70;">not_met</span></div>
+        <div style="padding: 11px 12px; display: flex; align-items: center; gap: 7px;"><div style="width: 10px; height: 10px; background: #9a9a8c;"></div>satisfied</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 84px 1fr 128px 178px 118px; background: #fffefa; border-bottom: 1px solid #eae8de; font-size: 12.5px;">
+        <div style="padding: 11px 12px; color: #58594f;">EXC-5</div>
+        <div style="padding: 11px 12px;">For patients with brain metastases, stable neurological status for 14 days <span style="color: #7d7d70;">· antecedent false</span></div>
+        <div style="padding: 11px 12px; color: #58594f;">disease</div>
+        <div style="padding: 11px 12px;">Not applicable <span style="font-size: 10.5px; color: #7d7d70;">not_applicable</span></div>
+        <div style="padding: 11px 12px; display: flex; align-items: center; gap: 7px;"><div style="width: 11px; height: 11px; border: 1.5px solid #9a9a8c; border-radius: 50%;"></div>neutral</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 84px 1fr 128px 178px 118px; background: #fff; border-bottom: 1px solid #eae8de; font-size: 12.5px; outline: 2px solid oklch(0.52 0.16 28); outline-offset: -2px;">
+        <div style="padding: 13px 12px; color: #58594f;">EXC-7</div>
+        <div style="padding: 13px 12px;">Prior treatment with any EGFR tyrosine kinase inhibitor within 14 days prior to the first dose of study drug <a href="#s6">· see § 6</a></div>
+        <div style="padding: 13px 12px; color: #58594f;">prior therapy</div>
+        <div style="padding: 13px 12px;">Supported <span style="font-size: 10.5px; color: #7d7d70;">met</span></div>
+        <div style="padding: 13px 12px; display: flex; align-items: center; gap: 7px;"><div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 11px solid oklch(0.52 0.16 28);"></div><span style="color: oklch(0.44 0.14 28);">blocking</span></div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 84px 1fr 128px 178px 118px; background: #fffefa; border-bottom: 1px solid #eae8de; font-size: 12.5px;">
+        <div style="padding: 11px 12px; color: #58594f;">EXC-9</div>
+        <div style="padding: 11px 12px;">Clinically significant interstitial lung disease <span style="color: #7d7d70;">· unknown reason: unsupported_evidence_type</span></div>
+        <div style="padding: 11px 12px; color: #58594f;">disease</div>
+        <div style="padding: 11px 12px;">Unknown <span style="font-size: 10.5px; color: #7d7d70;">unknown</span></div>
+        <div style="padding: 11px 12px; display: flex; align-items: center; gap: 7px;"><div style="width: 10px; height: 10px; background: oklch(0.68 0.13 78); transform: rotate(45deg);"></div>unresolved</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 84px 1fr; background: #f4f2ea; font-size: 12px; color: #58594f;">
+        <div style="padding: 10px 12px; color: #7d7d70;">+ 8 more</div>
+        <div style="padding: 10px 12px;">Eight further criteria resolve to satisfied. Every authored criterion is listed; none is dropped, and none is skipped in this configuration. <a href="#all">expand all 16</a></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="margin-top: 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: start;">
+    <div>
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">Unknown reasons in this trial</div>
+      <div style="border: 1px solid #d8d6cb; border-top: none; background: #fffefa; font-size: 12px;">
+        <div style="padding: 11px 14px; border-bottom: 1px dashed #d8d6cb;"><b>stale_evidence</b> — INC-4 · the only ECOG observation is preliminary, which cannot establish a threshold comparison.</div>
+        <div style="padding: 11px 14px;"><b>unsupported_evidence_type</b> — EXC-9 · interstitial lung disease falls outside the four supported criterion categories and is authored as an unsupported proposition rather than dropped.</div>
+      </div>
+    </div>
+    <div>
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">Reporting status distinct from state</div>
+      <div style="border: 1px solid #d8d6cb; border-top: none; background: #fffefa; padding: 14px 16px; font-size: 12px; color: #58594f;">
+        <div><span style="color: #1c1e1a;">Unknown</span> means evidence is missing, stale, ambiguous, conflicting, unsupported, or unverifiable — a criterion state.</div>
+        <div style="margin-top: 8px;"><span style="color: #1c1e1a;">Not assessed</span> means the trial supervisor deliberately skipped the criterion under an early-termination budget — a reporting status, never merged into unknown. Supervisor flags are off in this run, so the count is zero.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

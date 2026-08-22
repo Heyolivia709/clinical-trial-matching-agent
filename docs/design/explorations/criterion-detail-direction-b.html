@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Criterion detail — direction B (not selected) — Trace Report design mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" />
+<style>
+  body { margin: 0; background: #e9e7e2; color: #17181c; }
+  a { color: oklch(0.5 0.1 250); text-decoration: none; border-bottom: 1px solid oklch(0.78 0.05 250); }
+  a:hover { color: #17181c; border-bottom-color: #17181c; }
+</style>
+</head>
+<body>
+<div style="width: 1180px; margin: 0 auto; padding: 52px 60px 90px; background: #fbfaf8; box-sizing: border-box; font-family: 'Libre Franklin', sans-serif; font-size: 13px; line-height: 1.5;">
+
+  <div style="display: flex; align-items: baseline; gap: 14px;">
+    <div style="font-family: 'Space Mono', monospace; font-size: 11px; color: #8a8a92; letter-spacing: 0.1em;">4 /</div>
+    <h2 style="margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; text-transform: uppercase;">Criterion assessment</h2>
+    <div style="margin-left: auto; font-family: 'Space Mono', monospace; font-size: 11px; color: #8a8a92;">NCT05123456 / exclusion / ord. 7</div>
+  </div>
+  <div style="height: 3px; background: #17181c; margin-top: 8px;"></div>
+
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid #dcd9d3; border-top: none; background: #f4f2ee;">
+    <div style="padding: 12px 14px; border-right: 1px solid #dcd9d3;">
+      <div style="font-family: 'Space Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #8a8a92;">criterion state</div>
+      <div style="font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; margin-top: 4px;">met</div>
+    </div>
+    <div style="padding: 12px 14px; border-right: 1px solid #dcd9d3;">
+      <div style="font-family: 'Space Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #8a8a92;">criterion impact</div>
+      <div style="display: flex; align-items: center; gap: 7px; margin-top: 4px;">
+        <div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 11px solid oklch(0.5 0.17 22);"></div>
+        <div style="font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; color: oklch(0.42 0.15 22);">blocking</div>
+      </div>
+    </div>
+    <div style="padding: 12px 14px; border-right: 1px solid #dcd9d3;">
+      <div style="font-family: 'Space Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #8a8a92;">verifier</div>
+      <div style="font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; margin-top: 4px;">pass · 1 corr.</div>
+    </div>
+    <div style="padding: 12px 14px;">
+      <div style="font-family: 'Space Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #8a8a92;">expression</div>
+      <div style="font-family: 'Space Mono', monospace; font-size: 14px; font-weight: 700; margin-top: 4px;">all_of · v3</div>
+    </div>
+  </div>
+
+  <p style="font-size: 14px; line-height: 1.6; color: #4a4b52; max-width: 82ch; margin: 22px 0 0;">The model assesses one atomic proposition at a time. Deterministic code aggregates the proposition assessments through the authored criterion expression; the model never chooses the aggregate state.</p>
+
+  <div style="margin-top: 26px; border: 1px solid #dcd9d3; background: #fff;">
+    <div style="display: flex; align-items: center; gap: 10px; background: #17181c; color: #fbfaf8; padding: 7px 14px; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;">
+      <span>trial evidence</span><span style="color: #9a9aa2;">authoritative source text · verbatim · never rewritten</span>
+    </div>
+    <div style="padding: 18px 20px;">
+      <div style="font-family: 'Space Mono', monospace; font-size: 16px; line-height: 1.55;">Prior treatment with any EGFR tyrosine kinase inhibitor <mark style="background: oklch(0.93 0.06 250); padding: 0 2px;">within 14 days</mark> prior to the first dose of study drug.</div>
+      <div style="margin-top: 12px; font-family: 'Space Mono', monospace; font-size: 10.5px; color: #8a8a92;">snap-2026-07-04 · exclusionCriteria · span [1842,1948] · <a href="#src">open source span</a></div>
+    </div>
+  </div>
+
+  <div style="margin-top: 26px;">
+    <div style="display: grid; grid-template-columns: 62px 1fr 128px 88px; background: #17181c; color: #fbfaf8; font-family: 'Space Mono', monospace; font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase;">
+      <div style="padding: 7px 12px;">prop</div>
+      <div style="padding: 7px 12px;">atomic proposition</div>
+      <div style="padding: 7px 12px;">category</div>
+      <div style="padding: 7px 12px;">state</div>
+    </div>
+    <div style="display: grid; grid-template-columns: 62px 1fr 128px 88px; border: 1px solid #dcd9d3; border-top: none; background: #fff; font-size: 13px;">
+      <div style="padding: 11px 12px; font-family: 'Space Mono', monospace; color: #8a8a92;">P1</div>
+      <div style="padding: 11px 12px;">Documented exposure to an EGFR tyrosine kinase inhibitor</div>
+      <div style="padding: 11px 12px; color: #6a6b72;">prior therapy</div>
+      <div style="padding: 11px 12px; font-family: 'Space Mono', monospace; font-weight: 700;">met</div>
+    </div>
+    <div style="display: grid; grid-template-columns: 62px 1fr 128px 88px; border: 1px solid #dcd9d3; border-top: none; background: #fff; font-size: 13px;">
+      <div style="padding: 11px 12px; font-family: 'Space Mono', monospace; color: #8a8a92;">P2</div>
+      <div style="padding: 11px 12px;">Exposure ends within 14 days before assessment_as_of</div>
+      <div style="padding: 11px 12px; color: #6a6b72;">prior therapy</div>
+      <div style="padding: 11px 12px; font-family: 'Space Mono', monospace; font-weight: 700;">met</div>
+    </div>
+    <div style="margin-top: 7px; font-family: 'Space Mono', monospace; font-size: 10.5px; color: #8a8a92;">aggregation trace: all_of(met, met) → met · deterministic code</div>
+  </div>
+
+  <div style="margin-top: 26px; border: 1px solid #dcd9d3; background: #fff;">
+    <div style="display: flex; gap: 10px; background: #f4f2ee; border-bottom: 1px solid #dcd9d3; padding: 7px 14px; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #4a4b52;">
+      <span>P2 patient evidence</span><span style="color: #8a8a92;">relation: supports</span>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr;">
+      <div style="padding: 16px 18px; border-right: 1px solid #dcd9d3;">
+        <div style="font-family: 'Space Mono', monospace; font-size: 10.5px; color: #8a8a92;">fhir resource</div>
+        <div style="font-family: 'Space Mono', monospace; font-size: 13.5px; margin-top: 3px;">MedicationAdministration/med-adm-0117</div>
+        <div style="font-family: 'Space Mono', monospace; font-size: 10.5px; color: #8a8a92; margin-top: 12px;">json path</div>
+        <div style="font-family: 'Space Mono', monospace; font-size: 12.5px; margin-top: 3px;"><a href="#json">Bundle.entry[42].resource.effectivePeriod.end</a></div>
+      </div>
+      <div style="padding: 16px 18px; display: grid; grid-template-columns: 92px 1fr; row-gap: 7px; font-family: 'Space Mono', monospace; font-size: 12px;">
+        <div style="color: #8a8a92;">agent</div><div>osimertinib</div>
+        <div style="color: #8a8a92;">status</div><div>completed</div>
+        <div style="color: #8a8a92;">time</div><div>2026-06-02 → 2026-07-28</div>
+        <div style="color: #8a8a92;">precision</div><div>day</div>
+      </div>
+    </div>
+    <div style="border-top: 1px solid #dcd9d3; padding: 11px 18px; font-family: 'Space Mono', monospace; font-size: 10.5px; color: #6a6b72; background: #f9f8f6;">assessment_as_of 2026-08-04 · exposure end 7 days prior · window P14D · endpoints inclusive</div>
+  </div>
+
+  <div style="margin-top: 26px; display: grid; grid-template-columns: 1.4fr 1fr; gap: 22px; align-items: start;">
+    <div>
+      <div style="font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #8a8a92; border-bottom: 1px solid #17181c; padding-bottom: 5px;">tool calls · read-only</div>
+      <div style="font-family: 'Space Mono', monospace; font-size: 12px;">
+        <div style="border-bottom: 1px solid #eae7e2; padding: 10px 0; display: grid; grid-template-columns: 24px 1fr;">
+          <div style="color: #8a8a92;">01</div>
+          <div><div><b>find_medication_exposure</b>(concept="EGFR_TKI", time_window="P14D")</div><div style="color: #6a6b72; margin-top: 3px;">→ 1 administration · med-adm-0117</div></div>
+        </div>
+        <div style="border-bottom: 1px solid #eae7e2; padding: 10px 0; display: grid; grid-template-columns: 24px 1fr;">
+          <div style="color: #8a8a92;">02</div>
+          <div><div><b>check_temporal_window</b>(event_time="2026-07-28", anchor="assessment_as_of", window="P14D")</div><div style="color: #6a6b72; margin-top: 3px;">→ true · deterministic, not model-computed</div></div>
+        </div>
+        <div style="padding: 10px 0; display: grid; grid-template-columns: 24px 1fr;">
+          <div style="color: #8a8a92;">03</div>
+          <div><div><b>find_patient_facts</b>(category="prior_therapy", concept="erlotinib")</div><div style="color: #6a6b72; margin-top: 3px;">→ 1 MedicationRequest · unsupported content</div></div>
+        </div>
+      </div>
+    </div>
+    <div style="border: 1px solid oklch(0.5 0.17 22); background: #fff;">
+      <div style="background: oklch(0.5 0.17 22); color: #fff; padding: 7px 14px; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;">verifier rejected 1 citation</div>
+      <div style="padding: 14px 16px; font-size: 12.5px; line-height: 1.6; color: #4a4b52;">First assessment cited <span style="font-family: 'Space Mono', monospace; color: #17181c;">MedicationRequest/med-req-0088</span> as exposure. Rejected: unsupported evidence type. Exactly one targeted correction issued.</div>
+      <div style="border-top: 1px solid #dcd9d3; display: grid; grid-template-columns: 1fr 1fr; font-family: 'Space Mono', monospace; font-size: 11px;">
+        <div style="padding: 10px 14px; border-right: 1px solid #eae7e2;"><div style="color: #8a8a92;">model calls</div><div style="font-size: 13px;">3</div></div>
+        <div style="padding: 10px 14px;"><div style="color: #8a8a92;">tokens</div><div style="font-size: 13px;">4,118</div></div>
+        <div style="padding: 10px 14px; border-top: 1px solid #eae7e2; border-right: 1px solid #eae7e2;"><div style="color: #8a8a92;">latency</div><div style="font-size: 13px;">6.4 s</div></div>
+        <div style="padding: 10px 14px; border-top: 1px solid #eae7e2;"><div style="color: #8a8a92;">est. cost</div><div style="font-size: 13px;">$0.0031</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 28px; border-top: 1px solid #dcd9d3; padding-top: 12px; display: flex; gap: 22px; flex-wrap: wrap; font-family: 'Space Mono', monospace; font-size: 10.5px; color: #8a8a92; align-items: center;">
+    <div style="display: flex; align-items: center; gap: 6px;"><div style="width: 10px; height: 10px; background: #9a9aa2;"></div>satisfied</div>
+    <div style="display: flex; align-items: center; gap: 6px;"><div style="width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 9px solid oklch(0.5 0.17 22);"></div>blocking</div>
+    <div style="display: flex; align-items: center; gap: 6px;"><div style="width: 9px; height: 9px; background: oklch(0.58 0.11 250); transform: rotate(45deg);"></div>unresolved</div>
+    <div style="display: flex; align-items: center; gap: 6px;"><div style="width: 10px; height: 10px; border: 1.5px solid #9a9aa2; border-radius: 50%;"></div>neutral</div>
+    <div style="display: flex; align-items: center; gap: 6px;"><div style="width: 10px; height: 10px; border: 1.5px dashed #9a9aa2;"></div>not assessed · skipped, not unknown</div>
+    <div style="margin-left: auto; max-width: 44ch; color: #6a6b72; font-family: 'Libre Franklin', sans-serif; font-size: 11px;">Screening workflow label only. Verify recruiting status, site availability, and eligibility through ClinicalTrials.gov and the study team.</div>
+  </div>
+
+</div>
+</body>
+</html>

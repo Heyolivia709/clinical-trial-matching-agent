@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Criterion detail — Trace Report design mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&family=Roboto+Mono:wght@400;500;700&display=swap" />
+<style>
+  body { margin: 0; background: #efeee7; color: #1c1e1a; }
+  a { color: #4a5a3f; text-decoration: underline; text-underline-offset: 2px; }
+  a:hover { color: #1c1e1a; }
+</style>
+</head>
+<body>
+<div style="width: 1180px; margin: 0 auto; padding: 56px 64px 90px; background: #f7f6f1; box-sizing: border-box; font-family: 'Roboto Mono', monospace; font-size: 13px; line-height: 1.55;">
+
+  <div style="display: flex; gap: 18px; align-items: baseline; border-bottom: 2px solid #1c1e1a; padding-bottom: 10px;">
+    <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #7d7d70;">§ 6</div>
+    <h2 style="margin: 0; font-family: Newsreader, serif; font-size: 30px; font-weight: 500;">Criterion assessment</h2>
+    <div style="margin-left: auto; font-size: 11px; color: #7d7d70;">NCT05123456 · EXC-7 · exclusion · ordinal 7</div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid #d8d6cb; border-top: none; background: #eae8de;">
+    <div style="padding: 12px 14px; border-right: 1px solid #d8d6cb;">
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70;">criterion state</div>
+      <div style="font-size: 15px; margin-top: 4px;">Supported <span style="font-size: 11px; color: #7d7d70;">met</span></div>
+    </div>
+    <div style="padding: 12px 14px; border-right: 1px solid #d8d6cb;">
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70;">criterion impact</div>
+      <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+        <div style="width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 12px solid oklch(0.52 0.16 28);"></div>
+        <div style="font-size: 15px; color: oklch(0.44 0.14 28);">blocking</div>
+      </div>
+    </div>
+    <div style="padding: 12px 14px; border-right: 1px solid #d8d6cb;">
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70;">verifier</div>
+      <div style="font-size: 15px; margin-top: 4px; color: oklch(0.42 0.06 240);">pass · after 1 correction</div>
+    </div>
+    <div style="padding: 12px 14px;">
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70;">expression</div>
+      <div style="font-size: 15px; margin-top: 4px;">all_of · v3</div>
+    </div>
+  </div>
+
+  <p style="font-family: Newsreader, serif; font-size: 17px; line-height: 1.5; color: #3c3f37; max-width: 78ch; margin: 20px 0 0;">The model assesses one atomic proposition at a time. Deterministic code aggregates the proposition assessments through the authored criterion expression; the model never chooses the aggregate state. A supported exclusion criterion counts against a potential match.</p>
+
+  <div style="margin-top: 28px; border: 1px solid #d8d6cb; background: #fffefa; padding: 20px 22px;">
+    <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70;">Trial evidence · authoritative source text · verbatim, never rewritten</div>
+    <blockquote style="margin: 10px 0 0; font-family: Newsreader, serif; font-size: 20px; line-height: 1.45; border-left: 3px solid #1c1e1a; padding-left: 16px;">Prior treatment with any EGFR tyrosine kinase inhibitor <mark style="background: oklch(0.92 0.03 240); padding: 0 3px;">within 14 days</mark> prior to the first dose of study drug.</blockquote>
+    <div style="margin-top: 12px; font-size: 11px; color: #7d7d70;">snapshot <span style="color:#3c3f37">snap-2026-07-04</span> · section <span style="color:#3c3f37">exclusionCriteria</span> · span <span style="color:#3c3f37">[1842, 1948]</span> · <a href="#src">open source span</a></div>
+  </div>
+
+  <div style="margin-top: 30px;">
+    <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">Authored criterion expression · v3 · human-reviewed</div>
+    <div style="display: flex; gap: 10px; align-items: baseline; margin-top: 12px;">
+      <span style="background: #1c1e1a; color: #f7f6f1; padding: 1px 7px; letter-spacing: 0.08em; font-size: 11px;">ALL_OF</span>
+      <span style="color: #7d7d70; font-size: 12px;">2 atomic propositions · aggregation is deterministic</span>
+    </div>
+
+    <div style="margin-top: 14px;">
+      <div style="display: grid; grid-template-columns: 66px 1fr 128px 176px; background: #1c1e1a; color: #f7f6f1; font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase;">
+        <div style="padding: 8px 12px;">prop</div>
+        <div style="padding: 8px 12px;">atomic proposition</div>
+        <div style="padding: 8px 12px;">category</div>
+        <div style="padding: 8px 12px;">state</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 66px 1fr 128px 176px; background: #fffefa; border: 1px solid #d8d6cb; border-top: none; font-size: 12.5px;">
+        <div style="padding: 11px 12px; color: #7d7d70;">P1</div>
+        <div style="padding: 11px 12px;">Documented exposure to an EGFR tyrosine kinase inhibitor</div>
+        <div style="padding: 11px 12px; color: #58594f;">prior therapy</div>
+        <div style="padding: 11px 12px;">Supported <span style="font-size: 10.5px; color: #7d7d70;">met</span></div>
+      </div>
+      <div style="display: grid; grid-template-columns: 66px 1fr 128px 176px; background: #fffefa; border: 1px solid #d8d6cb; border-top: none; font-size: 12.5px;">
+        <div style="padding: 11px 12px; color: #7d7d70;">P2</div>
+        <div style="padding: 11px 12px;">Exposure ends within 14 days before assessment_as_of</div>
+        <div style="padding: 11px 12px; color: #58594f;">prior therapy</div>
+        <div style="padding: 11px 12px;">Supported <span style="font-size: 10.5px; color: #7d7d70;">met</span></div>
+      </div>
+    </div>
+    <div style="margin-top: 8px; font-size: 11px; color: #7d7d70;">aggregation trace · all_of(met, met) → met · computed by deterministic code, not the model</div>
+  </div>
+
+  <div style="margin-top: 30px;">
+    <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">P2 · patient evidence · relation: supports</div>
+    <div style="border: 1px solid #d8d6cb; border-top: none; background: #fffefa;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr;">
+        <div style="padding: 16px 18px; border-right: 1px dashed #d8d6cb;">
+          <div style="font-size: 11px; color: #7d7d70;">FHIR resource</div>
+          <div style="margin-top: 3px; font-size: 14px;">MedicationAdministration/med-adm-0117</div>
+          <div style="margin-top: 10px; font-size: 11px; color: #7d7d70;">json path</div>
+          <div style="margin-top: 3px;"><a href="#json">Bundle.entry[42].resource.effectivePeriod.end</a></div>
+        </div>
+        <div style="padding: 16px 18px;">
+          <div style="display: grid; grid-template-columns: 96px 1fr; row-gap: 6px; font-size: 12px;">
+            <div style="color: #7d7d70;">agent</div><div>osimertinib</div>
+            <div style="color: #7d7d70;">status</div><div>completed</div>
+            <div style="color: #7d7d70;">clinical time</div><div>2026-06-02 → 2026-07-28</div>
+            <div style="color: #7d7d70;">precision</div><div>day</div>
+          </div>
+        </div>
+      </div>
+      <div style="border-top: 1px solid #d8d6cb; background: #f4f2ea; padding: 12px 18px; font-size: 11px; color: #58594f;">assessment_as_of <span style="color:#1c1e1a">2026-08-04</span> · exposure end is 7 days prior · window P14D · interval endpoints inclusive</div>
+    </div>
+  </div>
+
+  <div style="margin-top: 30px; display: grid; grid-template-columns: 1.35fr 1fr; gap: 26px; align-items: start;">
+    <div>
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">Tool calls · read-only · recorded in the reasoning trace</div>
+      <div style="font-size: 12px;">
+        <div style="display: grid; grid-template-columns: 22px 1fr; border-bottom: 1px dashed #d8d6cb; padding: 10px 0;">
+          <div style="color: #7d7d70;">1</div>
+          <div>
+            <div><span style="font-weight: 700;">find_medication_exposure</span>(concept=<span style="color:#4a5a3f">"EGFR_TKI"</span>, time_window=<span style="color:#4a5a3f">"P14D"</span>)</div>
+            <div style="color: #58594f; margin-top: 3px;">→ 1 administration · med-adm-0117 · osimertinib</div>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 22px 1fr; border-bottom: 1px dashed #d8d6cb; padding: 10px 0;">
+          <div style="color: #7d7d70;">2</div>
+          <div>
+            <div><span style="font-weight: 700;">check_temporal_window</span>(event_time=<span style="color:#4a5a3f">"2026-07-28"</span>, anchor=<span style="color:#4a5a3f">"assessment_as_of"</span>, window=<span style="color:#4a5a3f">"P14D"</span>)</div>
+            <div style="color: #58594f; margin-top: 3px;">→ true · deterministic · the model did not compute this</div>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 22px 1fr; padding: 10px 0;">
+          <div style="color: #7d7d70;">3</div>
+          <div>
+            <div><span style="font-weight: 700;">find_patient_facts</span>(category=<span style="color:#4a5a3f">"prior_therapy"</span>, concept=<span style="color:#4a5a3f">"erlotinib"</span>)</div>
+            <div style="color: #58594f; margin-top: 3px;">→ 1 MedicationRequest · unsupported content · order intent is not exposure</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="border: 1px solid oklch(0.45 0.05 240); background: #fffefa;">
+      <div style="background: oklch(0.45 0.05 240); color: #fff; padding: 7px 14px; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;">verifier · process status</div>
+      <div style="padding: 14px 16px;">
+        <div style="font-size: 14px;">PASS · after exactly 1 correction</div>
+        <div style="margin-top: 10px; font-size: 11px; line-height: 1.6; color: #58594f;">The first assessment cited <span style="color:#1c1e1a">MedicationRequest/med-req-0088</span> as exposure. Rejected: unsupported evidence type. One targeted correction was issued; the corrected assessment cites the administration above. <a href="#s7">see § 7</a></div>
+      </div>
+      <div style="border-top: 1px solid #d8d6cb; display: grid; grid-template-columns: 1fr 1fr; font-size: 11px;">
+        <div style="padding: 10px 14px; border-right: 1px solid #eae8de;"><div style="color: #7d7d70;">model calls</div><div style="font-size: 14px;">3</div></div>
+        <div style="padding: 10px 14px;"><div style="color: #7d7d70;">tokens</div><div style="font-size: 14px;">4,118</div></div>
+        <div style="padding: 10px 14px; border-top: 1px solid #eae8de; border-right: 1px solid #eae8de;"><div style="color: #7d7d70;">latency</div><div style="font-size: 14px;">6.4 s</div></div>
+        <div style="padding: 10px 14px; border-top: 1px solid #eae8de;"><div style="color: #7d7d70;">est. cost</div><div style="font-size: 14px;">$0.0031</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 30px; border-top: 1px solid #d8d6cb; padding-top: 12px; display: flex; gap: 24px; flex-wrap: wrap; font-size: 11px; color: #7d7d70;">
+    <div style="display: flex; align-items: center; gap: 7px;"><div style="width: 11px; height: 11px; background: #9a9a8c;"></div>satisfied</div>
+    <div style="display: flex; align-items: center; gap: 7px;"><div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 10px solid oklch(0.52 0.16 28);"></div>blocking</div>
+    <div style="display: flex; align-items: center; gap: 7px;"><div style="width: 10px; height: 10px; background: oklch(0.68 0.13 78); transform: rotate(45deg);"></div>unresolved</div>
+    <div style="display: flex; align-items: center; gap: 7px;"><div style="width: 11px; height: 11px; border: 1.5px solid #9a9a8c; border-radius: 50%;"></div>neutral</div>
+    <div style="display: flex; align-items: center; gap: 7px;"><div style="width: 11px; height: 11px; border: 1.5px dashed #9a9a8c;"></div>not assessed · deliberately skipped, not unknown</div>
+    <div style="color: #58594f;">Colour and shape encode criterion impact only. Criterion state is text. Verifier status uses a separate process colour.</div>
+  </div>
+
+  <div style="margin-top: 24px; border: 2px solid #1c1e1a; background: #fffefa; padding: 16px 20px;">
+    <div style="font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;">Research prototype · requires qualified human review</div>
+    <p style="font-family: Newsreader, serif; font-size: 16px; line-height: 1.5; margin: 8px 0 0; max-width: 88ch;">Screening workflow labels only. This assessment does not determine clinical eligibility. Recruiting status, site availability, and actual eligibility must be verified through ClinicalTrials.gov and the study team.</p>
+  </div>
+
+</div>
+</body>
+</html>
