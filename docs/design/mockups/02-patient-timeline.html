@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Patient timeline — Trace Report design mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&family=Roboto+Mono:wght@400;500;700&display=swap" />
+<style>
+  body { margin: 0; background: #efeee7; color: #1c1e1a; }
+  a { color: #4a5a3f; text-decoration: underline; text-underline-offset: 2px; }
+  a:hover { color: #1c1e1a; }
+</style>
+</head>
+<body>
+<div style="width: 1180px; margin: 0 auto; padding: 56px 64px 90px; background: #f7f6f1; box-sizing: border-box; font-family: 'Roboto Mono', monospace; font-size: 13px; line-height: 1.55;">
+
+  <div style="display: flex; gap: 18px; align-items: baseline; border-bottom: 2px solid #1c1e1a; padding-bottom: 10px;">
+    <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #7d7d70;">§ 2</div>
+    <h2 style="margin: 0; font-family: Newsreader, serif; font-size: 30px; font-weight: 500;">Patient timeline</h2>
+    <div style="margin-left: auto; font-size: 11px; color: #7d7d70;">38 evidence-bearing facts · 6 unsupported · as_of 2026-08-04</div>
+  </div>
+
+  <p style="font-family: Newsreader, serif; font-size: 17px; line-height: 1.5; color: #3c3f37; max-width: 78ch; margin: 20px 0 0;">Facts are derived from a Synthea-based FHIR R4 Bundle across four evidence-bearing resource types. Clinical time, source date precision, status, value, and provenance are preserved rather than flattened. Events after <span style="font-family: 'Roboto Mono', monospace; font-size: 14px;">assessment_as_of</span> are retained for provenance but never used.</p>
+
+  <div style="margin-top: 26px;">
+    <div style="display: grid; grid-template-columns: 108px 92px 1fr 172px 96px 116px; background: #eae8de; border: 1px solid #d8d6cb; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #58594f;">
+      <div style="padding: 7px 12px;">clinical time</div>
+      <div style="padding: 7px 12px;">precision</div>
+      <div style="padding: 7px 12px;">fact</div>
+      <div style="padding: 7px 12px;">value</div>
+      <div style="padding: 7px 12px;">status</div>
+      <div style="padding: 7px 12px;">provenance</div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 108px 92px 1fr 172px 96px 116px; background: #fffefa; border: 1px solid #d8d6cb; border-top: none; font-size: 12.5px;">
+      <div style="padding: 10px 12px; color: #58594f;">2024-11-19</div>
+      <div style="padding: 10px 12px; color: #7d7d70;">day</div>
+      <div style="padding: 10px 12px;">NSCLC, adenocarcinoma <span style="color:#7d7d70;">(Condition)</span></div>
+      <div style="padding: 10px 12px;">stage IV</div>
+      <div style="padding: 10px 12px;">active</div>
+      <div style="padding: 10px 12px;"><a href="#p1">cond-0031</a></div>
+    </div>
+    <div style="display: grid; grid-template-columns: 108px 92px 1fr 172px 96px 116px; background: #fffefa; border: 1px solid #d8d6cb; border-top: none; font-size: 12.5px;">
+      <div style="padding: 10px 12px; color: #58594f;">2024-12-02</div>
+      <div style="padding: 10px 12px; color: #7d7d70;">day</div>
+      <div style="padding: 10px 12px;">EGFR L858R <span style="color:#7d7d70;">(Observation)</span></div>
+      <div style="padding: 10px 12px;">positive</div>
+      <div style="padding: 10px 12px;">final</div>
+      <div style="padding: 10px 12px;"><a href="#p2">obs-0144</a></div>
+    </div>
+    <div style="display: grid; grid-template-columns: 108px 92px 1fr 172px 96px 116px; background: #fffefa; border: 1px solid #d8d6cb; border-top: none; font-size: 12.5px;">
+      <div style="padding: 10px 12px; color: #58594f;">2025</div>
+      <div style="padding: 10px 12px; color: oklch(0.48 0.1 78);">year only</div>
+      <div style="padding: 10px 12px;">Thoracic radiotherapy <span style="color:#7d7d70;">(Observation)</span></div>
+      <div style="padding: 10px 12px;">completed course</div>
+      <div style="padding: 10px 12px;">final</div>
+      <div style="padding: 10px 12px;"><a href="#p3">obs-0201</a></div>
+    </div>
+    <div style="display: grid; grid-template-columns: 108px 92px 1fr 172px 96px 116px; background: #fffefa; border: 1px solid #d8d6cb; border-top: none; font-size: 12.5px;">
+      <div style="padding: 10px 12px; color: #58594f;">2026-06-02 →<br />2026-07-28</div>
+      <div style="padding: 10px 12px; color: #7d7d70;">day</div>
+      <div style="padding: 10px 12px;">Osimertinib <span style="color:#7d7d70;">(MedicationAdministration)</span></div>
+      <div style="padding: 10px 12px;">80 mg oral daily</div>
+      <div style="padding: 10px 12px;">completed</div>
+      <div style="padding: 10px 12px;"><a href="#p4">med-adm-0117</a></div>
+    </div>
+    <div style="display: grid; grid-template-columns: 108px 92px 1fr 172px 96px 116px; background: #fffefa; border: 1px solid #d8d6cb; border-top: none; font-size: 12.5px;">
+      <div style="padding: 10px 12px; color: #58594f;">2026-07-11</div>
+      <div style="padding: 10px 12px; color: #7d7d70;">day</div>
+      <div style="padding: 10px 12px;">PD-L1 TPS <span style="color:#7d7d70;">(Observation)</span></div>
+      <div style="padding: 10px 12px;">15 %</div>
+      <div style="padding: 10px 12px;">final</div>
+      <div style="padding: 10px 12px;"><a href="#p5">obs-0388</a></div>
+    </div>
+    <div style="display: grid; grid-template-columns: 108px 92px 1fr 172px 96px 116px; background: #f4f2ea; border: 1px solid #d8d6cb; border-top: none; font-size: 12.5px;">
+      <div style="padding: 10px 12px; color: #58594f;">2026-07-24</div>
+      <div style="padding: 10px 12px; color: #7d7d70;">day</div>
+      <div style="padding: 10px 12px;">ECOG performance status <span style="color:#7d7d70;">(Observation)</span></div>
+      <div style="padding: 10px 12px;">1</div>
+      <div style="padding: 10px 12px; color: oklch(0.48 0.1 78);">preliminary</div>
+      <div style="padding: 10px 12px;"><a href="#p6">obs-0402</a></div>
+    </div>
+    <div style="display: grid; grid-template-columns: 108px 92px 1fr 172px 96px 116px; background: #f4f2ea; border: 1px solid #d8d6cb; border-top: none; font-size: 12.5px;">
+      <div style="padding: 10px 12px; color: #58594f;">2026-08-19</div>
+      <div style="padding: 10px 12px; color: #7d7d70;">day</div>
+      <div style="padding: 10px 12px;">ALK rearrangement <span style="color:#7d7d70;">(Observation)</span></div>
+      <div style="padding: 10px 12px;">negative</div>
+      <div style="padding: 10px 12px; color: #58594f;">final</div>
+      <div style="padding: 10px 12px;"><a href="#p7">obs-0455</a></div>
+    </div>
+    <div style="display: grid; grid-template-columns: 108px 1fr; background: #eae8de; border: 1px solid #d8d6cb; border-top: none; font-size: 11px; color: #58594f;">
+      <div style="padding: 8px 12px; color: #7d7d70;">excluded</div>
+      <div style="padding: 8px 12px;">obs-0455 is dated after assessment_as_of 2026-08-04 — retained for provenance, never used as evidence.</div>
+    </div>
+  </div>
+
+  <div style="margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: start;">
+    <div>
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">Unsupported patient content · preserved, not interpreted</div>
+      <div style="border: 1px solid #d8d6cb; border-top: none; background: #fffefa; font-size: 12px;">
+        <div style="padding: 11px 14px; border-bottom: 1px dashed #d8d6cb;">
+          <div>MedicationRequest/med-req-0088 · erlotinib</div>
+          <div style="color: #58594f; margin-top: 2px;">order intent is not exposure</div>
+        </div>
+        <div style="padding: 11px 14px; border-bottom: 1px dashed #d8d6cb;">
+          <div>Observation/obs-0377 · EGFR T790M</div>
+          <div style="color: #58594f; margin-top: 2px;">status entered-in-error · ignored</div>
+        </div>
+        <div style="padding: 11px 14px;">
+          <div>DocumentReference/doc-0012 · oncology note</div>
+          <div style="color: #58594f; margin-top: 2px;">inventoried by identity; not semantically normalized</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">Provenance detail · obs-0402</div>
+      <div style="border: 1px solid #d8d6cb; border-top: none; background: #fffefa; padding: 14px 16px;">
+        <div style="display: grid; grid-template-columns: 96px 1fr; row-gap: 7px; font-size: 12px;">
+          <div style="color: #7d7d70;">resource</div><div>Observation/obs-0402</div>
+          <div style="color: #7d7d70;">json path</div><div style="font-size: 11.5px;">Bundle.entry[57].resource.valueInteger</div>
+          <div style="color: #7d7d70;">code</div><div>LOINC 89247-1</div>
+          <div style="color: #7d7d70;">status</div><div>preliminary</div>
+          <div style="color: #7d7d70;">consequence</div><div style="color: #58594f;">cannot establish supported or contradicted; threshold comparisons resolve to unknown</div>
+        </div>
+      </div>
+      <div style="margin-top: 10px; font-size: 11px; color: #7d7d70;">Timeline tools are read-only. Nothing in this section is rewritten, normalized across units, or inferred.</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

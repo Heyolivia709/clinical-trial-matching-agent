@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Retrieval — Trace Report design mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&family=Roboto+Mono:wght@400;500;700&display=swap" />
+<style>
+  body { margin: 0; background: #efeee7; color: #1c1e1a; }
+  a { color: #4a5a3f; text-decoration: underline; text-underline-offset: 2px; }
+  a:hover { color: #1c1e1a; }
+</style>
+</head>
+<body>
+<div style="width: 1180px; margin: 0 auto; padding: 56px 64px 90px; background: #f7f6f1; box-sizing: border-box; font-family: 'Roboto Mono', monospace; font-size: 13px; line-height: 1.55;">
+
+  <div style="display: flex; gap: 18px; align-items: baseline; border-bottom: 2px solid #1c1e1a; padding-bottom: 10px;">
+    <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #7d7d70;">§ 3</div>
+    <h2 style="margin: 0; font-family: Newsreader, serif; font-size: 30px; font-weight: 500;">Candidate retrieval</h2>
+    <div style="margin-left: auto; font-size: 11px; color: #7d7d70;">412 trials in snapshot · immutable top 20</div>
+  </div>
+
+  <p style="font-family: Newsreader, serif; font-size: 17px; line-height: 1.5; color: #3c3f37; max-width: 78ch; margin: 20px 0 0;">Two channels run independently over trial-level text and are combined by deterministic reciprocal-rank fusion. Retrieval rank expresses relevance only; it says nothing about eligibility, and no score blends retrieval with criterion reasoning.</p>
+
+  <div style="margin-top: 24px; display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid #d8d6cb; background: #eae8de;">
+    <div style="padding: 11px 14px; border-right: 1px solid #d8d6cb;"><div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70;">lexical channel</div><div style="margin-top: 3px;">BM25 v2 · k1 1.2 · b 0.75</div></div>
+    <div style="padding: 11px 14px; border-right: 1px solid #d8d6cb;"><div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70;">dense channel</div><div style="margin-top: 3px;">e5-small · in-process index</div></div>
+    <div style="padding: 11px 14px;"><div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70;">fusion</div><div style="margin-top: 3px;">RRF k=60 · deterministic</div></div>
+  </div>
+
+  <div style="margin-top: 12px; border: 1px solid #d8d6cb; background: #fffefa; padding: 12px 14px; font-size: 12px;">
+    <span style="color: #7d7d70;">candidate filters applied ·</span> structured age 62 within stated bounds · administrative sex female permitted · US recruiting site required. <span style="color: #58594f;">Biomarkers, stage, and treatment history remain retrieval signals and never remove a trial. Unknown values never filter.</span>
+  </div>
+
+  <div style="margin-top: 24px;">
+    <div style="display: grid; grid-template-columns: 52px 116px 1fr 74px 74px 78px 132px; background: #1c1e1a; color: #f7f6f1; font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase;">
+      <div style="padding: 8px 12px;">rank</div>
+      <div style="padding: 8px 12px;">nct id</div>
+      <div style="padding: 8px 12px;">title</div>
+      <div style="padding: 8px 12px;">bm25</div>
+      <div style="padding: 8px 12px;">dense</div>
+      <div style="padding: 8px 12px;">rrf</div>
+      <div style="padding: 8px 12px;">status</div>
+    </div>
+    <div style="border: 1px solid #d8d6cb; border-top: none;">
+      <div style="display: grid; grid-template-columns: 52px 116px 1fr 74px 74px 78px 132px; background: #fffefa; border-bottom: 1px solid #eae8de; font-size: 12.5px;">
+        <div style="padding: 9px 12px;">1</div><div style="padding: 9px 12px;"><a href="#t1">NCT05123456</a></div>
+        <div style="padding: 9px 12px;">Osimertinib plus savolitinib in EGFR-mutant advanced NSCLC</div>
+        <div style="padding: 9px 12px; color: #58594f;">1</div><div style="padding: 9px 12px; color: #58594f;">3</div><div style="padding: 9px 12px;">0.0328</div>
+        <div style="padding: 9px 12px;">assessed</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 52px 116px 1fr 74px 74px 78px 132px; background: #fffefa; border-bottom: 1px solid #eae8de; font-size: 12.5px;">
+        <div style="padding: 9px 12px;">2</div><div style="padding: 9px 12px;"><a href="#t2">NCT05771842</a></div>
+        <div style="padding: 9px 12px;">Amivantamab in EGFR exon 19/L858R after TKI progression</div>
+        <div style="padding: 9px 12px; color: #58594f;">4</div><div style="padding: 9px 12px; color: #58594f;">1</div><div style="padding: 9px 12px;">0.0321</div>
+        <div style="padding: 9px 12px;">assessed</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 52px 116px 1fr 74px 74px 78px 132px; background: #fffefa; border-bottom: 1px solid #eae8de; font-size: 12.5px;">
+        <div style="padding: 9px 12px;">3</div><div style="padding: 9px 12px;"><a href="#t3">NCT05990117</a></div>
+        <div style="padding: 9px 12px;">Pembrolizumab combination in PD-L1 low metastatic NSCLC</div>
+        <div style="padding: 9px 12px; color: #58594f;">2</div><div style="padding: 9px 12px; color: #58594f;">8</div><div style="padding: 9px 12px;">0.0294</div>
+        <div style="padding: 9px 12px; color: oklch(0.48 0.1 78);">expression unavailable</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 52px 116px 1fr 74px 74px 78px 132px; background: #fffefa; border-bottom: 1px solid #eae8de; font-size: 12.5px;">
+        <div style="padding: 9px 12px;">4</div><div style="padding: 9px 12px;"><a href="#t4">NCT06012993</a></div>
+        <div style="padding: 9px 12px;">Third-generation TKI plus bevacizumab, stage IIIB–IV</div>
+        <div style="padding: 9px 12px; color: #58594f;">9</div><div style="padding: 9px 12px;">2</div><div style="padding: 9px 12px;">0.0287</div>
+        <div style="padding: 9px 12px;">assessed</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 52px 116px 1fr 74px 74px 78px 132px; background: #fffefa; border-bottom: 1px solid #d8d6cb; font-size: 12.5px;">
+        <div style="padding: 9px 12px;">5</div><div style="padding: 9px 12px;"><a href="#t5">NCT05648002</a></div>
+        <div style="padding: 9px 12px;">Antibody-drug conjugate in previously treated NSCLC</div>
+        <div style="padding: 9px 12px; color: #58594f;">6</div><div style="padding: 9px 12px; color: #58594f;">5</div><div style="padding: 9px 12px;">0.0271</div>
+        <div style="padding: 9px 12px; color: #58594f;">presented, unassessed</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 52px 1fr; background: #f4f2ea; font-size: 12px; color: #58594f;">
+        <div style="padding: 9px 12px; color: #7d7d70;">6–20</div>
+        <div style="padding: 9px 12px;">15 further candidates remain visible as unassessed candidates. Candidate status indicates retrieval relevance, not clinical eligibility, and they must not be presented as assessed matches. <a href="#rows">expand rows 6–20</a></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: start;">
+    <div>
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">Per-channel attribution · rank 4</div>
+      <div style="border: 1px solid #d8d6cb; border-top: none; background: #fffefa; padding: 14px 16px; font-size: 12px;">
+        NCT06012993 ranks 9th lexically and 2nd densely. Fusion promotes it to rank 4, and it is the only assessed candidate that concludes <span style="color: #1c1e1a;">potential match</span>. Removing the dense channel drops it out of the presented top five — reported as a retrieval ablation, not as a claim about eligibility.
+      </div>
+    </div>
+    <div>
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">Matching policy</div>
+      <div style="display: grid; grid-template-columns: 130px 1fr; row-gap: 7px; margin-top: 12px; font-size: 12px;">
+        <div style="color: #7d7d70;">retrieved</div><div>top 20 · immutable, with per-channel ranks</div>
+        <div style="color: #7d7d70;">presented</div><div>top 5 by retrieval rank</div>
+        <div style="color: #7d7d70;">assessed</div><div>top 3 with authored expressions</div>
+        <div style="color: #7d7d70;">ordering</div><div>review priority = conclusion, then retrieval rank</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evaluation — Trace Report design mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&family=Roboto+Mono:wght@400;500;700&display=swap" />
+<style>
+  body { margin: 0; background: #efeee7; color: #1c1e1a; }
+  a { color: #4a5a3f; text-decoration: underline; text-underline-offset: 2px; }
+  a:hover { color: #1c1e1a; }
+</style>
+</head>
+<body>
+<div style="width: 1180px; margin: 0 auto; padding: 56px 64px 90px; background: #f7f6f1; box-sizing: border-box; font-family: 'Roboto Mono', monospace; font-size: 13px; line-height: 1.55;">
+
+  <div style="display: flex; gap: 18px; align-items: baseline; border-bottom: 2px solid #1c1e1a; padding-bottom: 10px;">
+    <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #7d7d70;">§ 9</div>
+    <h2 style="margin: 0; font-family: Newsreader, serif; font-size: 30px; font-weight: 500;">Evaluation</h2>
+    <div style="margin-left: auto; font-size: 11px; color: #7d7d70;">6 scenarios · 12 trials · pre-registered · seed 17</div>
+  </div>
+
+  <p style="font-family: Newsreader, serif; font-size: 17px; line-height: 1.5; color: #3c3f37; max-width: 78ch; margin: 20px 0 0;">Metrics, thresholds, and the analysis plan were fixed before results were examined. Unknown is a first-class outcome: a criterion whose evidence is genuinely insufficient is scored correct when the system says unknown and incorrect when it commits.</p>
+
+  <div style="margin-top: 26px;">
+    <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">Release gates · pre-registered thresholds</div>
+    <div style="display: grid; grid-template-columns: 1fr 130px 130px 96px; background: #eae8de; border: 1px solid #d8d6cb; border-top: none; font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; color: #58594f;">
+      <div style="padding: 7px 14px;">gate</div><div style="padding: 7px 14px;">threshold</div><div style="padding: 7px 14px;">observed</div><div style="padding: 7px 14px;">result</div>
+    </div>
+    <div style="border: 1px solid #d8d6cb; border-top: none; background: #fffefa; font-size: 12.5px;">
+      <div style="display: grid; grid-template-columns: 1fr 130px 130px 96px; border-bottom: 1px dashed #d8d6cb;">
+        <div style="padding: 10px 14px;">criterion-level macro F1</div><div style="padding: 10px 14px; color: #58594f;">≥ 0.75</div><div style="padding: 10px 14px;">0.83</div><div style="padding: 10px 14px;">pass</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 130px 130px 96px; border-bottom: 1px dashed #d8d6cb;">
+        <div style="padding: 10px 14px;">citation validity · after correction</div><div style="padding: 10px 14px; color: #58594f;">≥ 0.90</div><div style="padding: 10px 14px;">0.94</div><div style="padding: 10px 14px;">pass</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 130px 130px 96px; border-bottom: 1px dashed #d8d6cb;">
+        <div style="padding: 10px 14px;">unknown correctness</div><div style="padding: 10px 14px; color: #58594f;">≥ 0.70</div><div style="padding: 10px 14px;">0.80</div><div style="padding: 10px 14px;">pass</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 130px 130px 96px; border-bottom: 1px dashed #d8d6cb;">
+        <div style="padding: 10px 14px;">false-confidence rate</div><div style="padding: 10px 14px; color: #58594f;">≤ 0.10</div><div style="padding: 10px 14px;">0.05</div><div style="padding: 10px 14px;">pass</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 130px 130px 96px; border-bottom: 1px dashed #d8d6cb;">
+        <div style="padding: 10px 14px;">criterion coverage</div><div style="padding: 10px 14px; color: #58594f;">= 1.00</div><div style="padding: 10px 14px;">1.00</div><div style="padding: 10px 14px;">pass</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 130px 130px 96px; border-bottom: 1px dashed #d8d6cb;">
+        <div style="padding: 10px 14px;">injected-fault catch rate</div><div style="padding: 10px 14px; color: #58594f;">= 1.00</div><div style="padding: 10px 14px;">1.00</div><div style="padding: 10px 14px;">pass</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 130px 130px 96px;">
+        <div style="padding: 10px 14px;">end-to-end latency per patient</div><div style="padding: 10px 14px; color: #58594f;">≤ 120 s</div><div style="padding: 10px 14px;">74 s</div><div style="padding: 10px 14px;">pass</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 30px; display: grid; grid-template-columns: 1.15fr 1fr; gap: 26px; align-items: start;">
+    <div>
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">Ablations · one component removed at a time</div>
+      <div style="display: grid; grid-template-columns: 1fr 96px 96px 108px; background: #eae8de; border: 1px solid #d8d6cb; border-top: none; font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; color: #58594f;">
+        <div style="padding: 7px 12px;">variant</div><div style="padding: 7px 12px;">F1</div><div style="padding: 7px 12px;">cit. val.</div><div style="padding: 7px 12px;">unknown corr.</div>
+      </div>
+      <div style="border: 1px solid #d8d6cb; border-top: none; background: #fffefa; font-size: 12.5px;">
+        <div style="display: grid; grid-template-columns: 1fr 96px 96px 108px; border-bottom: 1px dashed #d8d6cb;">
+          <div style="padding: 9px 12px;">full system</div><div style="padding: 9px 12px;">0.83</div><div style="padding: 9px 12px;">0.94</div><div style="padding: 9px 12px;">0.80</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 96px 96px 108px; border-bottom: 1px dashed #d8d6cb;">
+          <div style="padding: 9px 12px;">− verifier feedback</div><div style="padding: 9px 12px;">0.79</div><div style="padding: 9px 12px;">0.76</div><div style="padding: 9px 12px;">0.71</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 96px 96px 108px; border-bottom: 1px dashed #d8d6cb;">
+          <div style="padding: 9px 12px;">− timeline tools <span style="color: #7d7d70;">(raw json)</span></div><div style="padding: 9px 12px;">0.68</div><div style="padding: 9px 12px;">0.62</div><div style="padding: 9px 12px;">0.54</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 96px 96px 108px; border-bottom: 1px dashed #d8d6cb;">
+          <div style="padding: 9px 12px;">− authored expressions</div><div style="padding: 9px 12px;">0.61</div><div style="padding: 9px 12px;">0.71</div><div style="padding: 9px 12px;">0.49</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 96px 96px 108px;">
+          <div style="padding: 9px 12px;">− dense retrieval channel</div><div style="padding: 9px 12px; color: #7d7d70;">unchanged</div><div style="padding: 9px 12px; color: #7d7d70;">unchanged</div><div style="padding: 9px 12px; color: #7d7d70;">unchanged</div>
+        </div>
+      </div>
+      <div style="margin-top: 8px; font-size: 11px; color: #7d7d70;">Removing the dense channel changes which trials reach assessment, not how any criterion is assessed. It is reported as recall@20 = 0.83 against the authored relevance set, never as a quality metric.</div>
+    </div>
+    <div>
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">Determinism and reproducibility</div>
+      <div style="border: 1px solid #d8d6cb; border-top: none; background: #fffefa; padding: 14px 16px; font-size: 12px;">
+        <div style="display: grid; grid-template-columns: 152px 1fr; row-gap: 7px;">
+          <div style="color: #7d7d70;">repeat runs</div><div>3 · identical criterion states</div>
+          <div style="color: #7d7d70;">non-determinism</div><div>confined to model text; states and aggregation are code</div>
+          <div style="color: #7d7d70;">schema failures</div><div>0 after 1 repair attempt</div>
+          <div style="color: #7d7d70;">infrastructure failures</div><div>0 · recorded separately, never scored as uncertainty</div>
+        </div>
+      </div>
+      <div style="margin-top: 16px; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">Ground truth</div>
+      <div style="border: 1px solid #d8d6cb; border-top: none; background: #fffefa; padding: 14px 16px; font-size: 12px; color: #58594f;">
+        Authored per criterion with an expected state, an expected impact, and a rationale, including the cases where unknown is the correct answer. Authored independently of system output; the label set was frozen before the runs in this report.
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 30px;">
+    <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">Failure taxonomy · every disagreement classified</div>
+    <div style="display: grid; grid-template-columns: 216px 1fr 74px; background: #eae8de; border: 1px solid #d8d6cb; border-top: none; font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; color: #58594f;">
+      <div style="padding: 7px 14px;">class</div><div style="padding: 7px 14px;">description</div><div style="padding: 7px 14px;">count</div>
+    </div>
+    <div style="border: 1px solid #d8d6cb; border-top: none; background: #fffefa; font-size: 12.5px;">
+      <div style="display: grid; grid-template-columns: 216px 1fr 74px; border-bottom: 1px dashed #d8d6cb;">
+        <div style="padding: 9px 14px;">retrieval miss</div><div style="padding: 9px 14px; color: #58594f;">a relevant trial never entered the top 20</div><div style="padding: 9px 14px;">2</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 216px 1fr 74px; border-bottom: 1px dashed #d8d6cb;">
+        <div style="padding: 9px 14px;">expression authoring gap</div><div style="padding: 9px 14px; color: #58594f;">the criterion text was decomposed too coarsely to assess</div><div style="padding: 9px 14px;">3</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 216px 1fr 74px; border-bottom: 1px dashed #d8d6cb;">
+        <div style="padding: 9px 14px;">evidence retrieval failure</div><div style="padding: 9px 14px; color: #58594f;">the fact was present in the timeline but not found by any tool call</div><div style="padding: 9px 14px;">4</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 216px 1fr 74px; border-bottom: 1px dashed #d8d6cb;">
+        <div style="padding: 9px 14px;">reasoning error</div><div style="padding: 9px 14px; color: #58594f;">correct evidence, wrong proposition state</div><div style="padding: 9px 14px;">5</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 216px 1fr 74px; border-bottom: 1px dashed #d8d6cb;">
+        <div style="padding: 9px 14px;">citation error</div><div style="padding: 9px 14px; color: #58594f;">correct state, unsupported or invalid citation</div><div style="padding: 9px 14px;">3</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 216px 1fr 74px;">
+        <div style="padding: 9px 14px;">unknown misuse</div><div style="padding: 9px 14px; color: #58594f;">unknown returned where sufficient evidence existed, or committed where it did not</div><div style="padding: 9px 14px;">6</div>
+      </div>
+    </div>
+    <div style="margin-top: 8px; font-size: 11px; color: #7d7d70;">The dominant class is unknown misuse, which the taxonomy separates from reasoning error precisely because the two demand different remedies. Overall accuracy alone would hide this.</div>
+  </div>
+
+  <div style="margin-top: 28px; border: 2px solid #1c1e1a; background: #fffefa; padding: 16px 20px;">
+    <div style="font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;">Research prototype · requires qualified human review</div>
+    <p style="font-family: Newsreader, serif; font-size: 16px; line-height: 1.5; margin: 8px 0 0; max-width: 88ch;">These are engineering results on authored synthetic data at small scale. They are not clinical validation, not evidence of clinical safety, and not a claim that the system generalizes to real patient records. Every screening workflow label in this report requires verification through ClinicalTrials.gov and the study team.</p>
+  </div>
+
+</div>
+</body>
+</html>

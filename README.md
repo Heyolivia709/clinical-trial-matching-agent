@@ -26,6 +26,7 @@ The MVP design is frozen. Implementation proceeds through acceptance-criteria-dr
 - [Benchmark plan](docs/evaluation/phase-1-benchmark-plan.md) — deterministic grading, invariant gates, and ablations
 - [Pre-registration](docs/evaluation/pre-registration.md) — metrics, statistical procedure, and falsification condition, fixed before any held-out run
 - [Product and technical constraints](docs/requirements/product-and-technical-constraints.md)
+- [Trace report design](docs/design/) — interface design, semantic encoding rules, and known gaps
 - [Domain glossary](CONTEXT.md)
 - [Decision records](docs/adr/)
 

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verifier and correction — Trace Report design mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&family=Roboto+Mono:wght@400;500;700&display=swap" />
+<style>
+  body { margin: 0; background: #efeee7; color: #1c1e1a; }
+  a { color: #4a5a3f; text-decoration: underline; text-underline-offset: 2px; }
+  a:hover { color: #1c1e1a; }
+</style>
+</head>
+<body>
+<div style="width: 1180px; margin: 0 auto; padding: 56px 64px 90px; background: #f7f6f1; box-sizing: border-box; font-family: 'Roboto Mono', monospace; font-size: 13px; line-height: 1.55;">
+
+  <div style="display: flex; gap: 18px; align-items: baseline; border-bottom: 2px solid #1c1e1a; padding-bottom: 10px;">
+    <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #7d7d70;">§ 7</div>
+    <h2 style="margin: 0; font-family: Newsreader, serif; font-size: 30px; font-weight: 500;">Evidence verifier and correction</h2>
+    <div style="margin-left: auto; font-size: 11px; color: #7d7d70;">deterministic · one correction maximum</div>
+  </div>
+
+  <p style="font-family: Newsreader, serif; font-size: 17px; line-height: 1.5; color: #3c3f37; max-width: 78ch; margin: 20px 0 0;">One verifier implementation serves two separated roles. It grades the final outputs of every variant offline, and it feeds back into the agent loop for the full system only. Verification failure triggers exactly one targeted correction; a second failure yields unknown with reason <span style="font-family: 'Roboto Mono', monospace; font-size: 14px;">verification_failed</span>.</p>
+
+  <div style="margin-top: 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid oklch(0.45 0.05 240);">
+    <div style="border-right: 1px solid oklch(0.45 0.05 240);">
+      <div style="background: oklch(0.45 0.05 240); color: #fff; padding: 8px 16px; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; display: flex; justify-content: space-between;">
+        <span>attempt 1 · rejected</span><span style="color: #d6dbe4;">EXC-7 · P1</span>
+      </div>
+      <div style="padding: 16px 18px; background: #fffefa;">
+        <div style="font-size: 11px; color: #7d7d70;">cited patient evidence</div>
+        <div style="margin-top: 4px; font-size: 13.5px; text-decoration: line-through; text-decoration-color: oklch(0.45 0.05 240);">MedicationRequest/med-req-0088</div>
+        <div style="margin-top: 2px; font-size: 11.5px; color: #58594f;">Bundle.entry[63].resource.authoredOn · erlotinib · 2026-07-30</div>
+        <div style="margin-top: 14px; font-size: 11px; color: #7d7d70;">claimed state</div>
+        <div style="margin-top: 3px; font-size: 13.5px;">Supported <span style="font-size: 10.5px; color: #7d7d70;">met</span></div>
+        <div style="margin-top: 14px; border-top: 1px dashed #d8d6cb; padding-top: 10px; font-size: 11px; color: #7d7d70;">verifier finding</div>
+        <div style="margin-top: 4px; font-size: 12.5px; color: oklch(0.42 0.06 240);">unsupported evidence type — <span style="color: #1c1e1a;">MedicationRequest</span> is preserved unsupported content; order intent is not exposure. The reference resolves, but it cannot establish the claimed state.</div>
+      </div>
+    </div>
+    <div>
+      <div style="background: #eae8de; color: #1c1e1a; padding: 8px 16px; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; display: flex; justify-content: space-between;">
+        <span>attempt 2 · accepted</span><span style="color: #7d7d70;">correction 1 of 1</span>
+      </div>
+      <div style="padding: 16px 18px; background: #fffefa;">
+        <div style="font-size: 11px; color: #7d7d70;">cited patient evidence</div>
+        <div style="margin-top: 4px; font-size: 13.5px;">MedicationAdministration/med-adm-0117</div>
+        <div style="margin-top: 2px; font-size: 11.5px; color: #58594f;">Bundle.entry[42].resource.effectivePeriod.end · osimertinib · 2026-07-28</div>
+        <div style="margin-top: 14px; font-size: 11px; color: #7d7d70;">claimed state</div>
+        <div style="margin-top: 3px; font-size: 13.5px;">Supported <span style="font-size: 10.5px; color: #7d7d70;">met</span></div>
+        <div style="margin-top: 14px; border-top: 1px dashed #d8d6cb; padding-top: 10px; font-size: 11px; color: #7d7d70;">verifier finding</div>
+        <div style="margin-top: 4px; font-size: 12.5px; color: oklch(0.42 0.06 240);">all checks pass · resource exists · json path resolves · value, status, and clinical time agree with the timeline · relation labelled supports · citation dated before assessment_as_of</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 12px; font-size: 11px; color: #7d7d70;">The correction request carries only the rejection reason and the criterion context. The verifier never supplies the correct answer, and no hidden retries exist.</div>
+
+  <div style="margin-top: 30px;">
+    <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">Checks performed on every assessment</div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; border: 1px solid #d8d6cb; border-top: none; background: #fffefa; font-size: 12px;">
+      <div style="padding: 10px 14px; border-right: 1px dashed #d8d6cb; border-bottom: 1px dashed #d8d6cb;">references to nonexistent FHIR resources or json paths</div>
+      <div style="padding: 10px 14px; border-bottom: 1px dashed #d8d6cb;">cited values, statuses, or times disagreeing with the timeline</div>
+      <div style="padding: 10px 14px; border-right: 1px dashed #d8d6cb; border-bottom: 1px dashed #d8d6cb;">invalid or out-of-range trial spans, or span text disagreeing with the snapshot</div>
+      <div style="padding: 10px 14px; border-bottom: 1px dashed #d8d6cb;">missing or unlabelled evidence relations</div>
+      <div style="padding: 10px 14px; border-right: 1px dashed #d8d6cb; border-bottom: 1px dashed #d8d6cb;">supported or contradicted claimed without patient evidence</div>
+      <div style="padding: 10px 14px; border-bottom: 1px dashed #d8d6cb;">incorrect expression aggregation</div>
+      <div style="padding: 10px 14px; border-right: 1px dashed #d8d6cb;">evidence dated after assessment_as_of</div>
+      <div style="padding: 10px 14px;">unsupported evidence types cited as establishing a state</div>
+    </div>
+  </div>
+
+  <div style="margin-top: 30px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 26px; align-items: start;">
+    <div>
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">Injected-fault fixture · reproducible demonstration</div>
+      <div style="border: 1px solid #d8d6cb; border-top: none; background: #fffefa; font-size: 12px;">
+        <div style="display: grid; grid-template-columns: 1fr 92px 96px; background: #eae8de; font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase; color: #58594f;">
+          <div style="padding: 7px 12px;">fault</div><div style="padding: 7px 12px;">caught</div><div style="padding: 7px 12px;">outcome</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 92px 96px; border-top: 1px dashed #d8d6cb;">
+          <div style="padding: 9px 12px;">fabricated resource id</div><div style="padding: 9px 12px;">yes</div><div style="padding: 9px 12px; color: #58594f;">corrected</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 92px 96px; border-top: 1px dashed #d8d6cb;">
+          <div style="padding: 9px 12px;">altered observation value</div><div style="padding: 9px 12px;">yes</div><div style="padding: 9px 12px; color: #58594f;">corrected</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 92px 96px; border-top: 1px dashed #d8d6cb;">
+          <div style="padding: 9px 12px;">span text disagreeing with snapshot</div><div style="padding: 9px 12px;">yes</div><div style="padding: 9px 12px; color: #58594f;">corrected</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 92px 96px; border-top: 1px dashed #d8d6cb;">
+          <div style="padding: 9px 12px;">post-cutoff citation</div><div style="padding: 9px 12px;">yes</div><div style="padding: 9px 12px; color: #58594f;">unknown</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 92px 96px; border-top: 1px dashed #d8d6cb;">
+          <div style="padding: 9px 12px;">incorrect all_of aggregation</div><div style="padding: 9px 12px;">yes</div><div style="padding: 9px 12px; color: #58594f;">corrected</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 92px 96px; border-top: 1px solid #d8d6cb; background: #f4f2ea;">
+          <div style="padding: 9px 12px;">catch rate · release gate</div><div style="padding: 9px 12px;">100%</div><div style="padding: 9px 12px;">pass</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">Two roles, one implementation</div>
+      <div style="border: 1px solid #d8d6cb; border-top: none; background: #fffefa; padding: 14px 16px; font-size: 12px; color: #58594f;">
+        <div><span style="color: #1c1e1a;">Grading</span> — every variant, including the baselines and ablations. Results never flow back into the system under test.</div>
+        <div style="margin-top: 8px;"><span style="color: #1c1e1a;">Feedback</span> — the full agent only. Its verdict triggers the single correction inside the loop.</div>
+        <div style="margin-top: 10px; border-top: 1px dashed #d8d6cb; padding-top: 10px;">Because the full system's outputs have passed through one correction, citation validity is reported at three points: the expression-aware control, the full system before correction, and the full system after correction. This asymmetry is the measured architectural difference and is stated wherever the comparison appears.</div>
+      </div>
+      <div style="margin-top: 12px; border: 1px solid #d8d6cb; background: #f4f2ea; padding: 12px 16px; font-size: 12px;">
+        <span style="color: #7d7d70;">failure separation ·</span> infrastructure failures — unavailable model endpoint, malformed snapshot, tool exception — are recorded as failures and are never scored as correct uncertainty.
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

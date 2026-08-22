@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baseline comparison — Trace Report design mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&family=Roboto+Mono:wght@400;500;700&display=swap" />
+<style>
+  body { margin: 0; background: #efeee7; color: #1c1e1a; }
+  a { color: #4a5a3f; text-decoration: underline; text-underline-offset: 2px; }
+  a:hover { color: #1c1e1a; }
+</style>
+</head>
+<body>
+<div style="width: 1180px; margin: 0 auto; padding: 56px 64px 90px; background: #f7f6f1; box-sizing: border-box; font-family: 'Roboto Mono', monospace; font-size: 13px; line-height: 1.55;">
+
+  <div style="display: flex; gap: 18px; align-items: baseline; border-bottom: 2px solid #1c1e1a; padding-bottom: 10px;">
+    <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #7d7d70;">§ 8</div>
+    <h2 style="margin: 0; font-family: Newsreader, serif; font-size: 30px; font-weight: 500;">Baseline comparison</h2>
+    <div style="margin-left: auto; font-size: 11px; color: #7d7d70;">same snapshot · same expressions · same model · same seed</div>
+  </div>
+
+  <p style="font-family: Newsreader, serif; font-size: 17px; line-height: 1.5; color: #3c3f37; max-width: 78ch; margin: 20px 0 0;">Three variants read the same patient record and the same frozen corpus. B1 receives the raw FHIR Bundle and the trial text in one prompt. B2 receives the authored expressions and the same timeline tools but no verifier feedback. The full system adds evidence verification inside the loop.</p>
+
+  <div style="margin-top: 26px;">
+    <div style="display: grid; grid-template-columns: 232px 1fr 1fr 1fr; background: #1c1e1a; color: #f7f6f1; font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase;">
+      <div style="padding: 8px 14px;">measure</div>
+      <div style="padding: 8px 14px;">B1 · single-prompt</div>
+      <div style="padding: 8px 14px;">B2 · expression-aware</div>
+      <div style="padding: 8px 14px;">full system</div>
+    </div>
+    <div style="border: 1px solid #d8d6cb; border-top: none; background: #fffefa;">
+
+      <div style="display: grid; grid-template-columns: 232px 1fr 1fr 1fr; border-bottom: 1px dashed #d8d6cb;">
+        <div style="padding: 11px 14px; color: #58594f;">criterion-level macro F1</div>
+        <div style="padding: 11px 14px;">0.58 <span style="font-size: 11px; color: #7d7d70;">[0.51, 0.65]</span></div>
+        <div style="padding: 11px 14px;">0.79 <span style="font-size: 11px; color: #7d7d70;">[0.74, 0.84]</span></div>
+        <div style="padding: 11px 14px;">0.83 <span style="font-size: 11px; color: #7d7d70;">[0.78, 0.87]</span></div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 232px 1fr 1fr 1fr; border-bottom: 1px dashed #d8d6cb;">
+        <div style="padding: 11px 14px; color: #58594f;">citation validity · before correction</div>
+        <div style="padding: 11px 14px;">0.41</div>
+        <div style="padding: 11px 14px;">0.76</div>
+        <div style="padding: 11px 14px;">0.78</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 232px 1fr 1fr 1fr; border-bottom: 1px dashed #d8d6cb; background: #f4f2ea;">
+        <div style="padding: 11px 14px; color: #58594f;">citation validity · after correction</div>
+        <div style="padding: 11px 14px; color: #7d7d70;">not applicable · no correction stage</div>
+        <div style="padding: 11px 14px; color: #7d7d70;">not applicable · no correction stage</div>
+        <div style="padding: 11px 14px;">0.94</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 232px 1fr 1fr 1fr; border-bottom: 1px dashed #d8d6cb;">
+        <div style="padding: 11px 14px; color: #58594f;">unknown correctness</div>
+        <div style="padding: 11px 14px;">0.34</div>
+        <div style="padding: 11px 14px;">0.71</div>
+        <div style="padding: 11px 14px;">0.80</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 232px 1fr 1fr 1fr; border-bottom: 1px dashed #d8d6cb;">
+        <div style="padding: 11px 14px; color: #58594f;">false-confidence rate</div>
+        <div style="padding: 11px 14px;">0.22</div>
+        <div style="padding: 11px 14px;">0.09</div>
+        <div style="padding: 11px 14px;">0.05</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 232px 1fr 1fr 1fr; border-bottom: 1px dashed #d8d6cb;">
+        <div style="padding: 11px 14px; color: #58594f;">criterion coverage</div>
+        <div style="padding: 11px 14px;">0.72 <span style="font-size: 11px; color: #7d7d70;">criteria silently omitted</span></div>
+        <div style="padding: 11px 14px;">1.00</div>
+        <div style="padding: 11px 14px;">1.00</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 232px 1fr 1fr 1fr; border-bottom: 1px dashed #d8d6cb;">
+        <div style="padding: 11px 14px; color: #58594f;">model calls per trial</div>
+        <div style="padding: 11px 14px;">1</div>
+        <div style="padding: 11px 14px;">27</div>
+        <div style="padding: 11px 14px;">32</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 232px 1fr 1fr 1fr;">
+        <div style="padding: 11px 14px; color: #58594f;">est. cost per trial</div>
+        <div style="padding: 11px 14px;">$0.004</div>
+        <div style="padding: 11px 14px;">$0.026</div>
+        <div style="padding: 11px 14px;">$0.031</div>
+      </div>
+
+    </div>
+    <div style="margin-top: 8px; font-size: 11px; color: #7d7d70;">Intervals are bootstrap 95% over 6 scenarios. Because only the full system runs a correction stage, its citation validity appears twice: the before-correction figure is the like-for-like comparison with B2; the after-correction figure is what the report presents.</div>
+  </div>
+
+  <div style="margin-top: 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid #d8d6cb;">
+    <div style="padding: 16px 18px; border-right: 1px solid #d8d6cb; background: #fffefa;">
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70;">what B1 gets wrong</div>
+      <div style="margin-top: 8px; font-size: 12px; color: #58594f; line-height: 1.6;">Criteria disappear rather than resolving to unknown. On EXC-7 it returns a confident narrative conclusion with a citation to a resource that does not exist in the bundle. Cheapest and least auditable.</div>
+    </div>
+    <div style="padding: 16px 18px; border-right: 1px solid #d8d6cb; background: #fffefa;">
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70;">what B2 recovers</div>
+      <div style="margin-top: 8px; font-size: 12px; color: #58594f; line-height: 1.6;">Authored expressions plus timeline tools account for the largest single gain. Coverage becomes complete and aggregation becomes deterministic. Remaining errors are citation errors nobody catches.</div>
+    </div>
+    <div style="padding: 16px 18px; background: #fffefa;">
+      <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70;">what verification adds</div>
+      <div style="margin-top: 8px; font-size: 12px; color: #58594f; line-height: 1.6;">A modest F1 gain and a large citation-validity gain. On EXC-7 the first attempt cited a MedicationRequest; the verifier rejected it and one correction produced the administration record. <a href="#s7">see § 7</a></div>
+    </div>
+  </div>
+
+  <div style="margin-top: 30px;">
+    <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #7d7d70; border-bottom: 1px solid #d8d6cb; padding-bottom: 6px;">Same criterion across all three variants · NCT05123456 · EXC-7</div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid #d8d6cb; border-top: none;">
+      <div style="padding: 15px 18px; border-right: 1px solid #d8d6cb; background: #fffefa;">
+        <div style="font-size: 11px; color: #7d7d70;">B1</div>
+        <div style="margin-top: 6px;">Contradicted <span style="font-size: 10.5px; color: #7d7d70;">not_met</span></div>
+        <div style="margin-top: 8px; display: flex; align-items: center; gap: 7px; font-size: 12px;"><div style="width: 10px; height: 10px; background: #9a9a8c;"></div>satisfied</div>
+        <div style="margin-top: 10px; font-size: 11.5px; color: oklch(0.42 0.06 240);">graded incorrect · cited Observation/obs-9001, which is absent from the bundle</div>
+      </div>
+      <div style="padding: 15px 18px; border-right: 1px solid #d8d6cb; background: #fffefa;">
+        <div style="font-size: 11px; color: #7d7d70;">B2</div>
+        <div style="margin-top: 6px;">Supported <span style="font-size: 10.5px; color: #7d7d70;">met</span></div>
+        <div style="margin-top: 8px; display: flex; align-items: center; gap: 7px; font-size: 12px;"><div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 11px solid oklch(0.52 0.16 28);"></div><span style="color: oklch(0.44 0.14 28);">blocking</span></div>
+        <div style="margin-top: 10px; font-size: 11.5px; color: oklch(0.42 0.06 240);">state graded correct · citation graded invalid · MedicationRequest cited as exposure, uncorrected</div>
+      </div>
+      <div style="padding: 15px 18px; background: #fff;">
+        <div style="font-size: 11px; color: #7d7d70;">full system</div>
+        <div style="margin-top: 6px;">Supported <span style="font-size: 10.5px; color: #7d7d70;">met</span></div>
+        <div style="margin-top: 8px; display: flex; align-items: center; gap: 7px; font-size: 12px;"><div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 11px solid oklch(0.52 0.16 28);"></div><span style="color: oklch(0.44 0.14 28);">blocking</span></div>
+        <div style="margin-top: 10px; font-size: 11.5px; color: oklch(0.42 0.06 240);">state and citation both graded correct · one correction · MedicationAdministration/med-adm-0117</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 20px; border: 1px solid #d8d6cb; background: #f4f2ea; padding: 13px 16px; font-size: 12px; color: #58594f;">
+    <span style="color: #7d7d70;">scope ·</span> With 6 scenarios and 12 trials, these are directional engineering results on authored synthetic data, not clinical validation and not a generalization claim. Differences smaller than the reported intervals are not treated as real.
+  </div>
+
+</div>
+</body>
+</html>
