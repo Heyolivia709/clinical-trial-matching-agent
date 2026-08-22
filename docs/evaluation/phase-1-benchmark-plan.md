@@ -1,147 +1,144 @@
-# Phase 1 Benchmark Plan
+# MVP Benchmark Plan
 
 **Status:** Frozen
-**Scope:** Synthetic evidence consistency and software reasoning, not clinical validity
+**Supersedes:** the v1 three-track plan built on TREC 2021/2022 and 500 manually labeled propositions
+**Scope:** Evidence-grounding correctness, agent behavior, and operational cost. Not clinical validity.
 
 ## Evaluation Principles
 
-- Evaluate criterion parsing, candidate retrieval, and criterion reasoning/grounding independently.
-- Use deterministic grading against reviewed gold data for all primary metrics and release gates.
-- Keep held-out partitions frozen and inaccessible to prompt, model, retrieval, or rule optimization.
-- Report state support, category support, confidence intervals, operational cost, and failure cases alongside averages.
-- Keep every parsed criterion visible even when it is Coverage-Only or resolves to `unknown`.
+- Grade deterministically. No LLM judge participates in any primary metric.
+- Derive gold expected states from the hidden Scenario Manifest and the authored Criterion Expression by code. Never label them with a model.
+- Keep held-out partitions frozen and inaccessible to prompt, model, retrieval, tool, or supervisor optimization.
+- Report sample size, per-state support, and bootstrap confidence intervals beside every average.
+- Keep every criterion visible, including Coverage-Only and `unknown` results.
+- Separate Infrastructure Failures from semantic `unknown`.
 
-## Gold-Labeling Policy
+## Why Grounding Metrics Lead
 
-Scenario facts come deterministically from the hidden Scenario Manifest. Criterion-expression and expected-state labels use a written guide, initial annotation, independent second-pass review for held-out data, and adjudication.
+The labeled set is small by design. At roughly 40–60 held-out atomic propositions, criterion-state macro F1 carries a confidence interval wide enough that small differences are noise.
 
-The report records reviewer background and pre-adjudication agreement. Without oncology-qualified review, semantic scoring is restricted to explicit, operationalizable criteria. Ambiguous criteria remain visible but become Coverage-Only Assessments or conservative `unknown` results.
+Primary release gates therefore rest on metrics with many observations per assessment or with hard invariants: citation validity, unsupported-assessment rate, verifier catch rate, and deterministic aggregation correctness. Every citation is an observation, so these metrics are far better supported than per-proposition classification accuracy.
 
-Evidence equivalence sets may identify multiple FHIR facts as equally valid. Free-form rationale is not a primary metric.
+Macro F1 is still reported, always with its confidence interval and support, and is read as a comparison against the one-shot baseline rather than as an absolute capability claim.
 
-## Track 1: Criterion Parsing
+## Benchmark Construction and Its Limits
 
-### Dataset
+Patient scenarios and criterion expressions are both authored by the project, so expected states are computable rather than judged. This removes LLM-grades-LLM circularity and removes large-scale manual labeling.
 
-- 200 source-aligned criteria
-- At least 30 distinct NSCLC trials
-- 140 development and 60 held-out criteria
-- No NCT ID in both partitions
-- Representative conjunctions, disjunctions, conditional clauses, temporal rules, numeric thresholds, malformed bullets, and unsupported clauses
+It also means the benchmark does not test clinical judgment on real-world ambiguous criteria. What it tests is whether the agent finds the right evidence, cites it validly, and applies the stated logic correctly.
 
-### Baselines
+Difficulty comes from Planted Distractors — specification section 8.3 — not from clinical subtlety. This limitation is stated in the published report, not implied away.
 
-- B0: section-heading detection plus bullet or line splitting
-- Full: versioned model-assisted expression parsing with source preservation
+## Dataset
 
-### Metrics and Gates
+**Scenarios:** 6 authored synthetic patients. S1–S4 development, S5–S6 held-out.
 
-| Metric | Gate |
-| --- | ---: |
-| Source criterion coverage | 100% |
-| Inclusion/exclusion polarity accuracy | ≥ 98% |
-| Atomic-proposition span F1 | ≥ 90% |
-| Exact expression-tree accuracy | ≥ 85% |
-| Invented or untraceable source spans | 0 |
+**Trials with authored expressions:** 10–12. T1–T8 development, T9–T12 held-out.
 
-## Track 2: Candidate Retrieval
+**Corpus:** 200–500 recruiting NSCLC trials, used for retrieval; only authored trials are assessed.
 
-### External Dataset
+**Partitions:** development evaluation uses development scenarios against development trials. The held-out set is every pair in which the scenario or the trial is held out, which exercises generalization on both axes and yields more held-out observations than a scenario-only split.
 
-- TREC Clinical Trials 2021 for development
-- TREC Clinical Trials 2022 as held-out external evaluation
-- Respect pooled-judgment limitations; unjudged trials are not automatic negatives
+**Labeled volume:** 80–120 atomic propositions total, at least 40 held out.
 
-### Product Dataset
+**Balance requirement:** at least 8 held-out examples per Criterion State, and at least one held-out example per Unknown Reason. Because expressions and scenarios are authored, this is a design obligation on Gate 2 and Gate 3, not an outcome to hope for. Largest-to-smallest state support ratio no greater than 3:1.
 
-- 30 Authored Synthetic Scenarios against the frozen NSCLC corpus
-- 20 development and 10 held-out scenarios
-- Explicit relevant target trials and hard negatives
+## Baselines and Variants
 
-### Baselines and Variants
+| Variant | Description |
+| --- | --- |
+| B0 | Deterministic structured-field checks only; unsupported semantics become `unknown` |
+| B1 | One-shot model over a flattened patient summary and raw criterion text |
+| Full | Patient Timeline, authored expressions, tool selection, deterministic routing, verification, one correction |
 
-- B0: Candidate Filters plus lexical retrieval
-- B1: Candidate Filters plus dense retrieval
-- B2: trial-level lexical+dense reciprocal-rank fusion
-- B3: trial- and criterion-level hybrid retrieval
-- Full: B3 plus constrained reranking
-- TrialGPT: exact reproduction only when code, data, prompts, and model configuration are actually reproduced; otherwise label the row inspired or reported
+B1 uses the same inputs, the same output schema, and the same cost accounting as Full. Anything else makes the comparison meaningless.
 
-### Metrics and Gates
+## Ablations
+
+Each is a configuration flag, not a separate implementation.
+
+| Ablation | Question it answers |
+| --- | --- |
+| No deterministic tools | Does routing dates, numbers, and Boolean logic out of the model matter? |
+| No verifier | What does evidence verification actually buy? |
+| No evidence reuse | Does cross-criterion reuse reduce cost, and at what accuracy risk? |
+| Early termination on | How much cost does blocker-first termination save, and does the conclusion change? |
+
+## Track 1: Grounding and Verification — Primary Gates
 
 | Metric | Gate |
 | --- | ---: |
-| Filter-induced loss of known relevant trials | 0 |
-| NSCLC Recall@20 | ≥ 90% |
-| NSCLC Recall@5 | ≥ 70% |
-| Held-out TREC nDCG@10 improvement over lexical B0 | ≥ 5% relative |
-| Recall@100 change versus best high-recall baseline | No worse than -2 percentage points |
-
-Also report `P@10`, per-channel recall, fusion gain, reranker gain, and filter loss separately.
-
-## Track 3: Criterion Reasoning and Grounding
-
-### Dataset
-
-- At least 40 patient-trial pairs
-- At least 12 distinct trials
-- At least 500 labeled Atomic Propositions overall
-- Development, validation, and test partitions separated by trial ID and scenario family
-- At least 100 held-out Atomic Propositions
-- At least 15 held-out examples for each Criterion State
-- Largest-to-smallest state-support ratio no greater than 3:1
-- Report support by state and Criterion Category
-
-### Baselines
-
-- B0: deterministic structured-field checks; unsupported semantics become `unknown`
-- B1: one-shot model over a flattened patient summary and raw criterion text
-- Full: Patient Timeline, Criterion Expressions, strategy routing, Evidence Packets, verification, and one bounded correction
-
-### Full-System Ablations
-
-- Replace Patient Timeline with flattened summary
-- Remove criterion decomposition
-- Remove deterministic reasoning tools
-- Remove evidence verification
-- Remove the correction/re-plan
-- Post-MVP: replace plain Python with LangGraph behind the same interface
-- Post-MVP: multi-agent variant under the same resource budget
-
-### Metrics and Gates
-
-| Metric | Gate |
-| --- | ---: |
-| Criterion Coverage | 100% |
-| Deterministic aggregation accuracy | 100% |
 | Patient and trial reference validity | 100% |
-| Criterion-state macro F1 | ≥ 75% |
+| Deterministic aggregation accuracy | 100% |
+| Verifier catch rate on injected faults | 100% |
+| Unsupported-assessment rate | ≤ 2% |
+| Criterion Coverage, flags off | 100% |
+| Evidence cited after `assessment_as_of` | 0 |
+| Infrastructure Failures scored as `unknown` | 0 |
+
+Reference validity is measured per citation. Unsupported-assessment rate is the share of `met` or `not_met` results whose citations fail verification before correction.
+
+## Track 2: Criterion State Accuracy — Reported with Intervals
+
+| Metric | Gate |
+| --- | ---: |
+| Criterion-state macro F1 | ≥ 70% |
 | `unknown` recall | ≥ 85% |
 | Patient-evidence precision | ≥ 90% |
 | Patient-evidence recall | ≥ 80% |
-| Unsupported-assessment rate | ≤ 2% |
 | Match Conclusion accuracy | ≥ 80% |
 | Macro-F1 gain over one-shot B1 | ≥ 5 percentage points |
 | Unsupported-assessment reduction versus B1 | ≥ 30% |
 
-Context-selection recall measures whether the agent retrieved gold Patient Evidence before assessment. Report performance by Criterion Category so demographic results cannot mask biomarker, treatment, laboratory, or temporal failures.
+All values carry bootstrap confidence intervals. Results are reported per Criterion Category so demographic performance cannot mask biomarker, treatment, or temporal failures.
+
+Context-selection recall measures whether the agent's tool calls retrieved the gold Patient Evidence before assessing.
+
+## Track 3: Retrieval — Additive
+
+Reported only if Gate 3 is built.
+
+| Metric | Gate |
+| --- | ---: |
+| Filter-induced loss of known relevant trials | 0 |
+| Recall@20 over authored target trials | ≥ 90% |
+| Recall@5 over authored target trials | ≥ 70% |
+
+Report BM25-only, dense-only, and RRF as three rows, plus per-channel contribution and RRF gain. The intended headline is concrete, for example how many target trials RRF placed in the top five that neither channel reached alone.
+
+Retrieval metrics stay separate from criterion-state metrics. No blended score is reported.
+
+## Track 4: Operational Cost
+
+Measured from run traces, never estimated by hand:
+
+- Latency per criterion assessment and per trial assessment
+- Model calls per trial assessment
+- Input and output tokens
+- Estimated cost per matching run
+- Token and model-call reduction from `evidence_reuse`
+- Token and latency reduction from `early_termination`, with any Match Conclusion changes reported alongside
+
+Budgets are calibrated on development data and frozen before held-out evaluation. At most one correction per proposition. Hidden SDK or provider retries are prohibited; retries from constrained decoding are recorded explicitly.
 
 ## End-to-End Held-Out Suite
 
-Run 10 held-out patient scenarios through the complete top-20 retrieval and top-5 assessment workflow. Treat this as system evaluation, not evidence of broad clinical generalization.
+Run the held-out pairs through the complete pipeline: retrieval, top-5 presentation, top-3 assessment, verification, and report generation.
 
-The suite verifies Candidate Set completeness, immutable Retrieval Rank, assessed/unassessed labeling, 100% Criterion Coverage for assessed trials, blocker and unresolved counts, Match Conclusion, provenance validity, snapshot warnings, trace completeness, and operational measurements.
+The suite verifies Candidate Set completeness, immutable Retrieval Rank, assessed and unassessed labeling, Criterion Coverage, blocker and unresolved and not-assessed counts, Match Conclusion derivation, citation validity, snapshot warnings, trace completeness, and operational measurements.
 
-## Evaluator Policy
+This is system evaluation. It is not evidence of clinical generalization.
 
-Primary scoring is deterministic. Criterion states, expression aggregation, Match Conclusions, source validity, evidence overlap, retrieval metrics, and cost never depend on an uncalibrated LLM judge.
+## Failure Analysis
 
-An optional LLM judge may later analyze rationale quality or failure themes only after calibration against human ratings. It must report model, version, prompt, agreement, false-pass rate, and false-fail rate. Generator-as-judge results require an independently reported control.
+Publish a failure taxonomy with at least two genuine failure cases carrying full traces, and at least three cases where the agent beats the one-shot baseline. For each failure, record the category, the proximate cause, whether the verifier caught it, and whether the correction cycle helped.
 
-## Reproducibility and Operations
+## Reproducibility
 
-Each evaluation run records patient and trial hashes, dataset partition, parser, terminology, embeddings, reranker, model, prompt/schema, decoding, reasoning configuration, evaluator code, seed, latency, tokens, estimated cost, and hardware profile.
+Each run records patient and trial hashes, partition, embedding model, language model and revision, prompt and schema versions, decoding configuration, tool and supervisor configuration, evaluator code version, seed, latency, tokens, estimated cost, and hardware profile.
 
-Token and latency budgets are calibrated on development data and frozen before held-out evaluation. There is at most one correction per Atomic Proposition. Hidden SDK or provider retries are prohibited in evaluation runs.
+Frozen outputs can be re-graded without rerunning the model. Every published number links to a reproducible run artifact.
 
-Report bootstrap confidence intervals and representative failures. Infrastructure failures are separate from semantic `unknown` and cannot improve uncertainty metrics.
+## Optional Later Work
+
+An LLM judge may analyze rationale quality or cluster failure themes only after calibration against human ratings, reporting model, version, prompt, agreement, false-pass rate, and false-fail rate. Generator-as-judge results require an independently reported control. Such analysis never becomes a primary metric or a release gate.
