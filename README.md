@@ -76,3 +76,15 @@ Out of scope: automatic criterion parsing, TREC benchmark tracks, PostgreSQL and
 Public ClinicalTrials.gov records and authored synthetic FHIR R4 scenarios only. No real PHI, no MIMIC, no live EHR connectivity.
 
 Benchmark gold labels are derived deterministically from hidden scenario manifests rather than judged by a model, so no LLM grades another LLM. The benchmark tests evidence retrieval, citation validity, and logic application — not clinical judgment.
+
+## Evaluation Discipline
+
+Release gates are restricted to deterministic invariants — properties the implementation controls, such as citation validity and aggregation correctness. No model-behavior statistic is gated, because a threshold on a small held-out sample invites optimizing toward the number.
+
+The architectural claim is tested against an expression-aware one-shot control that receives the same criterion expression and the same patient evidence as the full agent, isolating the contribution of orchestration rather than of having a structured expression at all. One verifier implementation grades every variant offline with identical configuration; only the full agent is allowed to consult it and correct.
+
+Metrics, comparison units, cost-value pairing, the statistical procedure, a power statement, and a falsification condition are committed before the first held-out run, and the published report cites that commit hash:
+
+> If the control shows no detectable difference from the full agent in citation validity or unsupported-assessment rate, the central claim of this project is unsupported, and that conclusion is published as the headline result.
+
+Passing every release gate while failing that condition is a possible outcome. The gates certify software correctness, not architectural value.
