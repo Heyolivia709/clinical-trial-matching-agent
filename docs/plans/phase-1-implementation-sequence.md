@@ -8,7 +8,9 @@ Gate scope classification and the cut order under schedule pressure are defined 
 
 ## Gate 1: Contracts and Fixtures — Core
 
-Implement core types, state semantics, Boolean aggregation, polarity-to-impact mapping, Match Conclusion, and test fixtures. Freeze a minimal set of source-aligned trial records and human-reviewed Criterion Expressions so later core gates do not depend on additive retrieval.
+Implement core types, state semantics, Boolean aggregation, polarity-to-impact mapping, Match Conclusion, and test fixtures. Freeze four source-aligned trial records with human-reviewed Criterion Expressions so later core gates do not depend on additive retrieval and retain two-axis partitioning.
+
+The four trials are selected for coverage, not convenience: together they must exercise all four Criterion Categories and all supported expression forms, and split cleanly into two development and two held-out trials. Four is the minimum that keeps the Gate 6 trial-and-scenario partition intact if Gate 3 is cut; with six scenarios this yields eight development and sixteen held-out scenario-trial pairs.
 
 Types: `PatientTimeline`, `TrialRecord`, `EligibilityCriterion`, `CriterionExpression`, `AtomicProposition`, `PatientEvidence`, `TrialEvidence`, `PropositionAssessment`, `CriterionAssessment`, `TrialAssessment`, `CandidateSet`, `MatchingRun`, `ReasoningTrace`, `ScenarioManifest`, `EvalCase`.
 
@@ -18,7 +20,9 @@ Types: `PatientTimeline`, `TrialRecord`, `EligibilityCriterion`, `CriterionExpre
 - `all_of`, `any_of`, and conditional truth tables pass exhaustively, including all-`not_applicable` cases
 - Inclusion and exclusion impact mapping and Match Conclusion derivation pass, including the early-termination rule
 - Every model round-trips through JSON without loss of provenance fields
-- At least two frozen trial fixtures contain source-aligned criteria and reviewed expressions covering all supported expression forms
+- Four frozen trial fixtures contain source-aligned criteria and reviewed expressions, partitioned two development and two held-out
+- The four fixtures collectively cover all four Criterion Categories and all supported expression forms, including at least one conditional expression capable of producing `not_applicable`
+- Criteria outside the supported categories are authored as `unsupported` rather than omitted
 
 ## Gate 2: Patient Timeline and Timeline Tools — Core
 
@@ -47,7 +51,7 @@ Ingest and freeze 200–500 NSCLC trials. Enforce corpus membership. Implement c
 - BM25-only, dense-only, and RRF configurations each run reproducibly and report Recall@5 and Recall@20
 - Authored expressions carry authoring provenance and human-review status; trials lacking expressions report `expression_unavailable`
 
-**Fallback if cut:** a fixed trial set per scenario, with retrieval declared out of scope in the report.
+**Fallback if cut:** the four frozen core trial fixtures from Gate 1, which preserve the two-axis partition, with retrieval declared out of scope in the report.
 
 ## Gate 4: Criterion Agent and Evidence Verifier — Core
 
@@ -81,18 +85,23 @@ Implement trial-level assessment strategy: criterion ordering, early termination
 
 ## Gate 6: Evaluation and Baselines — Core
 
-Derive gold labels deterministically from Scenario Manifests. Implement the deterministic baseline, both one-shot baselines, and the core ablation matrix. Publish metrics per the benchmark plan.
+Derive gold labels deterministically from Scenario Manifests. Commit the pre-registration. Implement the deterministic baseline, both one-shot baselines, and the core ablation matrix. Publish metrics per the benchmark plan.
 
 **Exit criteria**
 
+- The pre-registration is committed before the first held-out run, and the report cites its commit hash
 - Gold expected states are computed by code from manifest and expression, with no model judgment anywhere in grading
 - Development and held-out partitions are separated by both trial ID and scenario, and held-out artifacts never inform configuration
 - The raw-text and expression-aware one-shot baselines use the same patient evidence boundary, output schema, model family, and cost accounting as Full; their deliberate context differences are reported
+- The offline grading verifier scores every variant with identical code and configuration; only Full receives verifier feedback and a correction opportunity
+- Citation validity is reported at three points: B2, Full before correction, Full after correction
 - Core ablations run: no deterministic tools and no verifier
 - Supervisor-only ablations run only if Gate 5 is built: no evidence reuse and early termination
-- Primary gates in the benchmark plan are met, or the shortfall is published with analysis
-- All accuracy metrics report bootstrap confidence intervals and per-state support
+- Every deterministic release gate in benchmark plan Track 1 passes, or the failure is published with analysis
+- Accuracy and grounding results carry bootstrap confidence intervals, per-state support, and the pre-registered two-sided test with no minimum threshold; inconclusive results are labeled inconclusive
+- Cost is published per criterion assessment beside the value it purchased, including when the ratio is unfavorable
 - At least three cases where Full beats the expression-aware one-shot B2 control, and at least two genuine failure cases, are documented with traces
+- The falsification condition is evaluated and its outcome published
 
 ## Gate 7: Trace Report and Portfolio Demo — Core
 
@@ -111,7 +120,8 @@ Generate the self-contained static Trace Report from frozen runs. Publish the ho
 
 ## Sequencing Constraints
 
-- Gate 1 freezes two trial fixtures and expressions for the core path. Gate 3 freezes retrieval configuration before expanding the authored set to 10–12 trials, so the additional assessed trials are known before their expressions are authored.
+- Gate 1 freezes four trial fixtures and expressions for the core path. Gate 3 freezes retrieval configuration before expanding the authored set to 10–12 trials, so the additional assessed trials are known before their expressions are authored.
+- Gate 6 commits the pre-registration before the first held-out run. Nothing in Gate 6 may consult held-out output before that commit exists.
 - Gate 7 is built from frozen traces and must not become a dependency of any reasoning module.
 - Held-out scenarios and trials stay untouched until Gate 6.
 

@@ -36,7 +36,11 @@ Gold expected states are derived deterministically from the hidden Scenario Mani
 
 Held-out scenarios and trials stay frozen and must not influence prompts, models, retrieval, tools, or supervisor configuration.
 
-Report sample size, per-state support, and confidence intervals with every accuracy number. Small-sample results are stated as such.
+Only deterministic invariants are release gates. Never add a threshold gate on a model-behavior statistic; report it with a confidence interval instead. The accuracy comparison against the expression-aware control is a pre-registered two-sided test with no minimum effect size, and null results are published as results.
+
+The verifier has two roles that must not be conflated: offline grading of every variant with identical configuration, and runtime feedback inside the full agent loop only.
+
+Report sample size, per-state support, and confidence intervals with every accuracy number. Small-sample results are stated as such. Publish cost beside the value it purchased, including when the ratio is unfavorable.
 
 ## AI-Assisted Authoring
 

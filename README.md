@@ -23,7 +23,8 @@ The MVP design is frozen. Implementation proceeds through acceptance-criteria-dr
 
 - [MVP specification](docs/specs/phase-1-mvp-specification.md) — frozen source of truth
 - [Implementation sequence](docs/plans/phase-1-implementation-sequence.md) — seven gates, with core and additive scope marked
-- [Benchmark plan](docs/evaluation/phase-1-benchmark-plan.md) — deterministic grading, gates, and ablations
+- [Benchmark plan](docs/evaluation/phase-1-benchmark-plan.md) — deterministic grading, invariant gates, and ablations
+- [Pre-registration](docs/evaluation/pre-registration.md) — metrics, statistical procedure, and falsification condition, fixed before any held-out run
 - [Product and technical constraints](docs/requirements/product-and-technical-constraints.md)
 - [Domain glossary](CONTEXT.md)
 - [Decision records](docs/adr/)

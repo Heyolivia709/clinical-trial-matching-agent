@@ -121,8 +121,28 @@ The explicit classification of cited Patient Evidence as supporting or contradic
 _Avoid_: Relevance score
 
 **Evidence Verifier**:
-The deterministic check that rejects nonexistent references, altered values, invalid spans, missing evidence relations, incorrect aggregation, unsupported states, and post-assessment citations before an assessment is accepted.
+The deterministic check that rejects nonexistent references, altered values, invalid spans, missing evidence relations, incorrect aggregation, unsupported states, and post-assessment citations. One implementation serves two roles: offline grading of every variant, and runtime feedback inside the full agent loop only.
 _Avoid_: Model self-check, confidence filter
+
+**Offline Grading**:
+The verifier role that scores the final outputs of every variant with identical code and configuration, never flowing results back into the system under test. Distinct from the runtime feedback role, which only the full agent receives.
+_Avoid_: Self-evaluation, verifier loop
+
+**Component Control**:
+A baseline that receives the same inputs as the full system but lacks one architectural component, isolating that component's contribution. The expression-aware one-shot baseline is the primary component control; the raw-text one-shot baseline measures end-to-end improvement instead.
+_Avoid_: Ablation, end-to-end baseline
+
+**Release Gate**:
+A deterministic invariant the implementation controls, reported as pass or fail. Model-behavior statistics are never release gates, because gating a statistic invites optimizing toward its threshold on data reserved from optimization.
+_Avoid_: Target metric, success threshold
+
+**Pre-Registration**:
+The protocol fixing metrics, comparison units, statistical procedure, power, cost-value pairing, and falsification condition, committed before the first held-out run and cited by commit hash in the published report.
+_Avoid_: Evaluation plan, methodology section
+
+**Falsification Condition**:
+The result, declared in advance, that would show the project's central claim to be unsupported. Its outcome is published as the headline regardless of direction.
+_Avoid_: Risk, limitation
 
 **Injected Fault**:
 A deliberately corrupted assessment used to prove the Evidence Verifier catches fabricated or altered citations, independent of whether the model happens to produce such errors organically.

@@ -112,8 +112,10 @@ Evaluation is designed before model or orchestration optimization. At minimum:
 - A deterministic structured-field baseline, a raw-text one-shot baseline, and an expression-aware one-shot control. All model variants share the patient-evidence boundary, output schema, model family, decoding policy, and cost accounting; deliberate criterion-context differences are labeled.
 - Gold expected states derived deterministically from hidden scenario manifests. No model-generated labels, and no LLM judge in any primary metric.
 - Held-out partitions separated by both trial and scenario, frozen against all optimization.
-- Primary gates on citation validity, deterministic aggregation, verifier catch rate, unsupported-assessment rate, and criterion coverage.
-- Criterion-state macro F1, per-state precision and recall with attention to `unknown`, and per-category breakdown, all with bootstrap confidence intervals and reported support.
+- Release gates restricted to deterministic invariants: citation validity, deterministic aggregation, verifier catch rate on injected faults, zero unsupported assessments surviving verification, criterion coverage, zero post-cutoff citations, and zero infrastructure failures scored as uncertainty. No model-behavior statistic is gated.
+- A pre-registration committed before the first held-out run, fixing metrics, comparison units, statistical procedure, power, cost-value pairing, and a falsification condition, cited by commit hash in the report.
+- One verifier implementation in two separated roles: offline grading of every variant with identical configuration, and runtime feedback for the full agent only.
+- Criterion-state macro F1, per-state precision and recall with attention to `unknown`, and per-category breakdown, all reported with bootstrap confidence intervals and support, compared against the expression-aware control by a two-sided test with no minimum effect size.
 - Retrieval metrics reported separately from criterion-state metrics, with per-channel attribution.
 - Latency, model calls, token usage, and estimated cost measured from run traces.
 - Two core ablations: no deterministic tools and no verifier. If the additive Trial Supervisor is built, also report no evidence reuse and early termination.

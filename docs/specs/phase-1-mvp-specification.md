@@ -1,8 +1,8 @@
-# Clinical Trial Matching Agent: MVP Specification (v3)
+# Clinical Trial Matching Agent: MVP Specification (v4)
 
 **Status:** Frozen source of truth
 **Frozen on:** 2026-08-22
-**Supersedes:** v2 (frozen 2026-08-22). Version 3 preserves the rescope while repairing core/additive dependencies, making the assessment unit explicit, and separating end-to-end and component-control baselines.
+**Supersedes:** v3 (frozen 2026-08-22). Version 4 separates the verifier's grading role from its feedback role, restricts release gates to deterministic invariants, converts the accuracy comparison to a pre-registered hypothesis test with no minimum threshold, and enlarges the core trial fixture set so the core path retains two-axis partitioning.
 **Change policy:** Any scope or semantic change must be recorded explicitly here and, when it reverses a rejected alternative, in an ADR. Held-out evaluation results must never drive optimization.
 
 ## 1. Objective
@@ -200,6 +200,17 @@ A deterministic verifier rejects:
 - Evidence dated after `assessment_as_of`
 
 Verification failure triggers exactly one targeted correction. A second failure yields `unknown` with `verification_failed`. Disagreement between deterministic computation and model interpretation yields `unknown` with `reasoning_conflict`.
+
+The verifier has two distinct roles, served by one implementation at two call sites. Conflating them would make the grounding comparison meaningless.
+
+| Role | Applies to | Effect |
+| --- | --- | --- |
+| Grading | Every variant, including B0, B1, B2, ablations, and Full | Scores final outputs offline. Results never flow back into the system under test. |
+| Feedback | Full only | Its verdict triggers the single correction inside the agent loop. |
+
+Offline grading runs the same code with the same configuration across all variants. Only Full receives verifier feedback and a correction opportunity; baselines are graded by the same standard they were never allowed to consult. This asymmetry is the measured architectural difference, not a confound, and it is stated wherever the comparison is published.
+
+Because Full's final outputs have passed through one correction, citation validity is reported at three points — B2, Full before correction, and Full after correction — so the contribution of tool-mediated evidence selection is separable from the contribution of the correction loop.
 
 ### 8.2 Failure Separation
 
@@ -399,7 +410,7 @@ Not every gate is essential. If time is constrained, cut from the bottom of this
 
 **Additive** — real value, but the project remains complete and honest without them:
 
-- Gate 3 Hybrid retrieval. Fallback: the frozen core trial fixtures selected in Gate 1, with retrieval declared out of scope.
+- Gate 3 Hybrid retrieval. Fallback: the four frozen core trial fixtures selected in Gate 1, which preserve two-axis partitioning, with retrieval declared out of scope.
 - Gate 5 Trial Supervisor. Fallback: single-turn per-criterion assessment only.
 
 **Cut order under schedule pressure:**
@@ -411,3 +422,21 @@ Not every gate is essential. If time is constrained, cut from the bottom of this
 5. Authored trials from twelve to eight
 
 Cutting a stage requires deleting its claims from the report as well. Reduced scope stated plainly is stronger than scope implied but unmeasured.
+
+## 20. Release Gates and Reported Results
+
+Only deterministic invariants are release gates. These are properties the implementation controls, so gating on them is a statement about software correctness:
+
+- Patient and trial reference validity in final output: 100%
+- Deterministic aggregation accuracy: 100%
+- Verifier catch rate on injected faults: 100%
+- Unsupported assessments surviving verification in final output: 0
+- Criterion Coverage with supervisor flags off: 100%
+- Citations dated after `assessment_as_of` in final output: 0
+- Infrastructure Failures scored as `unknown`: 0
+
+Every model-behavior measurement is a reported result, not a gate. This includes criterion-state macro F1, per-state precision and recall, patient-evidence precision and recall, Match Conclusion accuracy, the pre-correction unsupported-assessment rate, and every cost figure. Gating on them at this sample size would invite optimizing toward a threshold, and held-out results must never drive optimization.
+
+The comparison against the expression-aware one-shot control B2 is a pre-registered, two-sided hypothesis test with no minimum effect threshold. Effect sizes and confidence intervals are published whether or not the test is significant, and a null or negative result is published as such.
+
+The pre-registration document — metrics, comparison units, statistical tests, power statement, and falsification condition — is committed before any held-out run, and the published report cites its commit hash. See [`../evaluation/pre-registration.md`](../evaluation/pre-registration.md).
