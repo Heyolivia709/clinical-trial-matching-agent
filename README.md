@@ -19,9 +19,9 @@ It does not diagnose, determine clinical eligibility, recommend treatment, or en
 
 ## Current Status
 
-The MVP design is frozen. Implementation proceeds through acceptance-criteria-driven gates with no calendar schedule.
+The MVP design is frozen in stages. Claims, scope, and evaluation discipline are settled; the sections describing behaviour that cannot be validated without an implementation are provisionally frozen and re-frozen when Gate 2 exits. Implementation proceeds through acceptance-criteria-driven gates with no calendar schedule.
 
-- [MVP specification](docs/specs/phase-1-mvp-specification.md) — frozen source of truth
+- [MVP specification](docs/specs/phase-1-mvp-specification.md) — source of truth, with a staged freeze policy
 - [Implementation sequence](docs/plans/phase-1-implementation-sequence.md) — seven gates, with core and additive scope marked
 - [Benchmark plan](docs/evaluation/phase-1-benchmark-plan.md) — deterministic grading, invariant gates, and ablations
 - [Pre-registration](docs/evaluation/pre-registration.md) — metrics, statistical procedure, and falsification condition, fixed before any held-out run
@@ -52,7 +52,10 @@ Criterion Reasoning Agent  <────────────┘
 Evidence Verifier
         |
         v
-Static Trace Report  +  Reproducible Run Artifacts
+Frozen run artifacts
+        |
+        +--> Trace Report       (one matching run, verdict-first)
+        `--> Evaluation Report  (the benchmark, run-independent)
 ```
 
 Four deep modules behind small interfaces:
@@ -68,7 +71,7 @@ The application entry point stays thin: `match(patient, snapshot) -> MatchingRun
 
 ## Scope Boundaries
 
-Target scope: four evidence-bearing FHIR resource types, four criterion categories, hand-authored criterion expressions, two retrieval channels with fusion, a bounded per-proposition agent loop with one correction, a flag-gated multi-turn trial supervisor, deterministic evaluation, and a static trace report. Retrieval and the supervisor are additive gates with explicit fallbacks; the criterion agent, verifier, evaluation, and trace report are core.
+Target scope: four evidence-bearing FHIR resource types, five supported criterion categories plus an explicit unsupported one, hand-authored criterion expressions, two retrieval channels with fusion, a bounded per-proposition agent loop with one correction, a flag-gated multi-turn trial supervisor, deterministic evaluation, and two static reports. Retrieval and the supervisor are additive gates with explicit fallbacks; the criterion agent, verifier, evaluation, and the reports are core.
 
 Out of scope: automatic criterion parsing, TREC benchmark tracks, PostgreSQL and pgvector, cross-encoder reranking, UCUM unit conversion, line-of-therapy inference, TNM derivation, HAPI FHIR, LangGraph, multi-agent orchestration, fine-tuning, and clinical validation. See specification sections 18 and 19.
 
@@ -82,10 +85,12 @@ Benchmark gold labels are derived deterministically from hidden scenario manifes
 
 Release gates are restricted to deterministic invariants — properties the implementation controls, such as citation validity and aggregation correctness. No model-behavior statistic is gated, because a threshold on a small held-out sample invites optimizing toward the number.
 
-The architectural claim is tested against an expression-aware one-shot control that receives the same criterion expression and the same patient evidence as the full agent, isolating the contribution of orchestration rather than of having a structured expression at all. One verifier implementation grades every variant offline with identical configuration; only the full agent is allowed to consult it and correct.
+The architectural claim is tested against an expression-aware one-shot control that receives the same criterion expression and the same evidence boundary as the full agent, isolating the contribution of orchestration rather than of having a structured expression at all. One verifier implementation grades every variant offline with identical configuration; only the full agent is allowed to consult it and correct.
 
-Metrics, comparison units, cost-value pairing, the statistical procedure, a power statement, and a falsification condition are committed before the first held-out run, and the published report cites that commit hash:
+A shared boundary is not shared context, and the difference runs against the full agent. The control is handed the entire patient timeline in one prompt; the full agent sees only what its tool calls return. It is the information-disadvantaged arm by construction, and any win has to come from grounding discipline rather than access. Final-output citation validity is 100% by construction, since the verifier degrades whatever it cannot verify, so comparisons use the full agent *before* correction and publish what the correction cost in converted-to-unknown assessments.
 
-> If the control shows no detectable difference from the full agent in citation validity or unsupported-assessment rate, the central claim of this project is unsupported, and that conclusion is published as the headline result.
+Metrics, comparison units, per-variant prompt contents, cost-value pairing, the statistical procedure, its precision, and a falsification condition are committed before the first held-out run, and the published report cites that commit hash:
+
+> If the full agent before correction shows no detectable difference from the control in reference validity or unsupported-assessment rate, the central claim of this project is unsupported, and that conclusion is published as the headline result.
 
 Passing every release gate while failing that condition is a possible outcome. The gates certify software correctness, not architectural value.

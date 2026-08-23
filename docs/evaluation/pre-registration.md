@@ -5,7 +5,7 @@
 **Date:** 2026-08-23 (v1: 2026-08-22)
 **Binding rule:** The published report cites this document's commit hash. Any revision after the first held-out run is a new document with the change and its reason recorded, and both versions are published.
 
-**Revision note (v2).** No held-out run has occurred and no implementation exists, so v1 is revised in place rather than superseded. Three defects were corrected: v1 never defined what B2 actually receives in its prompt (§2), v1's falsification condition was anchored to a measurement point that cannot fail (§6), and v1's power statement asserted a sample size inconsistent with the benchmark plan and a precision inconsistent with its own clustered resampling design (§5). One metric was added: the verification-induced `unknown` rate (§4.2), without which the verifier's cost is invisible.
+**Revision note (v2).** No held-out run has occurred and no implementation exists, so v1 is revised in place rather than superseded. Three defects were corrected: v1 never defined what B2 actually receives in its prompt (section 2), v1's falsification condition was anchored to a measurement point that cannot fail (section 6), and v1's power statement asserted a sample size inconsistent with the benchmark plan and a precision inconsistent with its own clustered resampling design (section 5). One metric was added: the verification-induced `unknown` rate (section 4.2), without which the verifier's cost is invisible.
 
 This protocol fixes what will be measured, how it will be compared, and what result would falsify the project's claim — before the numbers exist. Without it, "the agent is worth its cost" is unfalsifiable, because the metric can always be chosen after the fact.
 

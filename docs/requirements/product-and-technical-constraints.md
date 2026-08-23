@@ -66,7 +66,7 @@ Criterion state describes whether the proposition expressed by the criterion is 
 
 - `met`: available evidence supports the criterion proposition.
 - `not_met`: available evidence contradicts the criterion proposition.
-- `unknown`: evidence is missing, stale, ambiguous, conflicting, or unsupported.
+- `unknown`: evidence is missing, unusable by status, insufficiently precise, stale, conflicting, ambiguous, or unsupported. The structured reason is assigned deterministically by the table in specification section 8.0, never chosen by the model.
 - `not_applicable`: a conditional criterion does not apply because its explicit antecedent is false; never a substitute for missing information.
 
 This distinction is essential for exclusion criteria. A `met` exclusion criterion is evidence against a match; a `not_met` exclusion criterion is evidence in favor. Trial-level aggregation accounts for polarity explicitly and deterministically.
