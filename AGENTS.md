@@ -46,6 +46,39 @@ Report sample size, per-state support, and confidence intervals with every accur
 
 AI assistance is permitted for drafting criterion expressions, synthetic scenario resources, distractor designs, corpus normalization, code, tests, and documentation. Every AI-drafted artifact must be human-reviewed before freezing, with authoring provenance and review status recorded.
 
+## Engineering Conventions
+
+Anything a tool can check lives in `pyproject.toml` and CI, not here. This section is only for what a linter cannot see. If a rule below becomes mechanically checkable, move it into configuration and delete it from this file.
+
+**Toolchain.** Python 3.12, uv for dependencies, ruff for lint and format, pyright in strict mode, pytest. CI runs all four on every pull request. Add a dependency only with a reason recorded in the pull request; the specification names several things this project deliberately does not use.
+
+**Layout.** `src/ctma/`, one package per deep module in specification section 12.
+
+| Package | Owns | Gate |
+| --- | --- | --- |
+| `domain` | Core types, Criterion State semantics, aggregation, impact mapping | 1 |
+| `timeline` | Patient Timeline and the five Timeline Tools | 2 |
+| `retrieval` | Corpus, filters, BM25, embeddings, fusion | 3 |
+| `agent` | Tool selection, verification, correction | 4 |
+| `supervisor` | Flag-gated multi-turn strategy | 5 |
+| `evaluation` | Gold derivation, baselines, ablations, metrics | 6 |
+| `report` | Trace Report and Evaluation Report generation | 7 |
+| `adapters` | ClinicalTrials.gov, model inference, retrieval index | as needed |
+| `policy.py` | The pure Matching Policy: top-20, top-5, assessed set, Review Priority | 1 |
+| `match.py` | The thin entry point | 1 |
+
+Layering is enforced by `tests/test_architecture.py`. Two consequences worth stating in words: nothing may import `report`, because it is generated from frozen artifacts and must never become a dependency of a reasoning module; and nothing may import `evaluation`, which is the only package permitted to read a Scenario Manifest. That import rule is what keeps the manifest out of the matching system — not care, not review.
+
+Parser, terminology, evidence-packet construction, and index internals are module-private. They have no public interface and no test that imports them directly.
+
+**Types.** Pydantic v2, frozen. Immutability is a requirement of the design rather than a preference: snapshots, expressions, retrieval ranks, and runs are all specified as immutable, and a Gate 1 exit criterion is that every model round-trips through JSON without losing a provenance field. Pydantic covers that and the schema validation of model output with one set of definitions.
+
+**Make illegal states unrepresentable, in preference to testing for them.** An Infrastructure Failure must never be scored as `unknown`, and that is a release gate. The cheapest way to hold it is a tool return type that has no `unknown` variant, so the mistake cannot be written. Prefer this shape of guarantee wherever a release gate can be turned into a type. Do not catch a broad exception and degrade it to a Criterion State.
+
+**Names come from `CONTEXT.md`.** It is the project glossary, so it binds identifiers too. Use its terms for types, fields, and enum members, and keep its `_Avoid_` list out of the codebase entirely. When a name in code and a name in the glossary drift apart, one of the two is wrong and it is usually the code.
+
+**Tests.** `tests/` mirrors `src/ctma/`. Determinism is the default: seed anything sampled, freeze any clock, and never let a test depend on a live network or a live model. Fixtures that a gate freezes live under `fixtures/`, versioned, and are read as data rather than constructed in test code.
+
 ## Implementation Order
 
 Implementation is acceptance-criteria-driven with no calendar plan. Gate scope is classified as core or additive in specification section 19; cut from the bottom of that list under schedule pressure, and delete the corresponding claims from the report when a stage is cut.
