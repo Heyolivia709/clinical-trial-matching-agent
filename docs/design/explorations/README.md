@@ -24,4 +24,4 @@ The target register is now an agent trace inspector. See [ADR 0009](../../adr/00
 
 ## Not retained
 
-A stitched continuity file rendering §5–§7 back to back was used during design to expose repeated headings and broken hierarchy across section boundaries. It was a process check rather than a deliverable and is not committed. The same check should be repeated whenever section structure changes.
+A stitched continuity file rendering sections 5–7 back to back was used during design to expose repeated headings and broken hierarchy across section boundaries. It was a process check rather than a deliverable and is not committed. The same check should be repeated whenever section structure changes.
