@@ -8,4 +8,4 @@ Concretely the register means monospace-dominant data with sans prose, serif res
 
 Quoted trial source text keeps its distinct treatment through a label, a left rule, and a background shift rather than through a typeface, so the "verbatim, never rewritten" semantic no longer depends on serif.
 
-The change is confined to surface treatment. Section structure, field inventory, the impact-not-state encoding rule, the separate verifier process colour, specification §7 label wording, and the single-document information architecture are all unaffected. Duration bars use a neutral tone: the process colour stays reserved for verifier and provenance signals and must not be diluted into ordinary data.
+The change is confined to surface treatment. Section structure, field inventory, the impact-not-state encoding rule, the separate verifier process colour, specification section 7 label wording, and the single-document information architecture are all unaffected. Duration bars use a neutral tone: the process colour stays reserved for verifier and provenance signals and must not be diluted into ordinary data.
