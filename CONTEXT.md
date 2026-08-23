@@ -4,6 +4,8 @@ This context describes evidence-grounded comparison of an authored synthetic pat
 
 Terms removed in the v2 rescope — Parsed Criterion Representation, Treatment Episode, Retrieval Facet, Retrieval Expansion as a terminology concept — are superseded by the entries below.
 
+This glossary binds identifiers as well as prose. Types, fields, and enum members in `src/` use these terms, and the `_Avoid_` lists stay out of the codebase. When a name in code and a name here disagree, one of them is wrong.
+
 ## Language
 
 ### Criteria
@@ -25,7 +27,7 @@ The smallest independently assessable clinical statement within a Criterion Expr
 _Avoid_: Eligibility criterion, source bullet
 
 **Criterion Category**:
-The clinical reasoning category assigned to an Atomic Proposition.
+The clinical reasoning category assigned to an Atomic Proposition: `demographic`, `disease`, `biomarker`, `prior_therapy`, `performance_status`, or `unsupported`. `unsupported` is a value rather than an absence of one, so a proposition outside the supported set never acquires a misleading category.
 _Avoid_: Criterion polarity, retrieval facet
 
 **Criterion Polarity**:
@@ -71,6 +73,14 @@ _Avoid_: Record timestamp, database time
 **Temporal Precision**:
 The source-supported granularity of a clinical date or interval. Reasoning must preserve this granularity rather than inventing a more precise instant.
 _Avoid_: Normalized timestamp
+
+**Prospective Anchor**:
+An anchor a criterion names that does not exist at screening time, such as the first dose of study drug or randomization. It cannot be resolved from the patient record because the event has not happened.
+_Avoid_: Assessment time, index date
+
+**Anchor Substitution**:
+An explicit, authored, reviewed replacement of a Prospective Anchor by Assessment Time, recording the source phrase and the rationale, and displayed beside the criterion wherever the assessment appears. It is a screening-time proxy declared once at authoring, never a runtime inference and never chosen by the model. Without a declared substitution the proposition is `unknown` with `ambiguous_criterion`.
+_Avoid_: Silent re-anchoring, default to now
 
 ### Patient
 
@@ -121,7 +131,7 @@ The explicit classification of cited Patient Evidence as supporting or contradic
 _Avoid_: Relevance score
 
 **Evidence Verifier**:
-The deterministic check that rejects nonexistent references, altered values, invalid spans, missing evidence relations, incorrect aggregation, unsupported states, and post-assessment citations. One implementation serves two roles: offline grading of every variant, and runtime feedback inside the full agent loop only.
+The deterministic check that rejects nonexistent references, altered values, invalid spans, missing evidence relations, incorrect aggregation, unsupported states, post-assessment citations, and citations that resolve cleanly but cannot establish the claimed state. One implementation serves two roles: offline grading of every variant, and runtime feedback inside the full agent loop only.
 _Avoid_: Model self-check, confidence filter
 
 **Offline Grading**:
@@ -129,7 +139,7 @@ The verifier role that scores the final outputs of every variant with identical 
 _Avoid_: Self-evaluation, verifier loop
 
 **Component Control**:
-A baseline that receives the same inputs as the full system but lacks one architectural component, isolating that component's contribution. The expression-aware one-shot baseline is the primary component control; the raw-text one-shot baseline measures end-to-end improvement instead.
+A baseline that shares the full system's evidence boundary but lacks one architectural component, isolating that component's contribution. The expression-aware one-shot baseline is the primary component control; the raw-text one-shot baseline measures end-to-end improvement instead. A shared boundary is not shared context: the control is handed the whole Patient Timeline while the full agent sees only its tool results, so the full agent is the information-disadvantaged arm.
 _Avoid_: Ablation, end-to-end baseline
 
 **Release Gate**:
@@ -137,7 +147,7 @@ A deterministic invariant the implementation controls, reported as pass or fail.
 _Avoid_: Target metric, success threshold
 
 **Pre-Registration**:
-The protocol fixing metrics, comparison units, statistical procedure, power, cost-value pairing, and falsification condition, committed before the first held-out run and cited by commit hash in the published report.
+The protocol fixing metrics, comparison units, per-variant prompt contents, statistical procedure, precision, cost-value pairing, and falsification condition, committed before the first held-out run and cited by commit hash in the published report. Precision is stated as a procedure recomputed from development data, not as a number asserted in advance.
 _Avoid_: Evaluation plan, methodology section
 
 **Falsification Condition**:
@@ -185,6 +195,10 @@ _Avoid_: Match rank, eligibility rank
 **Review Priority**:
 A presentation ordering for assessed Candidate Trials based on Match Conclusion and then Retrieval Rank. It never replaces Retrieval Rank.
 _Avoid_: Match score, eligibility score
+
+**Assessed Set**:
+The three highest-ranked presented Candidate Trials that have an Authored Criterion Expression. A presented candidate without one is reported as `expression_unavailable` at its own Retrieval Rank and the next presented candidate takes its place; backfill never reaches past the presented top five. Expression coverage is an artifact of the authoring budget, not a property of a trial, so it never silently shrinks the set.
+_Avoid_: Top three, eligible set
 
 **Unassessed Candidate**:
 A Candidate Trial returned by retrieval that has not received criterion-level assessment and must not be presented as an assessed match.
@@ -239,7 +253,7 @@ Patient evidence contradicts the proposition expressed by an Eligibility Criteri
 _Avoid_: Not supported, failed
 
 **Unknown**:
-The available patient evidence is missing, stale, ambiguous, conflicting, unsupported, or unverifiable, so the criterion proposition cannot be determined.
+The available patient evidence is missing, unusable by status, insufficiently precise, stale, conflicting, ambiguous, unsupported, or unverifiable, so the criterion proposition cannot be determined.
 _Avoid_: Not met, not supported
 
 **Not Applicable**:
@@ -251,11 +265,11 @@ A reporting status, not a Criterion State, marking a criterion the Trial Supervi
 _Avoid_: Unknown, skipped criterion, unresolved
 
 **Unknown Reason**:
-A structured explanation for an `unknown` Criterion State: missing, conflicting, or stale evidence, ambiguous criterion, unsupported evidence type, unavailable expression, verification failure, or reasoning conflict.
+A structured explanation for an `unknown` Criterion State, one of `missing_evidence`, `unusable_status`, `insufficient_precision`, `conflicting_evidence`, `stale_evidence`, `ambiguous_criterion`, `unsupported_evidence_type`, `expression_unavailable`, `verification_failed`, or `reasoning_conflict`. Assigned by deterministic code from a decision table, never chosen by the model. A disqualified fact, an imprecise date, and no fact at all are three different diagnoses and never share a reason.
 _Avoid_: Free-form uncertainty
 
 **Unresolved Criterion**:
-An Eligibility Criterion with an `unknown` state because evidence is missing, stale, ambiguous, conflicting, or of an unsupported type.
+An Eligibility Criterion whose Criterion State is `unknown`, for any of the Unknown Reasons. Distinct from Not Assessed, which was never attempted.
 _Avoid_: Failed criterion, skipped criterion
 
 **Criterion Impact**:
@@ -273,6 +287,10 @@ _Avoid_: Eligibility determination, retrieval result
 **Criterion Coverage**:
 The proportion of authored inclusion and exclusion criteria represented by a Criterion Assessment, including criteria that resolve to `unknown`. Reported per supervisor configuration, since Early Termination reduces it by design.
 _Avoid_: Evaluated-only coverage
+
+**Verification-Induced Unknown**:
+A proposition the full agent committed to before correction and returned as `unknown` after it, because the Evidence Verifier could not verify the citation. Its rate is what final-output citation validity costs, and is published wherever that validity is published. A verifier that rejected everything would report perfect validity and be worthless; this quantity is what separates the two.
+_Avoid_: Verifier catch, model uncertainty
 
 **Infrastructure Failure**:
 A matching-run failure caused by unavailable or malformed system dependencies rather than uncertainty in patient or trial evidence. It is never scored as a correct `unknown` state.
@@ -293,8 +311,12 @@ The coordinator-facing subset of a Reasoning Trace that explains which criterion
 _Avoid_: Raw trace, chain of thought
 
 **Trace Report**:
-The self-contained static demonstration surface generated from a frozen Matching Run, viewable offline without a server or credentials. It shows the agent trace, not a clinical report, and is built last from frozen traces.
-_Avoid_: Web app, dashboard, coordinator workflow
+The self-contained static artifact generated from one frozen Matching Run, viewable offline with no server, credentials, or network fetch. It shows the agent trace rather than a clinical report, is ordered verdict-first rather than in pipeline order, and is built last from frozen traces. Scoped to a single run: benchmark statistics belong to the Evaluation Report.
+_Avoid_: Web app, dashboard, coordinator workflow, benchmark summary
+
+**Evaluation Report**:
+The separate self-contained static artifact scoped to the benchmark rather than to any run, carrying invariant gates and reported results in distinct tables, the paired cost-value table, the pre-registered comparison, and the failure taxonomy. It is never a section of a Trace Report, because a corpus-scoped statistic and a run-scoped fact are different kinds of claim.
+_Avoid_: Trace report section, results appendix
 
 **Eval Case**:
 An immutable benchmark item that binds versioned inputs, derived expected outputs, dataset partition, and grading rules without exposing hidden ground truth to the matching system.
@@ -311,6 +333,14 @@ _Avoid_: Clinically validated assessment
 **Coverage-Only Assessment**:
 A Criterion Assessment that remains visible for Criterion Coverage but is excluded from accuracy metrics because an authoritative expected state cannot be derived.
 _Avoid_: Dropped criterion, negative example
+
+**Graded Observation**:
+One Atomic Proposition evaluated against one Authored Synthetic Scenario. The unit of accuracy metrics, and distinct from the proposition itself, which is a property of a trial and carries no patient. Not to be confused with a FHIR `Observation`.
+_Avoid_: Proposition, sample, data point
+
+**Resampling Cluster**:
+One scenario-trial pair. The unit the bootstrap resamples, because propositions within a pair share a patient, a trial, and a single agent run. Interval width is governed by the number of clusters, not by the number of Graded Observations inside them, so adding criteria to a trial does not buy precision.
+_Avoid_: Sample size, n
 
 **State Support**:
 The number of labeled assessments for each Criterion State in an evaluation partition.

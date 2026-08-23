@@ -10,7 +10,7 @@ Do not add Chinese or bilingual repository content unless the user explicitly re
 
 This project is a research-coordinator decision-support prototype for matching synthetic or public patient information to clinical trials. It must not claim to diagnose, determine clinical eligibility, enroll patients automatically, or demonstrate clinical effectiveness.
 
-Before changing MVP behavior, read `CONTEXT.md` and `docs/specs/phase-1-mvp-specification.md`. The specification is frozen as the source of truth. Record scope changes explicitly rather than introducing them implicitly during implementation.
+Before changing MVP behavior, read `CONTEXT.md` and `docs/specs/phase-1-mvp-specification.md`. The specification is the source of truth and is frozen in stages: claims and discipline are settled, while the sections describing behaviour no implementation has yet exercised re-freeze at the exit of Gate 2. Record scope changes explicitly rather than introducing them implicitly during implementation.
 
 ## Subject of the Project
 
