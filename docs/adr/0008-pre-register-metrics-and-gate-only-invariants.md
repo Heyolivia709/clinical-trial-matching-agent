@@ -7,3 +7,11 @@ Threshold gates on statistics were rejected. At roughly 80 held-out atomic propo
 The accuracy comparison against the expression-aware control is instead a pre-registered, two-sided hypothesis test with no minimum effect size, accompanied by a power statement declaring in advance that differences below roughly 8–12 percentage points will be reported as inconclusive. Metrics, comparison units, cost-value pairing, statistical procedure, and a falsification condition are committed before the first held-out run, and the published report cites that commit hash. Declaring the protocol afterward was rejected because a cost-value claim whose metric is chosen after the numbers exist is unfalsifiable.
 
 The consequence, accepted deliberately, is that the project can pass every release gate and still fail its central claim. The gates certify software correctness; the pre-registered comparison certifies architectural value, and a null result there is published as the headline.
+
+**Revised 2026-08-23.** The decision stands; two figures cited above do not, and are retained here only as the record of what was believed at the time.
+
+"Roughly 80 held-out atomic propositions" is not a quantity this dataset produces. The dataset yields 40 held-out scenario-trial pairs carrying roughly 280–400 graded observations, and proposition, observation, and cluster are three different units. See [`../evaluation/pre-registration.md`](../evaluation/pre-registration.md) section 5.1.
+
+"Differences below roughly 8–12 percentage points" understates the band by treating propositions as independent, which the clustered resampling design in the same protocol exists to reject. Effective sample size is the cluster count. The band is provisionally 15–25 points and is now recomputed from development data and committed as a dated amendment before the held-out run, rather than asserted in advance. See pre-registration section 5.3.
+
+Both corrections strengthen the original argument rather than weakening it: if the resolvable difference is wider than v1 believed, threshold gates on statistics at this sample size would have been even more arbitrary than this ADR claimed.

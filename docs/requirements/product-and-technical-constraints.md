@@ -14,17 +14,21 @@ Clinical trial matching is the carrier domain. The demonstrated skills are agent
 
 It is not a general medical chatbot. Its primary surface is a static trace report, not an open-ended chat interface.
 
+The surface is two artifacts, not one: a Trace Report scoped to a single matching run, and a separate Evaluation Report scoped to the benchmark. Benchmark statistics never appear as a section of a run's trace, because a corpus-scoped number and a run-scoped fact are different kinds of claim and must not share a page as though they were not. See specification section 15.
+
 ## Intended Reviewer Journey
 
-1. A reviewer opens the hosted trace report, or runs the project locally.
-2. They see a patient timeline built from synthetic FHIR data with per-fact provenance.
-3. They see hybrid retrieval producing a ranked candidate set with per-channel attribution.
-4. They see criteria decomposed into atomic propositions and assessed through tool calls.
-5. They see structured judgments with patient evidence and exact trial citations.
-6. They see the verifier reproducibly reject an injected bad citation and trigger exactly one correction.
-7. They see the agent compared against deterministic, raw-text one-shot, and expression-aware one-shot baselines, with applicable ablations and cost.
+Ordered by what the reviewer encounters, which is deliberately not the order the pipeline runs in.
 
-All of this must be reachable within five minutes and must not require credentials or a network connection.
+1. A reviewer opens the hosted trace report, or runs the project locally.
+2. In plain language, with no domain or system vocabulary: what the system does, what this run concluded, and which single criterion demonstrates the claim.
+3. They see that criterion decomposed into atomic propositions and assessed through tool calls, with a structured judgment citing patient evidence and exact trial source text.
+4. They see the verifier reproducibly reject an injected bad citation on that criterion and trigger exactly one correction.
+5. They see the same criterion assessed by the deterministic, raw-text one-shot, and expression-aware one-shot variants, side by side, with cost.
+6. Only then: the remaining criteria, the candidate set, hybrid retrieval with per-channel attribution, the full patient timeline with per-fact provenance, and the reproducibility header.
+7. From a separate Evaluation Report: the benchmark results, ablations, invariants, and the pre-registered comparison with its outcome.
+
+Steps 1 through 5 must be reachable within five minutes and must not require credentials or a network connection. Step 6 is the same requirement applied to depth rather than to speed: nothing is omitted, it is merely placed after the argument it supports.
 
 ## Primary Portfolio Signals
 
@@ -110,12 +114,14 @@ Any later addition must not retroactively alter frozen held-out results: a large
 Evaluation is designed before model or orchestration optimization. At minimum:
 
 - A deterministic structured-field baseline, a raw-text one-shot baseline, and an expression-aware one-shot control. All model variants share the patient-evidence boundary, output schema, model family, decoding policy, and cost accounting; deliberate criterion-context differences are labeled.
+- What each variant actually receives in its prompt is fixed in the pre-registration, not left to implementation. A shared evidence *boundary* is not shared *context*: the expression-aware control is handed the whole timeline while the full agent sees only its tool results, so the full agent is the information-disadvantaged arm and this is stated wherever the comparison appears.
 - Gold expected states derived deterministically from hidden scenario manifests. No model-generated labels, and no LLM judge in any primary metric.
 - Held-out partitions separated by both trial and scenario, frozen against all optimization.
 - Release gates restricted to deterministic invariants: citation validity, deterministic aggregation, verifier catch rate on injected faults, zero unsupported assessments surviving verification, criterion coverage, zero post-cutoff citations, and zero infrastructure failures scored as uncertainty. No model-behavior statistic is gated.
-- A pre-registration committed before the first held-out run, fixing metrics, comparison units, statistical procedure, power, cost-value pairing, and a falsification condition, cited by commit hash in the report.
+- Final-output citation validity is an invariant reached by degrading unverifiable assessments to `unknown`, so it is never used as a comparison against a baseline. Comparisons use the full agent *before* correction, and the verification-induced `unknown` rate is published wherever post-correction validity is, at equal prominence.
+- A pre-registration committed before the first held-out run, fixing metrics, comparison units, per-variant prompt contents, statistical procedure, precision, cost-value pairing, and a falsification condition, cited by commit hash in the report. Precision is a procedure recomputed from development data and committed as a dated amendment, not a number asserted in advance.
 - One verifier implementation in two separated roles: offline grading of every variant with identical configuration, and runtime feedback for the full agent only.
-- Criterion-state macro F1, per-state precision and recall with attention to `unknown`, and per-category breakdown, all reported with bootstrap confidence intervals and support, compared against the expression-aware control by a two-sided test with no minimum effect size.
+- Criterion-state macro F1, per-state precision and recall with attention to `unknown`, and per-category breakdown, all reported with bootstrap confidence intervals from cluster-level resampling and with realised cluster and observation counts, compared against the expression-aware control by a two-sided test with no minimum effect size.
 - Retrieval metrics reported separately from criterion-state metrics, with per-channel attribution.
 - Latency, model calls, token usage, and estimated cost measured from run traces.
 - Two core ablations: no deterministic tools and no verifier. If the additive Trial Supervisor is built, also report no evidence reuse and early termination.
