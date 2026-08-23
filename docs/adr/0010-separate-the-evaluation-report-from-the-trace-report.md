@@ -1,0 +1,15 @@
+# Separate the evaluation report from the trace report, and order both for a reader
+
+The delivery surface is two artifacts rather than one. A **Trace Report** is scoped to a single Matching Run. An **Evaluation Report** is scoped to the benchmark and is run-independent. Neither is a section of the other.
+
+Presenting them as one document was rejected. Specification section 15 previously defined the surface as a single report "generated from a frozen Matching Run" and then listed only run-scoped content, so the benchmark had no legitimate home; the interface design that followed invented an evaluation section anyway and traced it to specification sections that are not about the report at all. The result put a bootstrap interval computed across six scenarios on the same page, in the same visual register, as a citation resolving to one FHIR JSON path — inviting a reader to treat a corpus-scoped statistic and a run-scoped fact as the same kind of claim. That is the mechanism by which an honest project produces a misleading portfolio page, and it costs nothing to prevent by splitting the artifacts and making each state its own scope.
+
+The Trace Report is ordered verdict-first rather than in pipeline order. Execution order puts the criterion detail, the verifier catch, and the per-criterion baseline comparison — the three things that carry the engineering claim — behind several screens of setup, and specification section 3 commits to a reviewer reaching all of it inside five minutes. Completeness in the wrong order fails that requirement, because the reviewer stops reading before the interesting part. Reproducibility metadata, the full timeline, and the retrieval table remain in the artifact and move to the back. A plain-language summary becomes section 1: the previous first screen was written entirely in domain and system vocabulary and gave a non-specialist no entry point at all.
+
+A persistent section index is now required, which reverses part of an earlier interface decision. That decision rejected breadcrumbs, back buttons, in-page tabs, and per-screen headers on the grounds that application chrome fragments a document a reader should be able to read start to finish, print, and cite. Those rejections stand. Extending them to *all* wayfinding was an overcorrection: a roughly ten-screen single document with no index is harder to read start to finish, not easier, and the trace inspectors this artifact is modelled on all carry one.
+
+Both artifacts must fetch nothing at view time. The offline requirement is not satisfied by a document that renders correctly only while the network is up, and the interface mockups violated it by loading remote fonts.
+
+The cost of the split is one more artifact to generate and a cross-linking obligation in both directions: the Evaluation Report's failure cases link to full Trace Reports, and each Trace Report links to the benchmark that contextualizes it. Accepted, because the alternative is one document that quietly changes what it is claiming halfway through.
+
+Numbering note: ADR 0009 was assigned on the interface-design branch, which merged separately. This ADR takes 0010.

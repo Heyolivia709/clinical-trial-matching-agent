@@ -93,29 +93,56 @@ Derive gold labels deterministically from Scenario Manifests. Commit the pre-reg
 - Gold expected states are computed by code from manifest and expression, with no model judgment anywhere in grading
 - Development and held-out partitions are separated by both trial ID and scenario, and held-out artifacts never inform configuration
 - The raw-text and expression-aware one-shot baselines use the same patient evidence boundary, output schema, model family, and cost accounting as Full; their deliberate context differences are reported
+- **Each variant's prompt contents match pre-registration section 2.1 exactly**, verified by an assertion over the rendered prompts rather than by inspection. B2 receives the complete Patient Timeline; Full receives Timeline Tool results only
 - The offline grading verifier scores every variant with identical code and configuration; only Full receives verifier feedback and a correction opportunity
-- Citation validity is reported at three points: B2, Full before correction, Full after correction
+- Citation validity is reported at three points: B2, Full before correction, Full after correction, with only the first two used for comparison
+- **The verification-induced `unknown` rate is computed and published beside post-correction citation validity**
 - Core ablations run: no deterministic tools and no verifier
 - Supervisor-only ablations run only if Gate 5 is built: no evidence reuse and early termination
 - Every deterministic release gate in benchmark plan Track 1 passes, or the failure is published with analysis
-- Accuracy and grounding results carry bootstrap confidence intervals, per-state support, and the pre-registered two-sided test with no minimum threshold; inconclusive results are labeled inconclusive
+- **The precision amendment required by pre-registration section 5.3 is computed from development data and committed before the first held-out run**, and the realised held-out cluster count is published
+- Accuracy and grounding results carry bootstrap confidence intervals from cluster-level resampling, realised cluster and observation counts, per-state support, and the pre-registered two-sided test with no minimum threshold; differences below the committed precision band are labeled inconclusive
 - Cost is published per criterion assessment beside the value it purchased, including when the ratio is unfavorable
 - At least three cases where Full beats the expression-aware one-shot B2 control, and at least two genuine failure cases, are documented with traces
-- The falsification condition is evaluated and its outcome published
+- The falsification condition, evaluated on Full before correction, is published with its outcome
 
-## Gate 7: Trace Report and Portfolio Demo — Core
+## Gate 7: Trace Report, Evaluation Report, and Portfolio Demo — Core
 
-Generate the self-contained static Trace Report from frozen runs. Publish the hosted demo and the written results.
+Generate two self-contained static artifacts from frozen inputs, per specification section 15: a run-scoped Trace Report per Matching Run, and one run-independent Evaluation Report. Publish the hosted demo and the written results.
 
-**Exit criteria**
+**Exit criteria — both artifacts**
 
-- The report renders offline from a frozen trace with no server, credentials, or network access
-- All eight demonstration-goal items in specification section 3 are visible within five minutes
+- Each renders offline from frozen inputs with no server, no credentials, and **no network fetch at view time**, fonts and assets included
+- Print styles are implemented and the disclaimer appears in print output
+- A persistent section index is present, without breadcrumbs, back buttons, in-page tabs, or per-screen headers
+- Colour and shape encode Criterion Impact only; Criterion State is text; verifier status uses a separate process colour
+- Retrieval Rank and Review Priority both appear and are never merged; no blended score, percentage, gauge, or star rating exists anywhere
+- Trial source text is verbatim; no Scenario Manifest content or model chain-of-thought appears
+
+**Exit criteria — Trace Report**
+
+- Sections appear in the verdict-first order of specification section 15.1, not in pipeline order
+- A reader with no domain or system vocabulary has an entry point: the plain-language summary is section 1
+- All eight demonstration-goal items in specification section 3 are visible within five minutes, verified by timing a reader who has not seen the project
+- Every section with a collapsed and an expanded state ships both, and the collapsed state is the default
 - Citations link to the cited FHIR JSON path and the exact trial source span
 - Verifier rejection and correction are visible, not merely logged
 - Full, expression-aware one-shot, and raw-text one-shot results appear side by side on the same criterion
 - Latency, model calls, tokens, and cost are shown per assessment
-- Every quantitative claim in the writeup links to a reproducible run artifact
+- At least one Trace Report covers a run in which the system fails
+
+**Exit criteria — Evaluation Report**
+
+- It states its scope as the benchmark rather than a run, and appears nowhere inside a Trace Report
+- Deterministic invariants and reported results are in **separate tables**, the first labelled release gates and the second labelled reported and not gated
+- No model-behavior statistic carries a threshold anywhere in the artifact
+- Every interval is accompanied by the realised cluster count, observation count, and per-state support
+- The paired cost-value table shows cost per criterion assessment beside the grounding metric it purchased
+- Post-correction citation validity never appears without the verification-induced `unknown` rate beside it
+- Wherever B2 appears, the statement that B2 receives more in-prompt patient context than Full appears with it
+- The pre-registered comparison, its effect size and interval, the falsification condition, and its evaluated outcome are all published, including when inconclusive or unfavourable
+- At least two failure cases link to their full Trace Reports
+- Every quantitative claim links to a reproducible run artifact and cites the pre-registration and precision-amendment commit hashes
 - Clinical limitations, benchmark construction, and the derived-gold methodology are stated explicitly
 
 ## Sequencing Constraints

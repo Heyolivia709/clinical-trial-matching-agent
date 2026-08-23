@@ -1,9 +1,12 @@
-# Clinical Trial Matching Agent: MVP Specification (v4)
+# Clinical Trial Matching Agent: MVP Specification (v5)
 
-**Status:** Frozen source of truth
-**Frozen on:** 2026-08-22
-**Supersedes:** v3 (frozen 2026-08-22). Version 4 separates the verifier's grading role from its feedback role, restricts release gates to deterministic invariants, converts the accuracy comparison to a pre-registered hypothesis test with no minimum threshold, and enlarges the core trial fixture set so the core path retains two-axis partitioning.
+**Status:** Provisionally frozen — see freeze policy below
+**Frozen on:** 2026-08-23
+**Supersedes:** v4 (frozen 2026-08-22). Version 5 makes four changes. It adds the verification-induced `unknown` rate as a reported grounding result, so the verifier's cost is visible beside its benefit. It anchors the pre-registered falsification condition to Full before correction, because final-output reference validity is 100% by construction and therefore cannot serve as a comparison. It splits the delivery surface into a run-scoped Trace Report and a run-independent Evaluation Report, and reorders the Trace Report verdict-first. It records that what each evaluation variant receives in its prompt is fixed in the pre-registration rather than left to implementation. See [ADR 0010](../adr/0010-separate-the-evaluation-report-from-the-trace-report.md).
+
 **Change policy:** Any scope or semantic change must be recorded explicitly here and, when it reverses a rejected alternative, in an ADR. Held-out evaluation results must never drive optimization.
+
+**Freeze policy.** Sections 1–3, 16–20 and the safety boundary are frozen now: they are commitments about claims and discipline, and evidence will not change them. Sections 5–13 are *provisionally* frozen and re-frozen at the exit of Gate 2. They contain decisions that cannot be validated without an implementation — the resource boundary, the tool surface, per-proposition concurrency, the Unknown Reason vocabulary — and freezing them against no evidence produces either constant change-policy churn or silent divergence. v4 was declared a frozen source of truth with zero lines of code in the repository; v5 declares which parts had earned that status and which had not.
 
 ## 1. Objective
 
@@ -35,6 +38,8 @@ A reviewer opening the hosted trace report, or running the project locally, must
 8. A side-by-side comparison against deterministic and one-shot baselines showing where the agent design pays off.
 
 Requirement 7 must be reproducibly demonstrable from an injected-fault fixture. Organic verifier catches are published when observed, but a model happening to make a particular mistake is not an acceptance criterion.
+
+Five minutes is a hard constraint on the interface, not an aspiration. Requirements 3 through 8 are the ones that carry the claim, so section 15.1 orders the Trace Report to reach them first and demotes reproducibility metadata, the full timeline, and the retrieval table to the back. A document that presents the pipeline in execution order fails this requirement no matter how complete it is, because the reviewer stops reading before the interesting part.
 
 ## 4. Inputs
 
@@ -349,24 +354,63 @@ The coordinator-facing Evidence Trajectory is the concise subset explaining whic
 
 Each run records patient and trial hashes, partition, embedding, model, prompt and schema, decoding, tool and supervisor configuration, evaluator code version, seed, latency, tokens, estimated cost, and hardware profile.
 
-## 15. Trace Report Interface
+## 15. Delivery Surface
 
-The delivery surface is a self-contained static Trace Report generated from a frozen Matching Run, publishable as a hosted page and viewable offline without credentials or a server.
+The delivery surface is **two** self-contained static artifacts, each publishable as a hosted page and viewable offline without credentials, a server, or any network fetch. Both are generated from frozen artifacts, so they are built last and never become a dependency of the reasoning modules.
 
-It presents:
+The split exists because the two have different scopes. A Trace Report describes one Matching Run. Evaluation results describe the benchmark across every run, and cannot be derived from any single one. Presenting them as one document lets a corpus-scoped statistic sit beside a run-scoped trace as though they were the same kind of claim, which is precisely how a portfolio artifact becomes misleading. See [ADR 0010](../adr/0010-separate-the-evaluation-report-from-the-trace-report.md).
 
-1. The patient timeline with per-fact provenance
-2. The immutable top-20 retrieval table with per-channel rank attribution
-3. The top five candidates, with the assessed top three in Review Priority order
-4. Per criterion: source text, atomic propositions, state, impact, and evidence
-5. Tool call sequences with arguments and results
-6. Verifier outcomes, including rejected citations and the resulting correction
-7. Side-by-side Full, expression-aware one-shot, and raw-text one-shot results on the same criterion
-8. Per-assessment latency, model calls, tokens, and cost
+### 15.1 Trace Report — scoped to one Matching Run
 
-Citations link to the cited FHIR JSON path and the exact trial source span.
+Ordered verdict-first, not in pipeline order. The three sections carrying the engineering claim are the criterion detail, the verifier catch, and the per-criterion baseline comparison; a reader must reach them before any setup material.
 
-An optional live mode may run a new patient-trial pair locally. The report is generated from traces, so it is built last and never becomes a dependency of the reasoning modules.
+| Order | Content |
+| --- | --- |
+| 1 | Plain-language summary: one sentence on what the system does, the run's conclusions, and the single worked criterion that demonstrates the claim. Written for a reader with no domain or system vocabulary. |
+| 2 | The demonstrative criterion in full: source text, atomic propositions, state, impact, evidence, tool call sequence with arguments and results |
+| 3 | Verifier outcome for that criterion, including the rejected citation and the resulting correction |
+| 4 | Side-by-side Full, expression-aware one-shot, and raw-text one-shot results on that same criterion |
+| 5 | The top five candidates, with the assessed top three in Review Priority order |
+| 6 | Per-trial criterion tables: state, impact, and Unknown Reason for every criterion |
+| 7 | The patient timeline with per-fact provenance |
+| 8 | The immutable top-20 retrieval table with per-channel ranks and per-channel scores |
+| 9 | Per-assessment latency, model calls, tokens, and cost |
+| 10 | Reproducibility header: identities, hashes, frozen configuration versions, and warnings |
+
+Citations link to the cited FHIR JSON path and the exact trial source span. Sections with a collapsed and an expanded state are specified in both; the collapsed state is what a reader lands on and is designed first.
+
+A persistent section index is required. It is wayfinding for a long single document, not application chrome, and it does not reintroduce breadcrumbs, back buttons, in-page tabs, or per-screen headers.
+
+Every scenario with a Matching Run gets a Trace Report. At least one report covers a run in which the system fails, per the pre-registration's failure-case obligation.
+
+### 15.2 Evaluation Report — scoped to the benchmark, not to any run
+
+A separate artifact. It opens by stating that its scope is the benchmark rather than a run, and it never appears as a section of a Trace Report.
+
+It presents, per the benchmark plan and the pre-registration:
+
+1. Deterministic invariants as pass or fail, in their own table, labelled release gates
+2. Reported results in a separate table, labelled as reported and explicitly not gated, with confidence intervals, realised cluster and observation counts, and per-state support
+3. The paired cost-value table, with cost per criterion assessment beside the grounding metric it purchased
+4. Citation validity at its comparable measurement points, with the verification-induced `unknown` rate beside the post-correction point
+5. The pre-registered two-sided comparison: effect size, interval, and outcome, including inconclusive and unfavourable outcomes
+6. The falsification condition and its evaluated result
+7. The failure taxonomy, with at least two failure cases linking to their full Trace Reports
+8. Its own scope and limitations statement
+
+No release gate in this report is a model-behavior statistic. Nothing in it is presented as a property of a single run.
+
+### 15.3 Constraints binding on both
+
+- Self-contained: no network fetch at view time, fonts and assets included. A report that needs the network is not offline-viewable.
+- Print styles implemented; the disclaimer appears in print output.
+- No blended score, no match percentage, no progress bar, gauge, or star rating.
+- Colour and shape encode Criterion Impact, never Criterion State.
+- Retrieval Rank and Review Priority are both shown and never merged.
+- Trial source text is verbatim, never rewritten, truncated, or paraphrased.
+- No Scenario Manifest content and no model chain-of-thought.
+
+An optional live mode may run a new patient-trial pair locally and produce a Trace Report.
 
 ## 16. Model Policy
 
@@ -406,7 +450,7 @@ Not every gate is essential. If time is constrained, cut from the bottom of this
 - Gate 2 Patient Timeline and Timeline Tools
 - Gate 4 Criterion Agent and Evidence Verifier
 - Gate 6 Evaluation, baselines, and core ablations
-- Gate 7 Trace Report, because an unseen result is not a portfolio result
+- Gate 7 Trace Report and Evaluation Report, because an unseen result is not a portfolio result
 
 **Additive** — real value, but the project remains complete and honest without them:
 
@@ -435,8 +479,14 @@ Only deterministic invariants are release gates. These are properties the implem
 - Citations dated after `assessment_as_of` in final output: 0
 - Infrastructure Failures scored as `unknown`: 0
 
-Every model-behavior measurement is a reported result, not a gate. This includes criterion-state macro F1, per-state precision and recall, patient-evidence precision and recall, Match Conclusion accuracy, the pre-correction unsupported-assessment rate, and every cost figure. Gating on them at this sample size would invite optimizing toward a threshold, and held-out results must never drive optimization.
+Every model-behavior measurement is a reported result, not a gate. This includes criterion-state macro F1, per-state precision and recall, patient-evidence precision and recall, Match Conclusion accuracy, the pre-correction unsupported-assessment rate, the verification-induced `unknown` rate, and every cost figure. Gating on them at this sample size would invite optimizing toward a threshold, and held-out results must never drive optimization.
 
-The comparison against the expression-aware one-shot control B2 is a pre-registered, two-sided hypothesis test with no minimum effect threshold. Effect sizes and confidence intervals are published whether or not the test is significant, and a null or negative result is published as such.
+**The first invariant is structural, and that has a consequence for how it may be used.** Reference validity in final output reaches 100% because the verifier degrades every assessment it cannot verify to `unknown` with reason `verification_failed`. It is therefore a statement about the implementation, not a measurement of model behavior, and it may never be compared against a baseline: a variant with no verifier has no such guarantee, so the comparison would report an architectural difference as a result. Comparisons use Full *before* correction.
 
-The pre-registration document — metrics, comparison units, statistical tests, power statement, and falsification condition — is committed before any held-out run, and the published report cites its commit hash. See [`../evaluation/pre-registration.md`](../evaluation/pre-registration.md).
+**What the guarantee costs is itself a reported result.** The verification-induced `unknown` rate — propositions Full committed to before correction and returned as `unknown` after it — is published wherever post-correction validity is published, at equal prominence. A verifier that rejected everything would satisfy every invariant above and produce a worthless system; this metric is what distinguishes the two.
+
+The comparison against the expression-aware one-shot control B2 is a pre-registered, two-sided hypothesis test with no minimum effect threshold, evaluated on Full before correction. Effect sizes and confidence intervals are published whether or not the test is significant, and a null or negative result is published as such. What each variant receives in its prompt — as distinct from what it is permitted to see — is fixed in the pre-registration and is not an implementation choice.
+
+The pre-registration document — metrics, comparison units, per-variant prompt contents, statistical procedure, precision, and falsification condition — is committed before any held-out run, and the published report cites its commit hash. See [`../evaluation/pre-registration.md`](../evaluation/pre-registration.md).
+
+Precision is stated as a procedure rather than as a number. The detectable-difference band is governed by the count of held-out clusters — scenario-trial pairs — not by the count of graded observations inside them, and it is recomputed from development-set data and committed as a dated amendment before the held-out run begins. A band asserted in advance without being derived from anything constrains nothing.
