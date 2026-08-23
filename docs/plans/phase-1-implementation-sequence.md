@@ -10,7 +10,7 @@ Gate scope classification and the cut order under schedule pressure are defined 
 
 Implement core types, state semantics, Boolean aggregation, polarity-to-impact mapping, Match Conclusion, and test fixtures. Freeze four source-aligned trial records with human-reviewed Criterion Expressions so later core gates do not depend on additive retrieval and retain two-axis partitioning.
 
-The four trials are selected for coverage, not convenience: together they must exercise all four Criterion Categories and all supported expression forms, and split cleanly into two development and two held-out trials. Four is the minimum that keeps the Gate 6 trial-and-scenario partition intact if Gate 3 is cut; with six scenarios this yields eight development and sixteen held-out scenario-trial pairs.
+The four trials are selected for coverage, not convenience: together they must exercise all five supported Criterion Categories and all supported expression forms, and split cleanly into two development and two held-out trials. Four is the minimum that keeps the Gate 6 trial-and-scenario partition intact if Gate 3 is cut; with six scenarios this yields eight development and sixteen held-out scenario-trial pairs.
 
 Types: `PatientTimeline`, `TrialRecord`, `EligibilityCriterion`, `CriterionExpression`, `AtomicProposition`, `PatientEvidence`, `TrialEvidence`, `PropositionAssessment`, `CriterionAssessment`, `TrialAssessment`, `CandidateSet`, `MatchingRun`, `ReasoningTrace`, `ScenarioManifest`, `EvalCase`.
 
@@ -19,9 +19,12 @@ Types: `PatientTimeline`, `TrialRecord`, `EligibilityCriterion`, `CriterionExpre
 - Deterministic tests for all four Criterion States and for `not_assessed` as a distinct reporting status
 - `all_of`, `any_of`, and conditional truth tables pass exhaustively, including all-`not_applicable` cases
 - Inclusion and exclusion impact mapping and Match Conclusion derivation pass, including the early-termination rule
+- The Unknown Reason assignment table of specification section 8.0 is implemented as pure code, with a test per row and a test asserting row precedence where two conditions hold at once
+- The Criterion Category enum carries all six values of specification section 6, including `performance_status` and `unsupported`
+- The assessed-set rule of specification section 9 is implemented in the Matching Policy, with tests for a missing expression at each of ranks 1 through 3, for backfill stopping at rank 5, and for fewer than three assessable candidates
 - Every model round-trips through JSON without loss of provenance fields
 - Four frozen trial fixtures contain source-aligned criteria and reviewed expressions, partitioned two development and two held-out
-- The four fixtures collectively cover all four Criterion Categories and all supported expression forms, including at least one conditional expression capable of producing `not_applicable`
+- The four fixtures collectively cover all five supported Criterion Categories and all supported expression forms, including at least one conditional expression capable of producing `not_applicable`
 - Criteria outside the supported categories are authored as `unsupported` rather than omitted
 
 ## Gate 2: Patient Timeline and Timeline Tools — Core
@@ -33,8 +36,9 @@ Parse the four evidence-bearing FHIR R4 resource types into the Patient Timeline
 - Six scenarios build correctly and reproducibly from frozen Bundles
 - Every timeline fact traces to a FHIR resource type, ID, and JSON path
 - `MedicationRequest` is preserved as Unsupported Patient Content and never treated as exposure
-- All seven Planted Distractor kinds are present across the scenario set and each is covered by a test asserting it does not produce a confident assessment
+- All seven Planted Distractor kinds are present across the scenario set and each is covered by a test asserting it does not produce a confident assessment **and that it resolves to the Unknown Reason named in specification section 8.3**
 - Missing, conflicting, post-`assessment_as_of`, `preliminary`, and `entered-in-error` facts never yield `met` or `not_met`
+- A criterion naming a prospective anchor is covered twice: once with an authored substitution, which assesses and displays the substitution, and once without, which yields `ambiguous_criterion`
 - Each tool has deterministic tests including empty-result and ambiguous-result paths
 
 ## Gate 3: Trial Snapshot and Hybrid Retrieval — Additive
@@ -50,6 +54,7 @@ Ingest and freeze 200–500 NSCLC trials. Enforce corpus membership. Implement c
 - Candidate filters cause zero loss of known relevant trials, verified per scenario
 - BM25-only, dense-only, and RRF configurations each run reproducibly and report Recall@5 and Recall@20
 - Authored expressions carry authoring provenance and human-review status; trials lacking expressions report `expression_unavailable`
+- Any authored anchor substitution records the source anchor phrase, the substituted anchor, and its rationale, and is reviewed like any other authored content
 
 **Fallback if cut:** the four frozen core trial fixtures from Gate 1, which preserve the two-axis partition, with retrieval declared out of scope in the report.
 
@@ -61,6 +66,7 @@ Implement the per-proposition agent loop, tool selection, structured output, the
 
 - Fabricated resource IDs, altered values, wrong statuses, out-of-range trial spans, mismatched span text, missing evidence relations, and post-`assessment_as_of` citations are all rejected by injected-fault fixtures, with 100% catch rate
 - `met` and `not_met` without patient evidence are rejected
+- A citation that resolves but cannot establish the claimed state is rejected — a `MedicationRequest` cited as exposure, and a `preliminary` or `entered-in-error` result cited as establishing a state. This is a separate fixture from the missing-evidence case, because every other check passes on it
 - Incorrect expression aggregation is rejected
 - At most one correction occurs per proposition; a second failure yields `unknown` with `verification_failed`
 - Deterministic and model disagreement yields `unknown` with `reasoning_conflict`

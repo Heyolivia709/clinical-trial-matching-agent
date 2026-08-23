@@ -1,8 +1,17 @@
-# Clinical Trial Matching Agent: MVP Specification (v5)
+# Clinical Trial Matching Agent: MVP Specification (v6)
 
 **Status:** Provisionally frozen — see freeze policy below
 **Frozen on:** 2026-08-23
-**Supersedes:** v4 (frozen 2026-08-22). Version 5 makes four changes. It adds the verification-induced `unknown` rate as a reported grounding result, so the verifier's cost is visible beside its benefit. It anchors the pre-registered falsification condition to Full before correction, because final-output reference validity is 100% by construction and therefore cannot serve as a comparison. It splits the delivery surface into a run-scoped Trace Report and a run-independent Evaluation Report, and reorders the Trace Report verdict-first. It records that what each evaluation variant receives in its prompt is fixed in the pre-registration rather than left to implementation. See [ADR 0010](../adr/0010-separate-the-evaluation-report-from-the-trace-report.md).
+
+**Supersedes:** v5 (frozen 2026-08-23). Version 6 closes five gaps that the interface design surfaced by being forced to render behaviour the specification had not defined. Each was resolved silently in a mockup, which is the wrong place for a semantic decision.
+
+- Section 5.1 governs prospective anchors — "within 14 days prior to the first dose of study drug" — through an authored, recorded substitution, never a runtime one.
+- Section 6 adds `performance_status` as a fifth supported Criterion Category and `unsupported` as an explicit sixth value, so ECOG stops being filed under `disease`.
+- Section 8.0 adds a deterministic Unknown Reason decision table, and two reasons — `unusable_status` and `insufficient_precision` — without which three distinct planted hazards all surface as `missing_evidence`.
+- Section 8.1 adds the verifier check for citations that resolve but cannot establish the claimed state. The section 3 demonstration already depended on it.
+- Section 9 defines the assessed set when a top-three candidate has no authored expression, with backfill bounded at the presented rank 5.
+
+**Supersedes:** v4 (frozen 2026-08-22). Version 5 made four changes. It added the verification-induced `unknown` rate as a reported grounding result, so the verifier's cost is visible beside its benefit. It anchored the pre-registered falsification condition to Full before correction, because final-output reference validity is 100% by construction and therefore cannot serve as a comparison. It split the delivery surface into a run-scoped Trace Report and a run-independent Evaluation Report, and reordered the Trace Report verdict-first. It recorded that what each evaluation variant receives in its prompt is fixed in the pre-registration rather than left to implementation. See [ADR 0010](../adr/0010-separate-the-evaluation-report-from-the-trace-report.md).
 
 **Change policy:** Any scope or semantic change must be recorded explicitly here and, when it reverses a rejected alternative, in an ADR. Held-out evaluation results must never drive optimization.
 
@@ -100,15 +109,30 @@ Only facts with usable status and temporal semantics qualify as Patient Evidence
 - Preserve intervals and source date precision.
 - Anchor relative windows to `assessment_as_of` unless the criterion names another anchor.
 - Treat interval endpoints as inclusive unless the source criterion says otherwise.
-- Missing precision required for a comparison yields `unknown`.
-- Conflicting current evidence yields `unknown` when deterministic precedence cannot resolve it.
+- Precision coarser than a comparison requires yields `unknown` with `insufficient_precision`.
+- Conflicting current evidence yields `unknown` with `conflicting_evidence` when deterministic precedence cannot resolve it.
+
+#### Prospective anchors
+
+Many real exclusion criteria anchor to an event that has not happened at screening time: "within 14 days prior to the first dose of study drug", "since randomization", "prior to cycle 1 day 1". Such an anchor is named by the criterion, so the default rule above does not apply, and it cannot be resolved from the patient record because the event does not exist yet.
+
+Substituting `assessment_as_of` silently is prohibited. It is the right proxy in practice — screening is done before enrollment, so "now" is what a coordinator uses — but it changes the semantics of the criterion, and an unrecorded semantic change is the thing this project exists not to do.
+
+The substitution is therefore made once, at authoring time, and never at runtime:
+
+- The Criterion Expression may declare an explicit anchor substitution, recording the source anchor phrase, the substituted anchor, and the authoring rationale. Authoring provenance and review status apply as to any other authored content.
+- A declared substitution is surfaced beside the criterion wherever the assessment is reported, not buried in the trace.
+- If the criterion names an unresolvable anchor and the expression declares no substitution, the proposition yields `unknown` with `ambiguous_criterion`.
+- The model never selects, proposes, or infers an anchor.
+
+Every declared substitution is a screening-time proxy and is listed as such in the limitations section of the published report.
 
 ### 5.2 Observation Policy
 
 - Preserve raw value, comparator, unit, reference range, status, and Clinical Time.
 - Evaluate numeric comparators deterministically within a single unit.
 - Corrected or amended results supersede prior versions while retaining provenance.
-- `preliminary` results cannot establish `met` or `not_met`; `entered-in-error` results are ignored.
+- `preliminary` results cannot establish `met` or `not_met`; `entered-in-error` results are ignored. Where such a result is the only fact for the concept, the proposition yields `unknown` with `unusable_status` rather than `missing_evidence`: a disqualified fact and no fact at all are different diagnoses and the output distinguishes them.
 - Qualitative values are never converted to numbers without a reviewed mapping.
 - Cross-unit conversion, UCUM normalization, and ULN/LLN derivation are out of scope and yield `unknown`.
 
@@ -127,18 +151,24 @@ Out of scope, yielding `unknown`: assay-coverage inference, actionability infere
 
 ## 6. Criterion Scope
 
-Four Criterion Categories are supported:
+Five Criterion Categories are supported, and a sixth value marks everything else:
 
 | Category | Examples |
 | --- | --- |
-| Demographic | age, administrative sex |
-| Disease | NSCLC diagnosis, stage |
-| Biomarker | EGFR, ALK, PD-L1 explicit results |
-| Prior therapy | documented exposure to a named agent |
+| `demographic` | age, administrative sex |
+| `disease` | NSCLC diagnosis, stage |
+| `biomarker` | EGFR, ALK, PD-L1 explicit results |
+| `prior_therapy` | documented exposure to a named agent |
+| `performance_status` | ECOG |
+| `unsupported` | everything outside the five above |
+
+Performance status is a supported category rather than a member of `disease`. Section 5 already places ECOG inside the evidence-bearing boundary, an ECOG criterion is a numeric comparison over a structured `Observation` — the case the deterministic tools handle best — and filing it under `disease` mislabels it in every per-category breakdown the benchmark plan reports.
+
+`unsupported` is a category value, not an absence of one. Without it a proposition outside the supported set has no legal category and acquires a misleading one; the mockups filed interstitial lung disease under `disease` for exactly this reason, so the output claimed the system had assessed a disease criterion when it had not.
 
 Supported expression forms: `all_of`, `any_of`, simple conditional expressions, simple date windows, and simple numeric comparisons.
 
-Any criterion outside these categories or expression forms is authored as an `unsupported` proposition, remains visible in output, and resolves to `unknown` with reason `unsupported_evidence_type`. Criteria are never silently dropped.
+Any criterion outside these categories or expression forms is authored as an `unsupported` proposition, carries category `unsupported`, remains visible in output, and resolves to `unknown` with reason `unsupported_evidence_type`. Criteria are never silently dropped.
 
 ## 7. Criterion Truth and Aggregation
 
@@ -184,7 +214,29 @@ Under early termination, any `not_assessed` criterion forces at least `insuffici
 
 Every `met` or `not_met` Proposition Assessment cites exact Trial Evidence and one or more Patient Evidence references with an explicit `supports` or `contradicts` relation.
 
-Every `unknown` Proposition Assessment carries a structured Unknown Reason: `missing_evidence`, `conflicting_evidence`, `stale_evidence`, `ambiguous_criterion`, `unsupported_evidence_type`, `expression_unavailable`, `verification_failed`, or `reasoning_conflict`.
+Every `unknown` Proposition Assessment carries a structured Unknown Reason: `missing_evidence`, `unusable_status`, `insufficient_precision`, `conflicting_evidence`, `stale_evidence`, `ambiguous_criterion`, `unsupported_evidence_type`, `expression_unavailable`, `verification_failed`, or `reasoning_conflict`.
+
+### 8.0 Unknown Reason Assignment
+
+The reason is chosen by deterministic code from the timeline and the criterion, never by the model, and the choice is reproducible. Assignment runs in three stages.
+
+**Stage 1, before assessment.** A trial with no authored Criterion Expression yields `expression_unavailable` for every one of its criteria.
+
+**Stage 2, from the evidence.** The first matching row wins; rows are evaluated top to bottom.
+
+| Condition at `assessment_as_of` | Reason |
+| --- | --- |
+| The proposition is authored `unsupported`, or the only candidate fact sits in a resource type the boundary does not treat as evidence-bearing | `unsupported_evidence_type` |
+| The criterion names an anchor, threshold, or concept the authored expression could not operationalize, and declares no substitution | `ambiguous_criterion` |
+| No fact for the concept exists, including where the nearest fact is a semantically near but distinct concept, and including where the only occurrence is dated after `assessment_as_of` and therefore excluded | `missing_evidence` |
+| A fact for the concept exists but its status disqualifies it under section 5.2 | `unusable_status` |
+| Two or more qualifying facts disagree and deterministic precedence cannot resolve them | `conflicting_evidence` |
+| A qualifying fact exists but its temporal precision is coarser than the comparison requires | `insufficient_precision` |
+| A qualifying fact exists but falls outside the window the criterion requires, and no in-window fact exists | `stale_evidence` |
+
+**Stage 3, after the agent loop.** `verification_failed` and `reasoning_conflict` replace whatever stage 2 assigned. A second verification failure is the reason regardless of what the evidence looked like.
+
+Two of these reasons exist because collapsing them into `missing_evidence` would have made the benchmark unreadable. Section 8.3 plants a `preliminary` result and a year-only date as distinct hazards; if both surface as "evidence is missing", the failure taxonomy cannot tell them apart from a concept the agent simply never looked for, and the Unknown Reason stops being diagnostic. Each planted distractor kind maps to exactly one reason, and that mapping is what the Gate 2 tests assert.
 
 Every `not_applicable` Proposition Assessment cites the Patient Evidence establishing that the conditional antecedent is false.
 
@@ -201,8 +253,11 @@ A deterministic verifier rejects:
 - Invalid or out-of-range trial spans, or span text that disagrees with the snapshot
 - Missing or unlabeled evidence relations
 - `met` or `not_met` without patient evidence
+- **Citations that resolve but cannot establish the claimed state** — a resource type outside the evidence-bearing boundary cited as evidence, or a fact whose status section 5.2 disqualifies cited as establishing `met` or `not_met`
 - Incorrect expression aggregation
 - Evidence dated after `assessment_as_of`
+
+The sixth check is distinct from the fifth and is not implied by it. A `MedicationRequest` cited as treatment exposure resolves cleanly: the resource exists, the JSON path is valid, the agent is named correctly, and the date is real. Every other check passes. What fails is that order intent is not exposure, so the citation is not Patient Evidence and the assessment has no evidentiary basis. This is the check the injected-fault demonstration in section 3 turns on, and section 8.3 plants the corresponding hazard.
 
 Verification failure triggers exactly one targeted correction. A second failure yields `unknown` with `verification_failed`. Disagreement between deterministic computation and model interpretation yields `unknown` with `reasoning_conflict`.
 
@@ -225,13 +280,17 @@ Infrastructure Failures — unavailable model endpoint, malformed snapshot, tool
 
 Benchmark difficulty comes from deliberately planted evidence hazards rather than clinical subtlety. Scenarios must collectively include all of:
 
-1. An `entered-in-error` biomarker or stage result
-2. A `MedicationRequest` with no corresponding `MedicationAdministration`
-3. An observation dated after `assessment_as_of`
-4. Two conflicting results for the same concept
-5. A date with year-only precision where the criterion requires a finer window
-6. A `preliminary` result relevant to a threshold comparison
-7. A semantically near but non-matching concept, such as ALK expression versus ALK rearrangement
+| # | Hazard | Correct Unknown Reason |
+| --- | --- | --- |
+| 1 | An `entered-in-error` biomarker or stage result | `unusable_status` |
+| 2 | A `MedicationRequest` with no corresponding `MedicationAdministration` | `unsupported_evidence_type` |
+| 3 | An observation dated after `assessment_as_of` | `missing_evidence` |
+| 4 | Two conflicting results for the same concept | `conflicting_evidence` |
+| 5 | A date with year-only precision where the criterion requires a finer window | `insufficient_precision` |
+| 6 | A `preliminary` result relevant to a threshold comparison | `unusable_status` |
+| 7 | A semantically near but non-matching concept, such as ALK expression versus ALK rearrangement | `missing_evidence` |
+
+The right-hand column is a test obligation, not documentation. Gate 2 asserts it per hazard. Two hazards sharing a reason is acceptable where they share a nature — 1 and 6 are both disqualifying statuses, 3 and 7 both leave no qualifying fact — but a hazard resolving to a reason other than the one listed is a defect in either the timeline or the assignment table, and is treated as one.
 
 ## 9. Candidate Retrieval
 
@@ -246,7 +305,11 @@ Two channels run independently over trial-level text — title, conditions and M
 
 Deterministic reciprocal-rank fusion combines the channels. Cross-encoder reranking is out of scope.
 
-Retrieval returns an immutable top 20 with per-channel ranks and scores. The top five by Retrieval Rank are presented; the top three receive full criterion assessment. Review Priority orders assessed trials by Match Conclusion and then Retrieval Rank without overwriting Retrieval Rank. Ranks 4–20 remain visible Unassessed Candidates.
+Retrieval returns an immutable top 20 with per-channel ranks and per-channel scores, both retained and both displayed. The top five by Retrieval Rank are presented. Review Priority orders assessed trials by Match Conclusion and then Retrieval Rank without overwriting Retrieval Rank. Ranks 6–20 remain visible Unassessed Candidates.
+
+**The assessed set is the three highest-ranked presented candidates that have an authored Criterion Expression.** Where a candidate in the top three has none, it is reported as `expression_unavailable` at its own rank and the next presented candidate with an expression takes its place. Backfill never reaches past rank 5: candidates that were not presented are not assessed. Where fewer than three of the presented five have expressions, fewer are assessed and the report says how many and why.
+
+The alternative, assessing strictly the top three and returning two results when one lacks an expression, was rejected as needlessly opaque. Expression coverage is an artifact of this project's authoring budget under ADR 0004, not a property of the trial or of retrieval, so allowing it to shrink the assessed set would report a budget decision as though it were a finding. The bound at rank 5 exists so the assessed set stays inside what the reader was shown.
 
 No blended "AI match score" combines retrieval and eligibility reasoning.
 
@@ -322,7 +385,7 @@ The application entry point stays thin:
 match(patient, snapshot) -> MatchingRun
 ```
 
-A small pure Matching Policy owns the top-20, top-5, top-3, and Review Priority rules. Parser, terminology, evidence packet construction, and index internals are module-internal and have no separate public interface.
+A small pure Matching Policy owns the top-20, top-5, and Review Priority rules, and the assessed-set rule of section 9 including its bounded backfill. Unknown Reason assignment under section 8.0 is likewise pure and deterministic, and belongs to the Criterion Agent module rather than to the model. Parser, terminology, evidence packet construction, and index internals are module-internal and have no separate public interface.
 
 ClinicalTrials.gov has HTTP and fixture adapters. Model inference has hosted, local, and frozen-replay adapters. The retrieval index sits behind a single interface so a larger backend can replace the in-process implementation without touching callers.
 

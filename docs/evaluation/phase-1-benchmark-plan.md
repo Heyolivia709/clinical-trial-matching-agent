@@ -21,7 +21,7 @@ Release gates are therefore restricted to deterministic invariants — propertie
 
 Grounding metrics carry the primary claim, because each citation is an observation and they are far better powered than per-proposition classification accuracy. Macro F1 is reported with its confidence interval and support, and is read as a pre-registered comparison against the expression-aware one-shot B2 control rather than as an absolute capability claim.
 
-Metrics, comparison units, statistical procedure, power, and the falsification condition are fixed in advance in [`pre-registration.md`](pre-registration.md), which is committed before any held-out run. The published report cites its commit hash.
+Metrics, comparison units, per-variant prompt contents, statistical procedure, precision, and the falsification condition are fixed in advance in [`pre-registration.md`](pre-registration.md), which is committed before any held-out run. The published report cites its commit hash.
 
 ## Benchmark Construction and Its Limits
 
@@ -45,7 +45,9 @@ Difficulty comes from Planted Distractors — specification section 8.3 — not 
 
 The three counts are different quantities and are never used interchangeably. Proposition, observation, and cluster are defined in [`pre-registration.md`](pre-registration.md) section 5.1; the cluster count is what governs every interval in this plan.
 
-**Balance requirement:** at least 8 held-out examples per Criterion State, and at least one held-out example per Unknown Reason. Because expressions and scenarios are authored, this is a design obligation on Gate 2 and Gate 3, not an outcome to hope for. Largest-to-smallest state support ratio no greater than 3:1.
+**Balance requirement:** at least 8 held-out examples per Criterion State, and at least one held-out example per evidence-derived Unknown Reason — `missing_evidence`, `unusable_status`, `insufficient_precision`, `conflicting_evidence`, `stale_evidence`, `ambiguous_criterion`, `unsupported_evidence_type`. Because expressions and scenarios are authored, this is a design obligation on Gate 2 and Gate 3, not an outcome to hope for. Largest-to-smallest state support ratio no greater than 3:1.
+
+The three process reasons — `expression_unavailable`, `verification_failed`, `reasoning_conflict` — arise from configuration and injected faults rather than from authored patient content, so they are covered by Gate 4 fixtures instead and are not subject to this requirement.
 
 ## Baselines and Variants
 
@@ -131,7 +133,7 @@ The verification-induced `unknown` rate is the proportion of propositions on whi
 
 Criterion-state macro F1, per-state precision and recall, `unknown` recall, and Match Conclusion accuracy. No metric in this track carries a threshold.
 
-Results are reported per Criterion Category so demographic performance cannot mask biomarker, treatment, or temporal failures, and per state so imbalance stays visible.
+Results are reported per Criterion Category so demographic performance cannot mask biomarker, treatment, performance-status, or temporal failures, and per state so imbalance stays visible. Propositions in the `unsupported` category are Coverage-Only: they are listed with their counts and excluded from every accuracy figure, since their expected state is `unknown` by construction and scoring them would inflate the result.
 
 ### Statistical Procedure
 
@@ -185,7 +187,7 @@ Retrieval metrics stay separate from criterion-state metrics. No blended score i
 
 ## End-to-End Held-Out Suite
 
-Run the held-out pairs through the complete pipeline: retrieval, top-5 presentation, top-3 assessment, verification, and report generation.
+Run the held-out pairs through the complete pipeline: retrieval, top-5 presentation, assessment of the three highest-ranked presented candidates that have authored expressions, verification, and report generation.
 
 The suite verifies Candidate Set completeness, immutable Retrieval Rank, assessed and unassessed labeling, Criterion Coverage, blocker and unresolved and not-assessed counts, Match Conclusion derivation, citation validity, snapshot warnings, trace completeness, and operational measurements.
 
