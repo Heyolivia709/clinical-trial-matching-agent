@@ -68,6 +68,22 @@ class CriterionCategory(StrEnum):
     UNSUPPORTED = "unsupported"
 
 
+class ComparisonOperator(StrEnum):
+    """The comparisons section 6 supports, and only those.
+
+    In `domain` rather than beside the tool that runs them, because an authored
+    Criterion Expression states the comparison a proposition makes and gold
+    derivation reads it from there. One vocabulary, so the expression and the
+    tool cannot mean different things by `<=`.
+    """
+
+    LT = "<"
+    LTE = "<="
+    GT = ">"
+    GTE = ">="
+    EQ = "=="
+
+
 class UnknownReason(StrEnum):
     """Specification section 8.0, assigned by a deterministic table.
 

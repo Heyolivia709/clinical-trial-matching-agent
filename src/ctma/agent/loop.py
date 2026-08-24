@@ -61,6 +61,7 @@ from ctma.domain.assessment import (
 )
 from ctma.domain.base import Frozen
 from ctma.domain.enums import (
+    ComparisonOperator,
     CriterionCategory,
     CriterionState,
     EvidenceRelation,
@@ -89,7 +90,6 @@ from ctma.timeline.tools import (
     ExposureQuery,
     FactQuery,
     LatestObservation,
-    Operator,
     Refusal,
     Verdict,
     compare_numeric,
@@ -146,7 +146,7 @@ a specification change, and section 8.0's vocabulary is closed."""
 class _Comparison(Frozen):
     """The comparison the model read out of the criterion text, for code to run."""
 
-    operator: Operator
+    operator: ComparisonOperator
     threshold: float
     unit: str | None = None
 

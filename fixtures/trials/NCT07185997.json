@@ -56,25 +56,37 @@
    "source_section": "inclusionCriteria",
    "ordinal": 1,
    "source_text": "Histologically or cytologically documented, locally advanced or metastatic Non-Small Cell Lung Cancer (NSCLC) not amenable to curative surgery or radiotherapy.",
-   "expression_version": "v1",
+   "expression_version": "v2",
    "propositions": [
     {
      "proposition_id": "P1",
      "statement": "Non-small cell lung cancer is histologically or cytologically documented",
      "category": "disease",
-     "concept": "NSCLC"
+     "concept": "NSCLC",
+     "predicate": {
+      "kind": "presence",
+      "expects": "present"
+     }
     },
     {
      "proposition_id": "P2",
      "statement": "The disease is locally advanced",
      "category": "disease",
-     "concept": "LOCALLY_ADVANCED_DISEASE"
+     "concept": "LOCALLY_ADVANCED_DISEASE",
+     "predicate": {
+      "kind": "presence",
+      "expects": "present"
+     }
     },
     {
      "proposition_id": "P3",
      "statement": "The disease is metastatic",
      "category": "disease",
-     "concept": "METASTATIC_DISEASE"
+     "concept": "METASTATIC_DISEASE",
+     "predicate": {
+      "kind": "presence",
+      "expects": "present"
+     }
     },
     {
      "proposition_id": "P4",
@@ -112,7 +124,7 @@
     "drafted_by": "assistant",
     "ai_assisted": true,
     "reviewed_by": "rendong",
-    "reviewed_on": "2026-08-24",
+    "reviewed_on": "2026-08-25",
     "review_status": "reviewed"
    }
   },
@@ -122,13 +134,17 @@
    "source_section": "inclusionCriteria",
    "ordinal": 2,
    "source_text": "Documented results of the presence of an Epidermal Growth Factor Receptor (EGFR) PACC mutation in tumor tissue or blood from local testing.",
-   "expression_version": "v1",
+   "expression_version": "v2",
    "propositions": [
     {
      "proposition_id": "P1",
      "statement": "A documented EGFR PACC mutation result is present",
      "category": "biomarker",
-     "concept": "EGFR_PACC_MUTATION"
+     "concept": "EGFR_PACC_MUTATION",
+     "predicate": {
+      "kind": "presence",
+      "expects": "present"
+     }
     }
    ],
    "expression": {
@@ -139,7 +155,7 @@
     "drafted_by": "assistant",
     "ai_assisted": true,
     "reviewed_by": "rendong",
-    "reviewed_on": "2026-08-24",
+    "reviewed_on": "2026-08-25",
     "review_status": "reviewed"
    }
   },
@@ -149,19 +165,27 @@
    "source_section": "inclusionCriteria",
    "ordinal": 3,
    "source_text": "No prior systemic anticancer therapy regimens received for locally advanced or metastatic Non-Small Cell Lung Cancer (NSCLC) including prior treatment with any Epidermal Growth Factor Receptor (EGFR)-targeting agents (e.g., previous (EGFR) TKIs, monoclonal antibodies, or bispecific antibodies).",
-   "expression_version": "v1",
+   "expression_version": "v2",
    "propositions": [
     {
      "proposition_id": "P1",
      "statement": "No documented exposure to systemic anticancer therapy for locally advanced or metastatic disease",
      "category": "prior_therapy",
-     "concept": "SYSTEMIC_ANTICANCER_THERAPY"
+     "concept": "SYSTEMIC_ANTICANCER_THERAPY",
+     "predicate": {
+      "kind": "presence",
+      "expects": "absent"
+     }
     },
     {
      "proposition_id": "P2",
      "statement": "No documented exposure to an EGFR-targeting agent",
      "category": "prior_therapy",
-     "concept": "EGFR_TARGETED_AGENT"
+     "concept": "EGFR_TARGETED_AGENT",
+     "predicate": {
+      "kind": "presence",
+      "expects": "absent"
+     }
     }
    ],
    "expression": {
@@ -181,7 +205,7 @@
     "drafted_by": "assistant",
     "ai_assisted": true,
     "reviewed_by": "rendong",
-    "reviewed_on": "2026-08-24",
+    "reviewed_on": "2026-08-25",
     "review_status": "reviewed"
    }
   },
@@ -191,13 +215,17 @@
    "source_section": "inclusionCriteria",
    "ordinal": 4,
    "source_text": "Patients who have received prior neo-adjuvant and/or adjuvant chemotherapy, immunotherapy, or chemo radiotherapy for non-metastatic disease must have experienced a treatment free interval of at least 12 months.",
-   "expression_version": "v1",
+   "expression_version": "v2",
    "propositions": [
     {
      "proposition_id": "P1",
      "statement": "Documented exposure to neo-adjuvant or adjuvant chemotherapy, immunotherapy or chemoradiotherapy for non-metastatic disease",
      "category": "prior_therapy",
-     "concept": "NEOADJUVANT_OR_ADJUVANT_THERAPY"
+     "concept": "NEOADJUVANT_OR_ADJUVANT_THERAPY",
+     "predicate": {
+      "kind": "presence",
+      "expects": "present"
+     }
     },
     {
      "proposition_id": "P2",
@@ -230,7 +258,7 @@
     "drafted_by": "assistant",
     "ai_assisted": true,
     "reviewed_by": "rendong",
-    "reviewed_on": "2026-08-24",
+    "reviewed_on": "2026-08-25",
     "review_status": "reviewed"
    }
   },
