@@ -180,3 +180,26 @@ def test_a_criterion_from_another_trial_is_refused() -> None:
 def test_records_round_trip_through_json_without_loss() -> None:
     for trial in TRIALS:
         assert TrialRecord.model_validate_json(trial.model_dump_json()) == trial
+
+
+def test_the_one_criterion_counting_from_study_treatment_declares_its_substitution() -> None:
+    """Section 5.1: an anchor the record cannot supply is substituted at
+    authoring time, with a rationale, or the proposition is `ambiguous_criterion`.
+
+    NCT07185997's twelve-month treatment-free interval is counted from the start
+    of study treatment, which has not happened at screening. It read as an
+    ordinary window until the anchor rule was implemented, which is exactly the
+    silent substitution the section prohibits.
+    """
+    criterion = next(
+        item
+        for trial in TRIALS
+        for item in trial.criteria
+        if item.criterion_id == "NCT07185997:INC-4"
+    )
+    window = criterion.propositions[1].window
+    assert window is not None
+    assert window.source_anchor_text is not None
+    assert window.anchor_substitution is not None
+    assert window.anchor_substitution.rationale
+    assert window.anchor_is_resolvable

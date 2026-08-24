@@ -34,7 +34,7 @@ from pydantic import Field
 
 from ctma.domain.base import Frozen
 from ctma.domain.enums import CriterionCategory, TemporalPrecision
-from ctma.domain.expression import TemporalWindow
+from ctma.domain.expression import AnchorSubstitution, TemporalWindow
 from ctma.domain.timeline import (
     ClinicalInterval,
     FactValue,
@@ -164,6 +164,11 @@ class WindowCheck(Frozen):
     refusal: Refusal | None = None
     window_start: dt.date | None = None
     window_end: dt.date | None = None
+    anchor_substitution: AnchorSubstitution | None = None
+    """The authored substitution this window was placed with, when the criterion
+    named an anchor the record cannot supply. Carried on the result so the trace
+    records that the window was anchored at the Assessment Time by declaration,
+    rather than showing a window whose anchor nobody can account for."""
 
 
 def find_patient_facts(
@@ -326,6 +331,7 @@ def check_temporal_window(
             refusal=Refusal.NO_CLINICAL_TIME,
             window_start=start,
             window_end=anchor,
+            anchor_substitution=window.anchor_substitution,
         )
     inclusive = window.endpoints_inclusive
     span = _span(event, anchor)
@@ -339,6 +345,7 @@ def check_temporal_window(
         refusal=Refusal.PRECISION_TOO_COARSE if verdict is Verdict.REFUSED else None,
         window_start=start,
         window_end=anchor,
+        anchor_substitution=window.anchor_substitution,
     )
 
 
