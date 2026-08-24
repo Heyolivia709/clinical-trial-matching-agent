@@ -1,0 +1,7 @@
+# Reject cross-run agent memory
+
+Cross-run memory conflicts structurally with the guarantee this project is built on. A Matching Run is one timeline against one immutable snapshot under frozen configuration, replayable from frozen artifacts under specification section 14, and memory carried between runs makes an assessment depend on execution history, so identical inputs would stop producing identical outputs. Specification section 10 already excludes it, and the offline replay and re-grading the evaluation design depends on would go with it.
+
+The project also already contains the only form of within-run memory whose value it can measure. `evidence_reuse` in specification section 11 reuses verified evidence across criteria in the same trial, records the originating criterion ID, defaults off, and reports its own error propagation separately, per [ADR 0006](0006-gate-multi-turn-behavior-behind-flags.md). That is memory scoped so its cost and its failure mode are both observable. Two further narrow forms remain admissible on the same condition — an assessment cache that is verifiably a semantic no-op against an uncached run, and coordinator session state outside the domain modules — and neither is agent memory in the sense being excluded here.
+
+A system whose behavior is intended to change with accumulated experience is a legitimate thing to build; it belongs in a project whose central claim is not reproducibility.
