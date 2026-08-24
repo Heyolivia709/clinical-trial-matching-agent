@@ -1,0 +1,421 @@
+{
+ "provenance": {
+  "drafted_by": "assistant",
+  "ai_assisted": true,
+  "reviewed_by": "rendong",
+  "reviewed_on": "2026-08-25",
+  "review_status": "reviewed"
+ },
+ "citations": [
+  {
+   "fault_id": "CLEAN",
+   "scenario_id": "SCN-01",
+   "nct_id": "NCT07349537",
+   "expected_rejection": null,
+   "intent": "A correct assessment. Present so the fixture set proves the verifier accepts something: a verifier that rejected everything would satisfy every release gate and be worthless.",
+   "proposal": {
+    "proposition_id": "P2",
+    "state": "met",
+    "trial_evidence": {
+     "snapshot_id": "gate1-trial-fixtures-v1:NCT07349537",
+     "nct_id": "NCT07349537",
+     "source_section": "inclusionCriteria",
+     "criterion_ordinal": 2,
+     "span_start": 82,
+     "span_end": 153,
+     "source_text": "Eastern Cooperative Oncology Group (ECOG) performance status of 0 or 1."
+    },
+    "patient_evidence": [
+     {
+      "facts": [
+       {
+        "resource_type": "Observation",
+        "resource_id": "obs-ecog",
+        "json_path": "entry[8].resource",
+        "clinical_time": "2026-07-28",
+        "precision": "day",
+        "status": "final",
+        "code": "89247-1",
+        "value": "1.0 {score}",
+        "display": "ECOG performance status score"
+       }
+      ],
+      "relation": "supports"
+     }
+    ],
+    "rationale": "The ECOG score recorded at the July clinic visit is 1."
+   }
+  },
+  {
+   "fault_id": "F1",
+   "scenario_id": "SCN-01",
+   "nct_id": "NCT07349537",
+   "expected_rejection": "nonexistent_reference",
+   "intent": "The cited Observation id does not occur anywhere in the Bundle.",
+   "proposal": {
+    "proposition_id": "P2",
+    "state": "met",
+    "trial_evidence": {
+     "snapshot_id": "gate1-trial-fixtures-v1:NCT07349537",
+     "nct_id": "NCT07349537",
+     "source_section": "inclusionCriteria",
+     "criterion_ordinal": 2,
+     "span_start": 82,
+     "span_end": 153,
+     "source_text": "Eastern Cooperative Oncology Group (ECOG) performance status of 0 or 1."
+    },
+    "patient_evidence": [
+     {
+      "facts": [
+       {
+        "resource_type": "Observation",
+        "resource_id": "obs-ecog-0742",
+        "json_path": "entry[8].resource",
+        "clinical_time": "2026-07-28",
+        "precision": "day",
+        "status": "final",
+        "code": "89247-1",
+        "value": "1.0 {score}",
+        "display": "ECOG performance status score"
+       }
+      ],
+      "relation": "supports"
+     }
+    ],
+    "rationale": "The ECOG score recorded at the July clinic visit is 1."
+   }
+  },
+  {
+   "fault_id": "F2",
+   "scenario_id": "SCN-01",
+   "nct_id": "NCT07349537",
+   "expected_rejection": "citation_disagrees_with_timeline",
+   "intent": "The right resource and the wrong number: the record holds an ECOG of 1 and the citation reports 0. Every field a reader checks by eye is correct.",
+   "proposal": {
+    "proposition_id": "P2",
+    "state": "met",
+    "trial_evidence": {
+     "snapshot_id": "gate1-trial-fixtures-v1:NCT07349537",
+     "nct_id": "NCT07349537",
+     "source_section": "inclusionCriteria",
+     "criterion_ordinal": 2,
+     "span_start": 82,
+     "span_end": 153,
+     "source_text": "Eastern Cooperative Oncology Group (ECOG) performance status of 0 or 1."
+    },
+    "patient_evidence": [
+     {
+      "facts": [
+       {
+        "resource_type": "Observation",
+        "resource_id": "obs-ecog",
+        "json_path": "entry[8].resource",
+        "clinical_time": "2026-07-28",
+        "precision": "day",
+        "status": "final",
+        "code": "89247-1",
+        "value": "0.0 {score}",
+        "display": "ECOG performance status score"
+       }
+      ],
+      "relation": "supports"
+     }
+    ],
+    "rationale": "The ECOG score recorded at the July clinic visit is 1."
+   }
+  },
+  {
+   "fault_id": "F3",
+   "scenario_id": "SCN-01",
+   "nct_id": "NCT07349537",
+   "expected_rejection": "invalid_trial_span",
+   "intent": "The span is shifted seven characters into the eligibility text, so it no longer covers the criterion the citation quotes.",
+   "proposal": {
+    "proposition_id": "P2",
+    "state": "met",
+    "trial_evidence": {
+     "snapshot_id": "gate1-trial-fixtures-v1:NCT07349537",
+     "nct_id": "NCT07349537",
+     "source_section": "inclusionCriteria",
+     "criterion_ordinal": 2,
+     "span_start": 89,
+     "span_end": 160,
+     "source_text": "Eastern Cooperative Oncology Group (ECOG) performance status of 0 or 1."
+    },
+    "patient_evidence": [
+     {
+      "facts": [
+       {
+        "resource_type": "Observation",
+        "resource_id": "obs-ecog",
+        "json_path": "entry[8].resource",
+        "clinical_time": "2026-07-28",
+        "precision": "day",
+        "status": "final",
+        "code": "89247-1",
+        "value": "1.0 {score}",
+        "display": "ECOG performance status score"
+       }
+      ],
+      "relation": "supports"
+     }
+    ],
+    "rationale": "The ECOG score recorded at the July clinic visit is 1."
+   }
+  },
+  {
+   "fault_id": "F4",
+   "scenario_id": "SCN-01",
+   "nct_id": "NCT07349537",
+   "expected_rejection": "missing_evidence_relation",
+   "intent": "A fact cited with no stated relation. It reads as support to anyone skimming, and it is a fact placed near a claim rather than evidence for it.",
+   "proposal": {
+    "proposition_id": "P2",
+    "state": "met",
+    "trial_evidence": {
+     "snapshot_id": "gate1-trial-fixtures-v1:NCT07349537",
+     "nct_id": "NCT07349537",
+     "source_section": "inclusionCriteria",
+     "criterion_ordinal": 2,
+     "span_start": 82,
+     "span_end": 153,
+     "source_text": "Eastern Cooperative Oncology Group (ECOG) performance status of 0 or 1."
+    },
+    "patient_evidence": [
+     {
+      "facts": [
+       {
+        "resource_type": "Observation",
+        "resource_id": "obs-ecog",
+        "json_path": "entry[8].resource",
+        "clinical_time": "2026-07-28",
+        "precision": "day",
+        "status": "final",
+        "code": "89247-1",
+        "value": "1.0 {score}",
+        "display": "ECOG performance status score"
+       }
+      ],
+      "relation": null
+     }
+    ],
+    "rationale": "The ECOG score recorded at the July clinic visit is 1."
+   }
+  },
+  {
+   "fault_id": "F5",
+   "scenario_id": "SCN-01",
+   "nct_id": "NCT07349537",
+   "expected_rejection": "state_without_patient_evidence",
+   "intent": "A confident state with no citation at all.",
+   "proposal": {
+    "proposition_id": "P2",
+    "state": "met",
+    "trial_evidence": {
+     "snapshot_id": "gate1-trial-fixtures-v1:NCT07349537",
+     "nct_id": "NCT07349537",
+     "source_section": "inclusionCriteria",
+     "criterion_ordinal": 2,
+     "span_start": 82,
+     "span_end": 153,
+     "source_text": "Eastern Cooperative Oncology Group (ECOG) performance status of 0 or 1."
+    },
+    "patient_evidence": [],
+    "rationale": "The ECOG score recorded at the July clinic visit is 1."
+   }
+  },
+  {
+   "fault_id": "F6",
+   "scenario_id": "SCN-04",
+   "nct_id": "NCT07185997",
+   "expected_rejection": "citation_cannot_establish_state",
+   "intent": "An osimertinib order cited as treatment exposure. The resource exists, the path resolves, the drug is right and the date is real — every other check passes. Order intent is not exposure, so the assessment rests on nothing. This is the fault the section 3 demonstration turns on.",
+   "proposal": {
+    "proposition_id": "P2",
+    "state": "met",
+    "trial_evidence": {
+     "snapshot_id": "gate1-trial-fixtures-v1:NCT07185997",
+     "nct_id": "NCT07185997",
+     "source_section": "inclusionCriteria",
+     "criterion_ordinal": 3,
+     "span_start": 333,
+     "span_end": 628,
+     "source_text": "No prior systemic anticancer therapy regimens received for locally advanced or metastatic Non-Small Cell Lung Cancer (NSCLC) including prior treatment with any Epidermal Growth Factor Receptor (EGFR)-targeting agents (e.g., previous (EGFR) TKIs, monoclonal antibodies, or bispecific antibodies)."
+    },
+    "patient_evidence": [
+     {
+      "facts": [
+       {
+        "resource_type": "MedicationRequest",
+        "resource_id": "medreq-osi",
+        "json_path": "entry[10].resource",
+        "clinical_time": null,
+        "precision": null,
+        "status": "active",
+        "code": "1721581",
+        "value": null,
+        "display": "osimertinib 80 MG Oral Tablet"
+       }
+      ],
+      "relation": "contradicts"
+     }
+    ],
+    "rationale": "The patient was prescribed osimertinib, an EGFR-targeting agent."
+   }
+  },
+  {
+   "fault_id": "F7",
+   "scenario_id": "SCN-03",
+   "nct_id": "NCT07349537",
+   "expected_rejection": "citation_cannot_establish_state",
+   "intent": "A preliminary ECOG score cited as establishing the threshold. The value reads plainly; the status says it cannot carry a confident state.",
+   "proposal": {
+    "proposition_id": "P2",
+    "state": "met",
+    "trial_evidence": {
+     "snapshot_id": "gate1-trial-fixtures-v1:NCT07349537",
+     "nct_id": "NCT07349537",
+     "source_section": "inclusionCriteria",
+     "criterion_ordinal": 2,
+     "span_start": 82,
+     "span_end": 153,
+     "source_text": "Eastern Cooperative Oncology Group (ECOG) performance status of 0 or 1."
+    },
+    "patient_evidence": [
+     {
+      "facts": [
+       {
+        "resource_type": "Observation",
+        "resource_id": "obs-ecog-prelim",
+        "json_path": "entry[7].resource",
+        "clinical_time": "2026-07-30",
+        "precision": "day",
+        "status": "preliminary",
+        "code": "89247-1",
+        "value": "1.0 {score}",
+        "display": "ECOG performance status score"
+       }
+      ],
+      "relation": "supports"
+     }
+    ],
+    "rationale": "The ECOG score on file is 1."
+   }
+  },
+  {
+   "fault_id": "F8",
+   "scenario_id": "SCN-02",
+   "nct_id": "NCT07185997",
+   "expected_rejection": "citation_cannot_establish_state",
+   "intent": "A retracted biomarker result cited as establishing a biomarker criterion. The result is in the record and was withdrawn as entered in error.",
+   "proposal": {
+    "proposition_id": "P1",
+    "state": "met",
+    "trial_evidence": {
+     "snapshot_id": "gate1-trial-fixtures-v1:NCT07185997",
+     "nct_id": "NCT07185997",
+     "source_section": "inclusionCriteria",
+     "criterion_ordinal": 2,
+     "span_start": 191,
+     "span_end": 330,
+     "source_text": "Documented results of the presence of an Epidermal Growth Factor Receptor (EGFR) PACC mutation in tumor tissue or blood from local testing."
+    },
+    "patient_evidence": [
+     {
+      "facts": [
+       {
+        "resource_type": "Observation",
+        "resource_id": "obs-pdl1-error",
+        "json_path": "entry[5].resource",
+        "clinical_time": "2025-02-02",
+        "precision": "day",
+        "status": "entered-in-error",
+        "code": "83052-1",
+        "value": "60.0 %",
+        "display": "PD-L1 by clone 22C3 [Presence] in Tissue by Immune stain"
+       }
+      ],
+      "relation": "supports"
+     }
+    ],
+    "rationale": "A biomarker result is documented for this patient."
+   }
+  },
+  {
+   "fault_id": "F9",
+   "scenario_id": "SCN-04",
+   "nct_id": "NCT07349537",
+   "expected_rejection": "evidence_after_assessment_time",
+   "intent": "The only ECOG score in the record was written two weeks after the Assessment Time. At screening it did not exist.",
+   "proposal": {
+    "proposition_id": "P1",
+    "state": "met",
+    "trial_evidence": {
+     "snapshot_id": "gate1-trial-fixtures-v1:NCT07349537",
+     "nct_id": "NCT07349537",
+     "source_section": "inclusionCriteria",
+     "criterion_ordinal": 2,
+     "span_start": 82,
+     "span_end": 153,
+     "source_text": "Eastern Cooperative Oncology Group (ECOG) performance status of 0 or 1."
+    },
+    "patient_evidence": [
+     {
+      "facts": [
+       {
+        "resource_type": "Observation",
+        "resource_id": "obs-ecog-late",
+        "json_path": "entry[8].resource",
+        "clinical_time": "2026-07-15",
+        "precision": "day",
+        "status": "final",
+        "code": "89247-1",
+        "value": "0.0 {score}",
+        "display": "ECOG performance status score"
+       }
+      ],
+      "relation": "supports"
+     }
+    ],
+    "rationale": "The most recent ECOG score is 0."
+   }
+  }
+ ],
+ "aggregations": [
+  {
+   "fault_id": "A-CLEAN",
+   "nct_id": "NCT07349537",
+   "criterion_id": "NCT07349537:INC-2",
+   "proposition_states": {
+    "P1": "not_met",
+    "P2": "met"
+   },
+   "claimed_state": "met",
+   "expected_rejection": null,
+   "intent": "'0 or 1' is an any_of, and one branch is met."
+  },
+  {
+   "fault_id": "A1",
+   "nct_id": "NCT07349537",
+   "criterion_id": "NCT07349537:INC-2",
+   "proposition_states": {
+    "P1": "not_met",
+    "P2": "not_met"
+   },
+   "claimed_state": "met",
+   "expected_rejection": "incorrect_aggregation",
+   "intent": "Both branches of the any_of are not_met, and the claim is met."
+  },
+  {
+   "fault_id": "A2",
+   "nct_id": "NCT07185997",
+   "criterion_id": "NCT07185997:INC-3",
+   "proposition_states": {
+    "P1": "met"
+   },
+   "claimed_state": "met",
+   "expected_rejection": "incorrect_aggregation",
+   "intent": "The all_of has two branches and only one was assessed. Reading the missing one as unknown would satisfy the truth table while hiding a dropped assessment."
+  }
+ ]
+}

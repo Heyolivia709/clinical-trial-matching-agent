@@ -196,6 +196,10 @@ _Avoid_: Retry loop, self-healing
 
 ### Assessment
 
+**Proposed Assessment**:
+What the model returns about one Atomic Proposition before anything is checked: a state, the citations it offered, and the trial text it read. Schema-valid and nothing more. It becomes a Proposition Assessment only by passing the Evidence Verifier, and the one-shot baseline produces one too, so the same standard grades both.
+_Avoid_: Draft assessment, candidate answer
+
 **Proposition Assessment**:
 The evidence-grounded judgment for one Atomic Proposition, including its Criterion State, cited patient and trial evidence, tool calls, and verifier outcome.
 _Avoid_: Criterion Assessment, eligibility decision
