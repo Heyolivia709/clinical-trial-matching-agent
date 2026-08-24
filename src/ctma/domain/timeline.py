@@ -165,12 +165,20 @@ class UnsupportedReason(StrEnum):
 
 
 class UnsupportedContent(Frozen):
-    """Bundle content preserved for provenance and not interpreted."""
+    """Bundle content preserved for provenance and not interpreted.
+
+    `code` is the source code as written, not a normalized concept. It is here so
+    a tool can answer "there was an order for this drug, and no administration":
+    without it, the inventory cannot tell a `MedicationRequest` for the drug in
+    question from one for something else, and `unsupported_evidence_type` becomes
+    indistinguishable from `missing_evidence`.
+    """
 
     resource_type: str = Field(min_length=1)
     resource_id: str | None = None
     json_path: str = Field(min_length=1)
     reason: UnsupportedReason
+    code: Coding | None = None
 
 
 class Demographics(Frozen):
