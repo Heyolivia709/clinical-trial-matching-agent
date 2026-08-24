@@ -14,20 +14,10 @@ from __future__ import annotations
 import datetime as dt
 from typing import Annotated, Literal, Self
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import Field, model_validator
 
+from ctma.domain.base import Frozen
 from ctma.domain.enums import CriterionCategory, CriterionPolarity, ReviewStatus
-
-
-class Frozen(BaseModel):
-    """Immutable, closed to unknown fields, and validated on assignment.
-
-    Authored artifacts are versioned and frozen by the specification, so
-    mutability is a defect rather than a convenience. `extra="forbid"` means a
-    typo in an authored JSON file fails loudly instead of being dropped.
-    """
-
-    model_config = ConfigDict(frozen=True, extra="forbid", validate_assignment=True)
 
 
 class AuthoringProvenance(Frozen):

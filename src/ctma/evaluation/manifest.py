@@ -20,8 +20,9 @@ from typing import Self
 
 from pydantic import Field, model_validator
 
+from ctma.domain.base import Frozen
 from ctma.domain.enums import TemporalPrecision, UnknownReason
-from ctma.domain.expression import AuthoringProvenance, Frozen
+from ctma.domain.expression import AuthoringProvenance
 
 
 class DistractorKind(StrEnum):
