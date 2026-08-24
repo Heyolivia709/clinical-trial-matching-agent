@@ -1,6 +1,6 @@
 """Module layering, enforced rather than documented.
 
-Specification section 12 defines four deep modules behind small interfaces.
+Specification section 12 defines three deep modules behind small interfaces.
 Specification section 15 and ADR 0007 require the report to be generated from
 frozen artifacts and never to become a dependency of a reasoning module.
 Specification section 4.4 requires that the matching system never receive a
@@ -10,8 +10,8 @@ All three are structural claims, so they are checked structurally. A comment
 saying "the report is built last" does not survive a hurried afternoon; an
 import that fails CI does.
 
-`policy` and `match` are listed before they exist. They arrive in Gate 1, and
-listing them now means the layering decision is already made when they do.
+`match` is listed before it exists. Listing it now means the layering decision
+is already made when it arrives.
 """
 
 from __future__ import annotations
@@ -38,14 +38,11 @@ ALLOWED: dict[str, frozenset[str]] = {
     "adapters": frozenset({"domain"}),
     "policy": frozenset({"domain"}),
     "timeline": frozenset({"domain", "adapters"}),
-    "retrieval": frozenset({"domain", "adapters"}),
     "agent": frozenset({"domain", "adapters", "timeline", "policy"}),
     "supervisor": frozenset({"domain", "agent"}),
-    "match": frozenset(
-        {"domain", "adapters", "timeline", "retrieval", "agent", "supervisor", "policy"}
-    ),
+    "match": frozenset({"domain", "adapters", "timeline", "agent", "supervisor", "policy"}),
     "evaluation": frozenset(
-        {"domain", "adapters", "timeline", "retrieval", "agent", "supervisor", "policy", "match"}
+        {"domain", "adapters", "timeline", "agent", "supervisor", "policy", "match"}
     ),
     "report": frozenset({"domain"}),
 }
@@ -138,7 +135,7 @@ def _models() -> list[type[BaseModel]]:
 def test_every_model_is_frozen_and_closed_to_unknown_fields() -> None:
     """Immutability is a requirement of the design, not a habit of the authors.
 
-    Snapshots, expressions, retrieval ranks, assessments, and runs are all
+    Snapshots, expressions, candidate ranks, assessments, and runs are all
     specified as immutable, and a model that subclasses `BaseModel` directly
     instead of `Frozen` looks identical at the call site until something mutates
     a frozen artifact. `extra="forbid"` is here for the same reason: a typo in an

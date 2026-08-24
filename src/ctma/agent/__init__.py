@@ -1,4 +1,4 @@
-"""Criterion Agent deep module. Gate 4.
+"""Criterion Agent deep module. Gate 3.
 
     assess(timeline, trial) -> TrialAssessment
 

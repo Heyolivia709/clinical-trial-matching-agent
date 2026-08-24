@@ -83,8 +83,8 @@ class _PropositionRecord(Frozen):
     def last_verdict(self) -> VerifierVerdict | None:
         """The verdict the assessment was left with, or None if unverified.
 
-        Unverified is a real configuration: the no-verifier ablation runs the
-        loop without one, and its assessments are graded offline like any other.
+        Unverified is a real configuration: the no-verifier variant runs the loop
+        without one, and its assessments are graded offline like any other.
         """
         return self.verification[-1].verdict if self.verification else None
 

@@ -20,7 +20,6 @@ from ctma.domain.enums import (
     CriterionPolarity,
     EvidenceRelation,
     Partition,
-    RetrievalChannel,
     ReviewStatus,
     TemporalPrecision,
     UnknownReason,
@@ -38,7 +37,6 @@ from ctma.domain.expression import (
 from ctma.domain.run import (
     CandidateSet,
     CandidateTrial,
-    ChannelRank,
     MatchingRun,
     ModelAdapter,
     ModelConfiguration,
@@ -47,7 +45,7 @@ from ctma.domain.run import (
     SupervisorConfiguration,
 )
 from ctma.domain.trace import Measurements
-from ctma.policy import RetrievedTrial
+from ctma.policy import CandidateInput
 
 REVIEWED = AuthoringProvenance(
     drafted_by="assistant",
@@ -223,11 +221,6 @@ def candidate(
         snapshot_record_id=f"{SNAPSHOT_ID}:{nct_id}",
         retrieval_rank=retrieval_rank,
         status=status,
-        fused_score=1.0 / retrieval_rank,
-        channel_ranks=(
-            ChannelRank(channel=RetrievalChannel.BM25, rank=retrieval_rank, score=12.5),
-            ChannelRank(channel=RetrievalChannel.DENSE, rank=retrieval_rank, score=0.81),
-        ),
     )
 
 
@@ -244,8 +237,6 @@ def candidate_set() -> CandidateSet:
 
 def run_configuration() -> RunConfiguration:
     return RunConfiguration(
-        retrieval_version="retrieval-v1",
-        embedding_model="bge-small-en-v1.5",
         tool_version="tools-v1",
         evaluator_version="evaluator-v1",
         hardware_profile="apple-m3-16gb",
@@ -292,13 +283,11 @@ def matching_run(
     )
 
 
-def retrieved(rank: int, *, has_expression: bool = True) -> RetrievedTrial:
-    """One retrieval hit. `rank` only names the trial; the policy numbers them."""
+def retrieved(rank: int, *, has_expression: bool = True) -> CandidateInput:
+    """One candidate. `rank` only names the trial; the policy numbers them."""
     nct_id = f"NCT0500{rank:04d}"
-    return RetrievedTrial(
+    return CandidateInput(
         nct_id=nct_id,
         snapshot_record_id=f"{SNAPSHOT_ID}:{nct_id}",
         has_authored_expression=has_expression,
-        fused_score=1.0 / rank,
-        channel_ranks=(ChannelRank(channel=RetrievalChannel.BM25, rank=rank, score=12.5),),
     )
