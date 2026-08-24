@@ -84,3 +84,17 @@ Parser, terminology, evidence-packet construction, and index internals are modul
 Implementation is acceptance-criteria-driven with no calendar plan. Gate scope is classified as core or additive in specification section 19; cut from the bottom of that list under schedule pressure, and delete the corresponding claims from the report when a stage is cut.
 
 The trace report is generated from frozen traces and is built last. It must never become a dependency of any reasoning module.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live as GitHub issues in `Heyolivia709/clinical-trial-matching-agent`, operated through the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five canonical triage roles, each label string equal to its name. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: `CONTEXT.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
