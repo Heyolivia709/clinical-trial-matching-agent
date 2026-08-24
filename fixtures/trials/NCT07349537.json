@@ -1,0 +1,474 @@
+{
+  "nct_id": "NCT07349537",
+  "snapshot_record_id": "gate1-trial-fixtures-v1:NCT07349537",
+  "partition": "development",
+  "source_url": "https://clinicaltrials.gov/study/NCT07349537",
+  "overall_status": "RECRUITING",
+  "study_type": "INTERVENTIONAL",
+  "phases": [
+    "PHASE1"
+  ],
+  "last_update_posted": "2026-07-10",
+  "recruiting_countries": [
+    "United States"
+  ],
+  "brief_title": "Study of RMC-5127 in Patients With Advanced KRAS G12V-Mutant Solid Tumors",
+  "brief_summary": "The purpose of this study is to evaluate the safety, tolerability, pharmacokinetics (PK), and preliminary antitumor activity of RMC-5127 as a monotherapy and in combination with either daraxonrasib or cetuximab in adults with KRAS G12V-mutant solid tumors.",
+  "conditions": [
+    "Non-small Cell Lung Cancer (NSCLC)",
+    "Colorectal Cancer (CRC)",
+    "Pancreatic Adenocarcinoma",
+    "Pancreatic Ductal Adenocarcinoma (PDAC)",
+    "PDAC",
+    "CRC",
+    "NSCLC",
+    "Pancreatic Cancer",
+    "Lung Cancer (NSCLC)",
+    "Advanced Solid Tumors"
+  ],
+  "mesh_terms": [
+    "Carcinoma, Non-Small-Cell Lung",
+    "Colorectal Neoplasms",
+    "Pancreatic Neoplasms",
+    "Lung Neoplasms"
+  ],
+  "interventions": [
+    "RMC-5127",
+    "daraxonrasib",
+    "cetuximab"
+  ],
+  "eligibility_source_text": "Inclusion Criteria:\n\n* At least 18 years old and has provided informed consent.\n* Eastern Cooperative Oncology Group (ECOG) performance status of 0 or 1.\n* Pathologically documented, locally advanced or metastatic KRAS G12V-mutated solid tumor malignancy.\n* Received and progressed or been intolerant to prior standard therapy (including targeted therapy) appropriate for tumor type and stage.\n* Measurable per RECIST v1.1\n* Adequate organ function (bone marrow, liver, kidney, coagulation).\n* Able to take oral medications.\n\nExclusion Criteria:\n\n* Primary central nervous system (CNS) tumors\n* Prior therapy with KRAS G12V inhibitor or direct RAS-targeted therapy (eg. degraders and/or inhibitors).\n* Any conditions that may affect the ability to take or absorb study drug.\n* Major surgery within 28 days prior to receiving study drug(s).\n* Patient is unable or unwilling to comply with protocol-required study visits or procedures.",
+  "eligibility_sha256": "e1a344c73975219af8fda4525e386a6168f2b06cbbaf7741f9032782eeada979",
+  "criteria": [
+    {
+      "criterion_id": "NCT07349537:INC-1",
+      "polarity": "inclusion",
+      "source_section": "inclusionCriteria",
+      "ordinal": 1,
+      "source_text": "At least 18 years old and has provided informed consent.",
+      "expression_version": "v1",
+      "propositions": [
+        {
+          "proposition_id": "P1",
+          "statement": "Age at Assessment Time is at least 18 years",
+          "category": "demographic",
+          "concept": "AGE_YEARS"
+        },
+        {
+          "proposition_id": "P2",
+          "statement": "Informed consent has been provided",
+          "category": "unsupported"
+        }
+      ],
+      "expression": {
+        "kind": "all_of",
+        "children": [
+          {
+            "kind": "proposition",
+            "proposition_id": "P1"
+          },
+          {
+            "kind": "proposition",
+            "proposition_id": "P2"
+          }
+        ]
+      },
+      "provenance": {
+        "drafted_by": "assistant",
+        "ai_assisted": true,
+        "reviewed_by": "rendong",
+        "reviewed_on": "2026-08-24",
+        "review_status": "reviewed"
+      }
+    },
+    {
+      "criterion_id": "NCT07349537:INC-2",
+      "polarity": "inclusion",
+      "source_section": "inclusionCriteria",
+      "ordinal": 2,
+      "source_text": "Eastern Cooperative Oncology Group (ECOG) performance status of 0 or 1.",
+      "expression_version": "v1",
+      "propositions": [
+        {
+          "proposition_id": "P1",
+          "statement": "ECOG performance status is 0",
+          "category": "performance_status",
+          "concept": "ECOG_SCORE"
+        },
+        {
+          "proposition_id": "P2",
+          "statement": "ECOG performance status is 1",
+          "category": "performance_status",
+          "concept": "ECOG_SCORE"
+        }
+      ],
+      "expression": {
+        "kind": "any_of",
+        "children": [
+          {
+            "kind": "proposition",
+            "proposition_id": "P1"
+          },
+          {
+            "kind": "proposition",
+            "proposition_id": "P2"
+          }
+        ]
+      },
+      "provenance": {
+        "drafted_by": "assistant",
+        "ai_assisted": true,
+        "reviewed_by": "rendong",
+        "reviewed_on": "2026-08-24",
+        "review_status": "reviewed"
+      }
+    },
+    {
+      "criterion_id": "NCT07349537:INC-3",
+      "polarity": "inclusion",
+      "source_section": "inclusionCriteria",
+      "ordinal": 3,
+      "source_text": "Pathologically documented, locally advanced or metastatic KRAS G12V-mutated solid tumor malignancy.",
+      "expression_version": "v1",
+      "propositions": [
+        {
+          "proposition_id": "P1",
+          "statement": "A solid tumour malignancy is pathologically documented",
+          "category": "disease",
+          "concept": "SOLID_TUMOR_MALIGNANCY"
+        },
+        {
+          "proposition_id": "P2",
+          "statement": "The disease is locally advanced",
+          "category": "disease",
+          "concept": "LOCALLY_ADVANCED_DISEASE"
+        },
+        {
+          "proposition_id": "P3",
+          "statement": "The disease is metastatic",
+          "category": "disease",
+          "concept": "METASTATIC_DISEASE"
+        },
+        {
+          "proposition_id": "P4",
+          "statement": "A KRAS G12V mutation is documented",
+          "category": "biomarker",
+          "concept": "KRAS_G12V"
+        }
+      ],
+      "expression": {
+        "kind": "all_of",
+        "children": [
+          {
+            "kind": "proposition",
+            "proposition_id": "P1"
+          },
+          {
+            "kind": "any_of",
+            "children": [
+              {
+                "kind": "proposition",
+                "proposition_id": "P2"
+              },
+              {
+                "kind": "proposition",
+                "proposition_id": "P3"
+              }
+            ]
+          },
+          {
+            "kind": "proposition",
+            "proposition_id": "P4"
+          }
+        ]
+      },
+      "provenance": {
+        "drafted_by": "assistant",
+        "ai_assisted": true,
+        "reviewed_by": "rendong",
+        "reviewed_on": "2026-08-24",
+        "review_status": "reviewed"
+      }
+    },
+    {
+      "criterion_id": "NCT07349537:INC-4",
+      "polarity": "inclusion",
+      "source_section": "inclusionCriteria",
+      "ordinal": 4,
+      "source_text": "Received and progressed or been intolerant to prior standard therapy (including targeted therapy) appropriate for tumor type and stage.",
+      "expression_version": "v1",
+      "propositions": [
+        {
+          "proposition_id": "P1",
+          "statement": "Documented exposure to prior standard systemic therapy",
+          "category": "prior_therapy",
+          "concept": "PRIOR_SYSTEMIC_THERAPY"
+        },
+        {
+          "proposition_id": "P2",
+          "statement": "The disease progressed on that therapy",
+          "category": "unsupported"
+        },
+        {
+          "proposition_id": "P3",
+          "statement": "The patient was intolerant to that therapy",
+          "category": "unsupported"
+        }
+      ],
+      "expression": {
+        "kind": "all_of",
+        "children": [
+          {
+            "kind": "proposition",
+            "proposition_id": "P1"
+          },
+          {
+            "kind": "any_of",
+            "children": [
+              {
+                "kind": "proposition",
+                "proposition_id": "P2"
+              },
+              {
+                "kind": "proposition",
+                "proposition_id": "P3"
+              }
+            ]
+          }
+        ]
+      },
+      "provenance": {
+        "drafted_by": "assistant",
+        "ai_assisted": true,
+        "reviewed_by": "rendong",
+        "reviewed_on": "2026-08-24",
+        "review_status": "reviewed"
+      }
+    },
+    {
+      "criterion_id": "NCT07349537:INC-5",
+      "polarity": "inclusion",
+      "source_section": "inclusionCriteria",
+      "ordinal": 5,
+      "source_text": "Measurable per RECIST v1.1",
+      "expression_version": "v1",
+      "propositions": [
+        {
+          "proposition_id": "P1",
+          "statement": "Disease is measurable per RECIST v1.1",
+          "category": "unsupported"
+        }
+      ],
+      "expression": {
+        "kind": "proposition",
+        "proposition_id": "P1"
+      },
+      "provenance": {
+        "drafted_by": "assistant",
+        "ai_assisted": true,
+        "reviewed_by": "rendong",
+        "reviewed_on": "2026-08-24",
+        "review_status": "reviewed"
+      }
+    },
+    {
+      "criterion_id": "NCT07349537:INC-6",
+      "polarity": "inclusion",
+      "source_section": "inclusionCriteria",
+      "ordinal": 6,
+      "source_text": "Adequate organ function (bone marrow, liver, kidney, coagulation).",
+      "expression_version": "v1",
+      "propositions": [
+        {
+          "proposition_id": "P1",
+          "statement": "Bone marrow, liver, kidney and coagulation function are adequate",
+          "category": "unsupported"
+        }
+      ],
+      "expression": {
+        "kind": "proposition",
+        "proposition_id": "P1"
+      },
+      "provenance": {
+        "drafted_by": "assistant",
+        "ai_assisted": true,
+        "reviewed_by": "rendong",
+        "reviewed_on": "2026-08-24",
+        "review_status": "reviewed"
+      }
+    },
+    {
+      "criterion_id": "NCT07349537:INC-7",
+      "polarity": "inclusion",
+      "source_section": "inclusionCriteria",
+      "ordinal": 7,
+      "source_text": "Able to take oral medications.",
+      "expression_version": "v1",
+      "propositions": [
+        {
+          "proposition_id": "P1",
+          "statement": "The patient is able to take oral medications",
+          "category": "unsupported"
+        }
+      ],
+      "expression": {
+        "kind": "proposition",
+        "proposition_id": "P1"
+      },
+      "provenance": {
+        "drafted_by": "assistant",
+        "ai_assisted": true,
+        "reviewed_by": "rendong",
+        "reviewed_on": "2026-08-24",
+        "review_status": "reviewed"
+      }
+    },
+    {
+      "criterion_id": "NCT07349537:EXC-1",
+      "polarity": "exclusion",
+      "source_section": "exclusionCriteria",
+      "ordinal": 1,
+      "source_text": "Primary central nervous system (CNS) tumors",
+      "expression_version": "v1",
+      "propositions": [
+        {
+          "proposition_id": "P1",
+          "statement": "A primary central nervous system tumour is documented",
+          "category": "disease",
+          "concept": "PRIMARY_CNS_TUMOR"
+        }
+      ],
+      "expression": {
+        "kind": "proposition",
+        "proposition_id": "P1"
+      },
+      "provenance": {
+        "drafted_by": "assistant",
+        "ai_assisted": true,
+        "reviewed_by": "rendong",
+        "reviewed_on": "2026-08-24",
+        "review_status": "reviewed"
+      }
+    },
+    {
+      "criterion_id": "NCT07349537:EXC-2",
+      "polarity": "exclusion",
+      "source_section": "exclusionCriteria",
+      "ordinal": 2,
+      "source_text": "Prior therapy with KRAS G12V inhibitor or direct RAS-targeted therapy (eg. degraders and/or inhibitors).",
+      "expression_version": "v1",
+      "propositions": [
+        {
+          "proposition_id": "P1",
+          "statement": "Documented exposure to a KRAS G12V inhibitor",
+          "category": "prior_therapy",
+          "concept": "KRAS_G12V_INHIBITOR"
+        },
+        {
+          "proposition_id": "P2",
+          "statement": "Documented exposure to a direct RAS-targeted therapy",
+          "category": "prior_therapy",
+          "concept": "RAS_TARGETED_THERAPY"
+        }
+      ],
+      "expression": {
+        "kind": "any_of",
+        "children": [
+          {
+            "kind": "proposition",
+            "proposition_id": "P1"
+          },
+          {
+            "kind": "proposition",
+            "proposition_id": "P2"
+          }
+        ]
+      },
+      "provenance": {
+        "drafted_by": "assistant",
+        "ai_assisted": true,
+        "reviewed_by": "rendong",
+        "reviewed_on": "2026-08-24",
+        "review_status": "reviewed"
+      }
+    },
+    {
+      "criterion_id": "NCT07349537:EXC-3",
+      "polarity": "exclusion",
+      "source_section": "exclusionCriteria",
+      "ordinal": 3,
+      "source_text": "Any conditions that may affect the ability to take or absorb study drug.",
+      "expression_version": "v1",
+      "propositions": [
+        {
+          "proposition_id": "P1",
+          "statement": "A condition affects the ability to take or absorb the study drug",
+          "category": "unsupported"
+        }
+      ],
+      "expression": {
+        "kind": "proposition",
+        "proposition_id": "P1"
+      },
+      "provenance": {
+        "drafted_by": "assistant",
+        "ai_assisted": true,
+        "reviewed_by": "rendong",
+        "reviewed_on": "2026-08-24",
+        "review_status": "reviewed"
+      }
+    },
+    {
+      "criterion_id": "NCT07349537:EXC-4",
+      "polarity": "exclusion",
+      "source_section": "exclusionCriteria",
+      "ordinal": 4,
+      "source_text": "Major surgery within 28 days prior to receiving study drug(s).",
+      "expression_version": "v1",
+      "propositions": [
+        {
+          "proposition_id": "P1",
+          "statement": "Major surgery took place within 28 days before the first dose",
+          "category": "unsupported"
+        }
+      ],
+      "expression": {
+        "kind": "proposition",
+        "proposition_id": "P1"
+      },
+      "provenance": {
+        "drafted_by": "assistant",
+        "ai_assisted": true,
+        "reviewed_by": "rendong",
+        "reviewed_on": "2026-08-24",
+        "review_status": "reviewed"
+      }
+    },
+    {
+      "criterion_id": "NCT07349537:EXC-5",
+      "polarity": "exclusion",
+      "source_section": "exclusionCriteria",
+      "ordinal": 5,
+      "source_text": "Patient is unable or unwilling to comply with protocol-required study visits or procedures.",
+      "expression_version": "v1",
+      "propositions": [
+        {
+          "proposition_id": "P1",
+          "statement": "The patient is unable or unwilling to comply with study visits or procedures",
+          "category": "unsupported"
+        }
+      ],
+      "expression": {
+        "kind": "proposition",
+        "proposition_id": "P1"
+      },
+      "provenance": {
+        "drafted_by": "assistant",
+        "ai_assisted": true,
+        "reviewed_by": "rendong",
+        "reviewed_on": "2026-08-24",
+        "review_status": "reviewed"
+      }
+    }
+  ]
+}

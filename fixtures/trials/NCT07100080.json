@@ -1,0 +1,338 @@
+{
+  "nct_id": "NCT07100080",
+  "snapshot_record_id": "gate1-trial-fixtures-v1:NCT07100080",
+  "partition": "held_out",
+  "source_url": "https://clinicaltrials.gov/study/NCT07100080",
+  "overall_status": "RECRUITING",
+  "study_type": "INTERVENTIONAL",
+  "phases": [
+    "PHASE2",
+    "PHASE3"
+  ],
+  "last_update_posted": "2026-07-29",
+  "recruiting_countries": [
+    "Argentina",
+    "Belgium",
+    "Canada",
+    "Chile",
+    "China",
+    "Colombia",
+    "France",
+    "Germany",
+    "Greece",
+    "India",
+    "Italy",
+    "Japan",
+    "Mexico",
+    "Netherlands",
+    "Norway",
+    "Poland",
+    "Romania",
+    "Singapore",
+    "South Korea",
+    "Spain",
+    "Switzerland",
+    "Taiwan",
+    "Thailand",
+    "United Kingdom",
+    "United States"
+  ],
+  "brief_title": "Study of Izalontamab Brengitecan (BMS-986507) Versus Platinum-Pemetrexed for EGFR-mutated Non-small Cell Lung Cancer After Failure of EGFR TKI Therapy (IZABRIGHT-Lung01)",
+  "brief_summary": "A Study of Izalontamab Brengitecan (BMS-986507) versus Platinum-Pemetrexed for EGFR-mutated Non-small Cell Lung Cancer after failure of EGFR TKI Therapy",
+  "conditions": [
+    "Non-Small Cell Lung Cancer"
+  ],
+  "mesh_terms": [
+    "Carcinoma, Non-Small-Cell Lung",
+    "Lung Neoplasms"
+  ],
+  "interventions": [
+    "Iza-bren",
+    "Carboplatin",
+    "Cisplatin",
+    "Pemetrexed"
+  ],
+  "eligibility_source_text": "Inclusion Criteria:\n\n* Non-squamous NSCLC, not amenable to treatment in curative intent.\n* Documented evidence of EGFR mutation (exon 19 deletion, L858R mutation).\n* Progressive disease on a 3rd-generation (such as osimertinib, furmonertinib, lazertinib,...) EGFR-TKI-based mono- or combination therapy regimen as the most recent line of therapy in an adjuvant, locally advanced, or metastatic treatment setting.\n* Eligible to receive a platinum-based doublet chemotherapy regimen (either cisplatin or carboplatin in combination with pemetrexed).\n\nExclusion criteria:\n\n* Inadequate organ function and/or bone marrow reserve.\n* Leptomeningeal metastases or spinal cord compression.\n* Poorly controlled systemic medical conditions.\n* Other protocol-defined inclusion/exclusion criteria apply.",
+  "eligibility_sha256": "3db61de3a6bdf0c079273cde9f9857b7cbb4a677455103338ec46277ddd91ea6",
+  "criteria": [
+    {
+      "criterion_id": "NCT07100080:INC-1",
+      "polarity": "inclusion",
+      "source_section": "inclusionCriteria",
+      "ordinal": 1,
+      "source_text": "Non-squamous NSCLC, not amenable to treatment in curative intent.",
+      "expression_version": "v1",
+      "propositions": [
+        {
+          "proposition_id": "P1",
+          "statement": "Non-squamous non-small cell lung cancer is documented",
+          "category": "disease",
+          "concept": "NSCLC_NONSQUAMOUS"
+        },
+        {
+          "proposition_id": "P2",
+          "statement": "The disease is not amenable to curative-intent treatment",
+          "category": "unsupported"
+        }
+      ],
+      "expression": {
+        "kind": "all_of",
+        "children": [
+          {
+            "kind": "proposition",
+            "proposition_id": "P1"
+          },
+          {
+            "kind": "proposition",
+            "proposition_id": "P2"
+          }
+        ]
+      },
+      "provenance": {
+        "drafted_by": "assistant",
+        "ai_assisted": true,
+        "reviewed_by": "rendong",
+        "reviewed_on": "2026-08-24",
+        "review_status": "reviewed"
+      }
+    },
+    {
+      "criterion_id": "NCT07100080:INC-2",
+      "polarity": "inclusion",
+      "source_section": "inclusionCriteria",
+      "ordinal": 2,
+      "source_text": "Documented evidence of EGFR mutation (exon 19 deletion, L858R mutation).",
+      "expression_version": "v1",
+      "propositions": [
+        {
+          "proposition_id": "P1",
+          "statement": "An EGFR exon 19 deletion is documented",
+          "category": "biomarker",
+          "concept": "EGFR_EXON19_DELETION"
+        },
+        {
+          "proposition_id": "P2",
+          "statement": "An EGFR L858R mutation is documented",
+          "category": "biomarker",
+          "concept": "EGFR_L858R"
+        }
+      ],
+      "expression": {
+        "kind": "any_of",
+        "children": [
+          {
+            "kind": "proposition",
+            "proposition_id": "P1"
+          },
+          {
+            "kind": "proposition",
+            "proposition_id": "P2"
+          }
+        ]
+      },
+      "provenance": {
+        "drafted_by": "assistant",
+        "ai_assisted": true,
+        "reviewed_by": "rendong",
+        "reviewed_on": "2026-08-24",
+        "review_status": "reviewed"
+      }
+    },
+    {
+      "criterion_id": "NCT07100080:INC-3",
+      "polarity": "inclusion",
+      "source_section": "inclusionCriteria",
+      "ordinal": 3,
+      "source_text": "Progressive disease on a 3rd-generation (such as osimertinib, furmonertinib, lazertinib,...) EGFR-TKI-based mono- or combination therapy regimen as the most recent line of therapy in an adjuvant, locally advanced, or metastatic treatment setting.",
+      "expression_version": "v1",
+      "propositions": [
+        {
+          "proposition_id": "P1",
+          "statement": "Documented exposure to a third-generation EGFR tyrosine kinase inhibitor",
+          "category": "prior_therapy",
+          "concept": "THIRD_GENERATION_EGFR_TKI"
+        },
+        {
+          "proposition_id": "P2",
+          "statement": "The disease progressed on that regimen",
+          "category": "unsupported"
+        },
+        {
+          "proposition_id": "P3",
+          "statement": "That regimen was the most recent line of therapy",
+          "category": "unsupported"
+        }
+      ],
+      "expression": {
+        "kind": "all_of",
+        "children": [
+          {
+            "kind": "proposition",
+            "proposition_id": "P1"
+          },
+          {
+            "kind": "proposition",
+            "proposition_id": "P2"
+          },
+          {
+            "kind": "proposition",
+            "proposition_id": "P3"
+          }
+        ]
+      },
+      "provenance": {
+        "drafted_by": "assistant",
+        "ai_assisted": true,
+        "reviewed_by": "rendong",
+        "reviewed_on": "2026-08-24",
+        "review_status": "reviewed"
+      }
+    },
+    {
+      "criterion_id": "NCT07100080:INC-4",
+      "polarity": "inclusion",
+      "source_section": "inclusionCriteria",
+      "ordinal": 4,
+      "source_text": "Eligible to receive a platinum-based doublet chemotherapy regimen (either cisplatin or carboplatin in combination with pemetrexed).",
+      "expression_version": "v1",
+      "propositions": [
+        {
+          "proposition_id": "P1",
+          "statement": "The patient is eligible to receive platinum-pemetrexed doublet chemotherapy",
+          "category": "unsupported"
+        }
+      ],
+      "expression": {
+        "kind": "proposition",
+        "proposition_id": "P1"
+      },
+      "provenance": {
+        "drafted_by": "assistant",
+        "ai_assisted": true,
+        "reviewed_by": "rendong",
+        "reviewed_on": "2026-08-24",
+        "review_status": "reviewed"
+      }
+    },
+    {
+      "criterion_id": "NCT07100080:EXC-1",
+      "polarity": "exclusion",
+      "source_section": "exclusionCriteria",
+      "ordinal": 1,
+      "source_text": "Inadequate organ function and/or bone marrow reserve.",
+      "expression_version": "v1",
+      "propositions": [
+        {
+          "proposition_id": "P1",
+          "statement": "Organ function or bone marrow reserve is inadequate",
+          "category": "unsupported"
+        }
+      ],
+      "expression": {
+        "kind": "proposition",
+        "proposition_id": "P1"
+      },
+      "provenance": {
+        "drafted_by": "assistant",
+        "ai_assisted": true,
+        "reviewed_by": "rendong",
+        "reviewed_on": "2026-08-24",
+        "review_status": "reviewed"
+      }
+    },
+    {
+      "criterion_id": "NCT07100080:EXC-2",
+      "polarity": "exclusion",
+      "source_section": "exclusionCriteria",
+      "ordinal": 2,
+      "source_text": "Leptomeningeal metastases or spinal cord compression.",
+      "expression_version": "v1",
+      "propositions": [
+        {
+          "proposition_id": "P1",
+          "statement": "Leptomeningeal metastases are documented",
+          "category": "disease",
+          "concept": "LEPTOMENINGEAL_METASTASIS"
+        },
+        {
+          "proposition_id": "P2",
+          "statement": "Spinal cord compression is documented",
+          "category": "disease",
+          "concept": "SPINAL_CORD_COMPRESSION"
+        }
+      ],
+      "expression": {
+        "kind": "any_of",
+        "children": [
+          {
+            "kind": "proposition",
+            "proposition_id": "P1"
+          },
+          {
+            "kind": "proposition",
+            "proposition_id": "P2"
+          }
+        ]
+      },
+      "provenance": {
+        "drafted_by": "assistant",
+        "ai_assisted": true,
+        "reviewed_by": "rendong",
+        "reviewed_on": "2026-08-24",
+        "review_status": "reviewed"
+      }
+    },
+    {
+      "criterion_id": "NCT07100080:EXC-3",
+      "polarity": "exclusion",
+      "source_section": "exclusionCriteria",
+      "ordinal": 3,
+      "source_text": "Poorly controlled systemic medical conditions.",
+      "expression_version": "v1",
+      "propositions": [
+        {
+          "proposition_id": "P1",
+          "statement": "A poorly controlled systemic medical condition is documented",
+          "category": "unsupported"
+        }
+      ],
+      "expression": {
+        "kind": "proposition",
+        "proposition_id": "P1"
+      },
+      "provenance": {
+        "drafted_by": "assistant",
+        "ai_assisted": true,
+        "reviewed_by": "rendong",
+        "reviewed_on": "2026-08-24",
+        "review_status": "reviewed"
+      }
+    },
+    {
+      "criterion_id": "NCT07100080:EXC-4",
+      "polarity": "exclusion",
+      "source_section": "exclusionCriteria",
+      "ordinal": 4,
+      "source_text": "Other protocol-defined inclusion/exclusion criteria apply.",
+      "expression_version": "v1",
+      "propositions": [
+        {
+          "proposition_id": "P1",
+          "statement": "Criteria the published record does not state also apply",
+          "category": "unsupported"
+        }
+      ],
+      "expression": {
+        "kind": "proposition",
+        "proposition_id": "P1"
+      },
+      "provenance": {
+        "drafted_by": "assistant",
+        "ai_assisted": true,
+        "reviewed_by": "rendong",
+        "reviewed_on": "2026-08-24",
+        "review_status": "reviewed"
+      }
+    }
+  ]
+}
