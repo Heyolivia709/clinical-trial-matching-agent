@@ -29,6 +29,7 @@ The MVP design is frozen in stages. Claims, scope, and evaluation discipline are
 - [Trace report design](docs/design/) — interface design, semantic encoding rules, and known gaps
 - [Domain glossary](CONTEXT.md)
 - [Decision records](docs/adr/)
+- [Post-MVP sequence](docs/plans/post-mvp-implementation-sequence.md) — four gates that start only after Gate 7, with what was rejected and why
 
 ## Architecture
 
@@ -74,6 +75,13 @@ The application entry point stays thin: `match(patient, snapshot) -> MatchingRun
 Target scope: four evidence-bearing FHIR resource types, five supported criterion categories plus an explicit unsupported one, hand-authored criterion expressions, two retrieval channels with fusion, a bounded per-proposition agent loop with one correction, a flag-gated multi-turn trial supervisor, deterministic evaluation, and two static reports. Retrieval and the supervisor are additive gates with explicit fallbacks; the criterion agent, verifier, evaluation, and the reports are core.
 
 Out of scope: automatic criterion parsing, TREC benchmark tracks, PostgreSQL and pgvector, cross-encoder reranking, UCUM unit conversion, line-of-therapy inference, TNM derivation, HAPI FHIR, LangGraph, multi-agent orchestration, fine-tuning, and clinical validation. See specification sections 18 and 19.
+
+### After the MVP
+
+Four gates start only once Gate 7 is published: the deployed live mode of specification section 15.3, an adversarial test of criterion text the verifier is claimed to bound but never attacked, and orchestration comparisons against LangGraph and against a category-decomposed multi-agent variant behind the unchanged `assess` interface.
+
+Those comparisons run on the development partition and say so. The held-out partition is spent on the MVP claim, and at 40 clusters the resolvable difference is wider than two implementations of the same logic should ever produce — so the orchestration gates report equivalence and cost rather than an accuracy win. Knowledge-graph retrieval, cross-run memory, and experiment-tracking tooling were considered and rejected with reasons recorded.
+
 
 ## Data Boundary
 

@@ -83,6 +83,8 @@ Parser, terminology, evidence-packet construction, and index internals are modul
 
 Implementation is acceptance-criteria-driven with no calendar plan. Gate scope is classified as core or additive in specification section 19; cut from the bottom of that list under schedule pressure, and delete the corresponding claims from the report when a stage is cut.
 
+Gates 8 and above are post-MVP and defined in `docs/plans/post-mvp-implementation-sequence.md`. They start only after Gate 7 publishes, add no Criterion State, Unknown Reason, truth table, or reporting status, and never reopen a held-out partition. A component enters that sequence only if it answers a question the specification already owes an answer to; rejected candidates are recorded in an ADR or in the sequence's rejected list rather than dropped silently.
+
 The trace report is generated from frozen traces and is built last. It must never become a dependency of any reasoning module.
 
 ## Agent skills
