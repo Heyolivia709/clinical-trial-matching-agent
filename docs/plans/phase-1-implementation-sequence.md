@@ -27,7 +27,7 @@ four frozen trial records with human-reviewed Criterion Expressions.
 - The four collectively cover all five supported Criterion Categories and every supported expression form, including a conditional capable of producing `not_applicable`
 - Criteria outside the supported categories are authored as `unsupported` rather than omitted
 
-## Gate 2: Patient Timeline, Tools, and Scenarios — Core
+## Gate 2: Patient Timeline, Tools, and Scenarios — Core ✅
 
 Parse the four evidence-bearing FHIR R4 resource types into the Patient Timeline.
 Recognize `MedicationRequest` as Unsupported Patient Content. Implement the five
@@ -44,9 +44,9 @@ Planted Distractors.
 - A criterion naming a prospective anchor is covered twice: once with an authored substitution, which assesses and displays it, and once without, which yields `ambiguous_criterion`
 - Each tool has deterministic tests including the empty-result and ambiguous-result paths
 
-Issues #17 and #18 are done; #19 and #20 remain.
+All met, issues #17 through #20.
 
-## Gate 3: Criterion Agent and Evidence Verifier — Core
+## Gate 3: Criterion Agent and Evidence Verifier — Core ✅
 
 The bounded per-proposition loop of specification section 10, the deterministic
 verifier of section 8.1, exactly one targeted correction, and `match()` end to
@@ -63,9 +63,15 @@ end. Early Termination is the one supervisor behaviour kept, and it is additive.
 - `match()` produces a `MatchingRun` that round-trips and can be re-graded offline
 - With Early Termination on, skipped criteria are `not_assessed` and never `unknown`
 
-Issues #25 through #29, and #30.
+All met, issues #25 through #30.
 
-## Gate 4: Measurement — Core
+One limitation this gate surfaced, recorded because the numbers will show it: no
+development scenario meets an exclusion criterion of a development trial, because
+the reviewed terminology mapping does not cover the conditions those trials
+exclude. So no development pair produces a blocker, and `early_termination` is
+exercised against a two-criterion trial authored in `tests/builders.py`.
+
+## Gate 4: Measurement — Core ✅
 
 Derive gold labels from the hidden manifests, build the offline grading harness,
 run the one-shot baseline and the no-verifier configuration, and compute the
@@ -80,9 +86,13 @@ counts of the [measurement plan](../evaluation/phase-1-benchmark-plan.md).
 - The held-out pair is assessed once, after development numbers are settled, and reported separately
 - Propositions whose expected state cannot be derived are visible as Coverage-Only and excluded from accuracy counts
 
-Issues #32, #33, #34, #36.
+All met, issues #32, #33, #34 and #36, with one qualification: the runs replay
+authored transcripts rather than a recorded model run, so the published counts
+measure the harness. `fixtures/transcripts/README.md` and
+[the results](../evaluation/development-results.md) both say so, and a reported
+result about model behaviour is recorded from the hosted or local adapter.
 
-## Gate 5: Report — Core
+## Gate 5: Report — Core ✅
 
 One self-contained static page per run, ordered verdict-first per specification
 section 15, published as a hosted page and viewable offline.
@@ -96,7 +106,11 @@ section 15, published as a hosted page and viewable offline.
 - No network fetch at view time; print styles implemented; no blended score anywhere
 - A reader with no domain vocabulary can reach the claim within five minutes
 
-Issues #40, #41, #42, #45.
+Issues #40, #41 and #42 are met. #45 stays open for the two things a build
+cannot do: switching on GitHub Pages, which is the repository owner's call, and
+timing a reader who has not seen the project, which is what the five-minute
+constraint actually asks for. Both are recorded in
+[the five-minute check](../evaluation/five-minute-check.md).
 
 ## What was cut
 

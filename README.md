@@ -19,16 +19,25 @@ It does not diagnose, determine clinical eligibility, recommend treatment, or en
 
 ## Current Status
 
-Gate 1 is complete and Gate 2 is nearly so: the domain types, the deterministic
-aggregation and Unknown Reason table, the Matching Policy, four frozen trial
-records with 34 authored criterion expressions, the FHIR parser, the five
-Timeline Tools, and six authored synthetic scenarios with hidden manifests. The
-agent loop, the verifier, measurement, and the report remain.
+All five gates are built: the domain types and the deterministic aggregation and
+Unknown Reason table, the FHIR parser and the five Timeline Tools, six authored
+synthetic scenarios with hidden manifests, the bounded agent loop with its
+deterministic verifier and single correction, `match()` end to end, gold
+derivation and the offline grading harness with the one-shot baseline, and the
+Trace Report.
+
+The reports in [`docs/demo/`](docs/demo/) are generated from frozen artifacts and
+open offline. They replay **authored transcripts** rather than a recorded model
+run, so the counts in their section 8 measure the harness rather than a model —
+`fixtures/transcripts/README.md` says so, and a published result is recorded from
+the hosted or local adapter with the run naming which one produced it.
 
 Specification v7 cut candidate retrieval and the inferential-statistics
 apparatus. Both were defensible and neither demonstrated an agent; see
 [ADR 0014](docs/adr/0014-cut-the-research-grade-evaluation-protocol.md).
 
+- [Trace Reports](docs/demo/) — one page per run, generated from frozen artifacts, viewable offline
+- [Development results](docs/evaluation/development-results.md) — every count, with its denominator
 - [MVP specification](docs/specs/phase-1-mvp-specification.md) — source of truth
 - [Implementation sequence](docs/plans/phase-1-implementation-sequence.md) — five gates, core and additive scope marked
 - [Measurement plan](docs/evaluation/phase-1-benchmark-plan.md) — deterministic grading, invariant gates, and what the counts may not claim
