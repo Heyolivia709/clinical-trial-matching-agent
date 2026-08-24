@@ -383,6 +383,96 @@
         },
         "date": "2026-08-05T11:00:00Z"
       }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-8",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-8",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "83052-1",
+              "display": "PD-L1 by clone 22C3 [Presence] in Tissue by Immune stain"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/patient-1"
+        },
+        "effectiveDateTime": "2024-12-01",
+        "valueCodeableConcept": {
+          "text": "Positive"
+        },
+        "performer": [
+          {
+            "display": "Local pathology laboratory"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:obs-9",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-9",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "83052-1",
+              "display": "PD-L1 by clone 22C3 [Presence] in Tissue by Immune stain"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/patient-1"
+        },
+        "effectiveDateTime": "2024-12-01",
+        "valueCodeableConcept": {
+          "text": "Negative"
+        },
+        "performer": [
+          {
+            "display": "Central laboratory"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:medadmin-2",
+      "resource": {
+        "resourceType": "MedicationAdministration",
+        "id": "medadmin-2",
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "code": "1721581",
+              "display": "osimertinib 80 MG Oral Tablet"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/patient-1"
+        },
+        "effectiveDateTime": "2026",
+        "dosage": {
+          "route": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "26643006",
+                "display": "Oral route"
+              }
+            ]
+          }
+        }
+      }
     }
   ]
 }

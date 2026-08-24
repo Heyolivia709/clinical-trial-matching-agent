@@ -59,7 +59,10 @@ def inventoried(resource_id: str) -> UnsupportedContent:
 def test_the_four_evidence_bearing_resource_types_are_parsed() -> None:
     assert TIMELINE.demographics.administrative_sex == "female"
     assert {item.resource_type for item in TIMELINE.facts} == {"Condition", "Observation"}
-    assert [item.fact_id for item in TIMELINE.exposures] == ["MedicationAdministration/medadmin-1"]
+    assert [item.fact_id for item in TIMELINE.exposures] == [
+        "MedicationAdministration/medadmin-1",
+        "MedicationAdministration/medadmin-2",
+    ]
 
 
 def test_every_bundle_entry_is_accounted_for() -> None:
