@@ -15,7 +15,6 @@ from __future__ import annotations
 
 from pydantic import Field
 
-from ctma.domain.assessment import TrialAssessment
 from ctma.domain.base import Frozen
 from ctma.domain.enums import CriterionState, UnknownReason
 from ctma.domain.run import MatchingRun
@@ -102,9 +101,6 @@ class ReportInputs(Frozen):
     baseline: tuple[BaselineRow, ...] = ()
     faults: tuple[FaultRow, ...] = ()
     results: ResultsSection | None = None
-
-    def assessment_for(self, nct_id: str) -> TrialAssessment | None:
-        return next((item for item in self.run.trial_assessments if item.nct_id == nct_id), None)
 
     def trial_for(self, nct_id: str) -> TrialRecord | None:
         return next((item for item in self.trials if item.nct_id == nct_id), None)

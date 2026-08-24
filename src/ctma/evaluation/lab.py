@@ -115,32 +115,25 @@ def run_one_shot(case: EvalCase, *, model: ModelClient) -> VariantResult:
 def totals(
     results: Sequence[VariantResult], *, variant: Variant, partition: Partition
 ) -> ReportedCounts:
-    """Add one variant's cases into the row the report prints."""
+    """Add one variant's cases into the row the report prints.
+
+    The partition is recorded on the row rather than checked here. Nothing in
+    code can enforce when a person looks at a held-out number; what it can do is
+    make the half impossible to reach by accident, which `eval_cases` does by
+    having no default, and make every row say which half it came from.
+    """
     graded = tuple(item for result in results for item in result.graded)
     scenarios = {result.case_id.split("|")[0] for result in results}
     trials = {result.case_id.split("|")[1] for result in results}
-    _guard(partition)
     return report_counts(
         graded,
         variant=variant,
+        partition=partition,
         scenarios=len(scenarios),
         trials=len(trials),
         cost=Measurements.summed(result.cost for result in results),
         criterion_assessments=sum(result.criterion_assessments for result in results),
     )
-
-
-def _guard(partition: Partition) -> None:
-    """A reminder in the one place both halves pass through.
-
-    Held-out results are assessed once, at the end, and never used to tune. The
-    code cannot enforce when a person looks at a number; what it can do is make
-    the partition impossible to pass by accident, which `eval_cases` already
-    does by having no default.
-    """
-    if partition not in Partition:
-        msg = f"unknown partition {partition!r}"
-        raise ValueError(msg)
 
 
 def _trial(nct_id: str) -> TrialRecord:
