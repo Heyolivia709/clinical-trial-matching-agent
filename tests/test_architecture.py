@@ -17,7 +17,13 @@ listing them now means the layering decision is already made when they do.
 from __future__ import annotations
 
 import ast
+import importlib
+import pkgutil
 from pathlib import Path
+
+from pydantic import BaseModel
+
+import ctma
 
 SRC = Path(__file__).resolve().parent.parent / "src" / "ctma"
 
@@ -108,3 +114,39 @@ def test_nothing_depends_on_report_or_evaluation() -> None:
     for name, allowed in ALLOWED.items():
         assert "report" not in allowed, f"{name} may not import ctma.report"
         assert "evaluation" not in allowed, f"{name} may not import ctma.evaluation"
+
+
+def _models() -> list[type[BaseModel]]:
+    """Every Pydantic model this package defines, private ones included.
+
+    Imported ones are skipped by module name: `BaseModel` itself is in scope
+    wherever a model is declared, and it is not ours to configure.
+    """
+    found: dict[str, type[BaseModel]] = {}
+    for info in pkgutil.walk_packages(ctma.__path__, prefix="ctma."):
+        module = importlib.import_module(info.name)
+        for value in vars(module).values():
+            if (
+                isinstance(value, type)
+                and issubclass(value, BaseModel)
+                and value.__module__.startswith("ctma.")
+            ):
+                found[f"{value.__module__}.{value.__qualname__}"] = value
+    return sorted(found.values(), key=lambda model: model.__qualname__)
+
+
+def test_every_model_is_frozen_and_closed_to_unknown_fields() -> None:
+    """Immutability is a requirement of the design, not a habit of the authors.
+
+    Snapshots, expressions, retrieval ranks, assessments, and runs are all
+    specified as immutable, and a model that subclasses `BaseModel` directly
+    instead of `Frozen` looks identical at the call site until something mutates
+    a frozen artifact. `extra="forbid"` is here for the same reason: a typo in an
+    authored JSON file has to fail rather than be dropped.
+    """
+    mutable = [
+        f"{model.__module__}.{model.__qualname__}"
+        for model in _models()
+        if not (model.model_config.get("frozen") and model.model_config.get("extra") == "forbid")
+    ]
+    assert not mutable, f"these models should inherit from ctma.domain.base.Frozen: {mutable}"
