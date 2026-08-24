@@ -1,6 +1,6 @@
 """The shared model base.
 
-Snapshots, expressions, retrieval ranks, assessments, and runs are all
+Snapshots, expressions, candidate ranks, assessments, and runs are all
 specified as immutable, so frozen is the default here rather than a decision
 each model makes for itself.
 """

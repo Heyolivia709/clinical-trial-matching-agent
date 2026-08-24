@@ -1,5 +1,7 @@
 # Separate the evaluation report from the trace report, and order both for a reader
 
+**Status:** Superseded by [ADR 0014](0014-cut-the-research-grade-evaluation-protocol.md), 2026-08-24. One report carries both, with the run-independent counts in a labelled section. The reasoning below — that a corpus-scoped statistic and a run-scoped fact are different kinds of claim — is why the section is labelled rather than why it is a second file.
+
 The delivery surface is two artifacts rather than one. A **Trace Report** is scoped to a single Matching Run. An **Evaluation Report** is scoped to the benchmark and is run-independent. Neither is a section of the other.
 
 Presenting them as one document was rejected. Specification section 15 previously defined the surface as a single report "generated from a frozen Matching Run" and then listed only run-scoped content, so the benchmark had no legitimate home; the interface design that followed invented an evaluation section anyway and traced it to specification sections that are not about the report at all. The result put a bootstrap interval computed across six scenarios on the same page, in the same visual register, as a citation resolving to one FHIR JSON path — inviting a reader to treat a corpus-scoped statistic and a run-scoped fact as the same kind of claim. That is the mechanism by which an honest project produces a misleading portfolio page, and it costs nothing to prevent by splitting the artifacts and making each state its own scope.

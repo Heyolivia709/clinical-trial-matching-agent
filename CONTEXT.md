@@ -2,7 +2,7 @@
 
 This context describes evidence-grounded comparison of an authored synthetic patient record with public clinical trial criteria, for research coordinator review. Clinical trial matching is the carrier domain; agent engineering is the subject.
 
-Terms removed in the v2 rescope — Parsed Criterion Representation, Treatment Episode, Retrieval Facet, Retrieval Expansion as a terminology concept — are superseded by the entries below.
+Terms removed in the v2 rescope — Parsed Criterion Representation, Treatment Episode, Retrieval Facet, Retrieval Expansion as a terminology concept — are superseded by the entries below. Terms removed with the v7 scope cut — Candidate Retrieval, Patient Retrieval Profile, Candidate Filter, Retrieval Signal, Corpus Membership, Patient-Specific Matching Fact, Pre-Registration, Falsification Condition, Resampling Cluster, Evidence Reuse, Component Control, Evaluation Report — name work this project does not do; see ADR 0014.
 
 This glossary binds identifiers as well as prose. Types, fields, and enum members in `src/` use these terms, and the `_Avoid_` lists stay out of the codebase. When a name in code and a name here disagree, one of them is wrong.
 
@@ -41,24 +41,16 @@ A clinical study whose stable public identity is its NCT identifier.
 _Avoid_: Trial record, candidate trial
 
 **Trial Corpus Snapshot**:
-A versioned, immutable collection of public clinical trial records that defines the complete search universe for one matching run. Deliberately larger than the assessed subset so that retrieval is non-trivial.
-_Avoid_: Candidate list, live trial list
+The versioned, immutable set of public trial records one matching run compares against — four of them, captured once and frozen. Retrieval over a larger corpus is out of scope, so this is the candidate list rather than a search universe.
+_Avoid_: Live trial list, search index
 
 **Trial Record**:
-The immutable representation of a Trial captured in one Trial Corpus Snapshot, including its full source payload hash and record-specific authored artifacts.
+The immutable representation of a Trial captured in one Trial Corpus Snapshot, including the hash of the eligibility text it was reviewed against and its record-specific authored artifacts.
 _Avoid_: Trial, live study
-
-**Corpus Membership**:
-Whether a public trial belongs in a Trial Corpus Snapshot, determined only from study-wide facts such as study type, recruiting status, recruiting-site geography, and normalized disease-area metadata.
-_Avoid_: Patient matching, eligibility filtering
 
 **Stale Snapshot**:
 A Trial Corpus Snapshot whose ClinicalTrials.gov data timestamp is older than the freshness threshold. Staleness produces a warning but never mutates or invalidates historical Matching Runs.
 _Avoid_: Invalid snapshot, outdated result
-
-**Patient-Specific Matching Fact**:
-A patient attribute such as age, sex, biomarker status, disease stage, or treatment history that may affect retrieval or criterion assessment but never Corpus Membership.
-_Avoid_: Corpus filter
 
 ### Time
 
@@ -101,7 +93,7 @@ Patient-record content preserved for provenance but not interpreted as Patient E
 _Avoid_: Missing evidence, ignored data
 
 **Normalized Concept**:
-A source term linked through a versioned, provenance-preserving reviewed mapping to a canonical concept used for retrieval or deterministic reasoning.
+A source term linked through a versioned, provenance-preserving reviewed mapping to a canonical concept the Timeline Tools query by.
 _Avoid_: Model synonym, replacement source code
 
 **Authored Synthetic Scenario**:
@@ -138,21 +130,13 @@ _Avoid_: Model self-check, confidence filter
 The verifier role that scores the final outputs of every variant with identical code and configuration, never flowing results back into the system under test. Distinct from the runtime feedback role, which only the full agent receives.
 _Avoid_: Self-evaluation, verifier loop
 
-**Component Control**:
-A baseline that shares the full system's evidence boundary but lacks one architectural component, isolating that component's contribution. The expression-aware one-shot baseline is the primary component control; the raw-text one-shot baseline measures end-to-end improvement instead. A shared boundary is not shared context: the control is handed the whole Patient Timeline while the full agent sees only its tool results, so the full agent is the information-disadvantaged arm.
-_Avoid_: Ablation, end-to-end baseline
+**One-Shot Baseline**:
+The single control variant: the criterion, its authored expression, and the entire Patient Timeline in one prompt. A shared evidence boundary is not shared context — the baseline is handed the whole timeline while the agent sees only its tool results, so the agent is the information-disadvantaged arm and any advantage it shows comes from grounding discipline rather than access.
+_Avoid_: End-to-end baseline, gold standard
 
 **Release Gate**:
 A deterministic invariant the implementation controls, reported as pass or fail. Model-behavior statistics are never release gates, because gating a statistic invites optimizing toward its threshold on data reserved from optimization.
 _Avoid_: Target metric, success threshold
-
-**Pre-Registration**:
-The protocol fixing metrics, comparison units, per-variant prompt contents, statistical procedure, precision, cost-value pairing, and falsification condition, committed before the first held-out run and cited by commit hash in the published report. Precision is stated as a procedure recomputed from development data, not as a number asserted in advance.
-_Avoid_: Evaluation plan, methodology section
-
-**Falsification Condition**:
-The result, declared in advance, that would show the project's central claim to be unsupported. Its outcome is published as the headline regardless of direction.
-_Avoid_: Risk, limitation
 
 **Injected Fault**:
 A deliberately corrupted assessment used to prove the Evidence Verifier catches fabricated or altered citations, independent of whether the model happens to produce such errors organically.
@@ -162,34 +146,18 @@ _Avoid_: Bug, regression case
 Model-generated explanatory text that helps a coordinator understand an assessment but never counts as Patient Evidence or Trial Evidence.
 _Avoid_: Evidence, provenance
 
-### Retrieval
-
-**Candidate Retrieval**:
-The process of finding and ranking potentially relevant trials from a Trial Corpus Snapshot before criterion-level assessment.
-_Avoid_: Eligibility screening, trial selection
-
-**Patient Retrieval Profile**:
-A retrieval-oriented view of the Patient Timeline covering disease, biomarkers, stage, prior therapy, demographics, and geography, without replacing the source timeline. Per-facet query decomposition is out of scope.
-_Avoid_: Patient summary, eligibility profile
-
-**Candidate Filter**:
-A deterministic, patient-specific comparison that may remove a trial before ranking only when both the patient value and the trial constraint are structured and known.
-_Avoid_: Semantic filter, inferred exclusion
-
-**Retrieval Signal**:
-A patient or trial fact that influences candidate ranking without irreversibly removing a trial from consideration.
-_Avoid_: Hard filter, eligibility result
+### Candidates
 
 **Candidate Trial**:
-A trial returned by Candidate Retrieval for further review or assessment. Candidate status indicates retrieval relevance, not clinical eligibility.
+A trial in the candidate set, presented for review or assessment. Candidate status indicates nothing about clinical eligibility.
 _Avoid_: Eligible trial, matched trial
 
 **Candidate Set**:
-The immutable ranked collection returned by Candidate Retrieval, including channel-level provenance and explicit assessed or unassessed status.
+The immutable ordered collection of Candidate Trials for one run, each carrying explicit retained, presented, or assessed status.
 _Avoid_: Match results, eligible trials
 
 **Retrieval Rank**:
-The immutable position assigned to a Candidate Trial by Candidate Retrieval, preserved independently from any later criterion assessment.
+The immutable position of a Candidate Trial in the authored candidate order, preserved independently from any later criterion assessment. It keeps its name because the Matching Policy is written against a ranked list and would take one unchanged.
 _Avoid_: Match rank, eligibility rank
 
 **Review Priority**:
@@ -197,7 +165,7 @@ A presentation ordering for assessed Candidate Trials based on Match Conclusion 
 _Avoid_: Match score, eligibility score
 
 **Assessed Set**:
-The three highest-ranked presented Candidate Trials that have an Authored Criterion Expression. A presented candidate without one is reported as `expression_unavailable` at its own Retrieval Rank and the next presented candidate takes its place; backfill never reaches past the presented top five. Expression coverage is an artifact of the authoring budget, not a property of a trial, so it never silently shrinks the set.
+The three highest-ranked presented Candidate Trials that have an Authored Criterion Expression. A presented candidate without one is reported as `expression_unavailable` at its own Retrieval Rank and the next presented candidate takes its place; backfill never reaches past the presented candidates. Expression coverage is an artifact of the authoring budget, not a property of a trial, so it never silently shrinks the set.
 _Avoid_: Top three, eligible set
 
 **Unassessed Candidate**:
@@ -215,16 +183,12 @@ A typed, read-only Python function the agent may call to query the Patient Timel
 _Avoid_: Plugin, skill, retrieval call
 
 **Trial Supervisor**:
-The strategy layer above the Criterion Reasoning Agent that owns criterion ordering, Early Termination, and Evidence Reuse within one trial.
+The thin layer above the Criterion Reasoning Agent that owns criterion ordering and Early Termination within one trial.
 _Avoid_: Orchestrator framework, multi-agent coordinator
 
 **Early Termination**:
 A supervisor budget that stops assessment after a blocker is confirmed and marks the remaining criteria `not_assessed`. It trades Criterion Coverage for measured token and latency reduction.
 _Avoid_: Short circuit as a default, criterion skipping
-
-**Evidence Reuse**:
-Reuse of already-verified Patient Evidence across criteria within the same trial, carrying the originating criterion ID. Reuse-induced error propagation is measured, not assumed absent.
-_Avoid_: Memory, cache, cross-patient state
 
 **Correction**:
 A targeted revision requested after the Evidence Verifier rejects a Proposition Assessment.
@@ -311,12 +275,8 @@ The coordinator-facing subset of a Reasoning Trace that explains which criterion
 _Avoid_: Raw trace, chain of thought
 
 **Trace Report**:
-The self-contained static artifact generated from one frozen Matching Run, viewable offline with no server, credentials, or network fetch. It shows the agent trace rather than a clinical report, is ordered verdict-first rather than in pipeline order, and is built last from frozen traces. Scoped to a single run: benchmark statistics belong to the Evaluation Report.
-_Avoid_: Web app, dashboard, coordinator workflow, benchmark summary
-
-**Evaluation Report**:
-The separate self-contained static artifact scoped to the benchmark rather than to any run, carrying invariant gates and reported results in distinct tables, the paired cost-value table, the pre-registered comparison, and the failure taxonomy. It is never a section of a Trace Report, because a corpus-scoped statistic and a run-scoped fact are different kinds of claim.
-_Avoid_: Trace report section, results appendix
+The self-contained static artifact generated from one frozen Matching Run, viewable offline with no server, credentials, or network fetch. It shows the agent trace rather than a clinical report, is ordered verdict-first rather than in pipeline order, and is built last from frozen traces. Counts across the scenario set sit in one labelled section, because a number over the whole set is a different kind of claim from a fact about the run above it.
+_Avoid_: Web app, dashboard, coordinator workflow
 
 **Eval Case**:
 An immutable benchmark item that binds versioned inputs, derived expected outputs, dataset partition, and grading rules without exposing hidden ground truth to the matching system.
@@ -338,12 +298,8 @@ _Avoid_: Dropped criterion, negative example
 One Atomic Proposition evaluated against one Authored Synthetic Scenario. The unit of accuracy metrics, and distinct from the proposition itself, which is a property of a trial and carries no patient. Not to be confused with a FHIR `Observation`.
 _Avoid_: Proposition, sample, data point
 
-**Resampling Cluster**:
-One scenario-trial pair. The unit the bootstrap resamples, because propositions within a pair share a patient, a trial, and a single agent run. Interval width is governed by the number of clusters, not by the number of Graded Observations inside them, so adding criteria to a trial does not buy precision.
-_Avoid_: Sample size, n
-
 **State Support**:
-The number of labeled assessments for each Criterion State in an evaluation partition.
+The number of labeled assessments for each Criterion State. Reported per state, because an aggregate over four states with a dozen observations each hides which state the system is bad at.
 _Avoid_: Overall sample count
 
 **Coordinator Review**:

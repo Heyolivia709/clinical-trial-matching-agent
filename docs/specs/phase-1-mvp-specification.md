@@ -1,9 +1,19 @@
-# Clinical Trial Matching Agent: MVP Specification (v6)
+# Clinical Trial Matching Agent: MVP Specification (v7)
 
 **Status:** Provisionally frozen — see freeze policy below
-**Frozen on:** 2026-08-23
+**Frozen on:** 2026-08-24
 
-**Supersedes:** v5 (frozen 2026-08-23). Version 6 closes five gaps that the interface design surfaced by being forced to render behaviour the specification had not defined. Each was resolved silently in a mockup, which is the wrong place for a semantic decision.
+**Supersedes:** v6 (frozen 2026-08-23). Version 7 cuts scope rather than adding any. The project is a portfolio piece demonstrating agent engineering, and v6 had specified a research-grade evaluation around it: a pre-registered two-sided test, cluster-level bootstrap resampling, a committed precision amendment, three baselines with two supervisor ablations, a separate benchmark artifact, and a hybrid retrieval stack over a corpus of hundreds of trials. Each was defensible in isolation and none of them demonstrates an agent. Version 7 removes:
+
+- Candidate retrieval entirely — BM25, dense embeddings, reciprocal-rank fusion, candidate filters, and the corpus they would rank. The candidate set is the four frozen trial records of section 4.1. Sections 9, 12, 14 and 18 change accordingly.
+- Inferential statistics. Reported results are counts and percentages over stated denominators, with the sample size shown. No interval, test, or effect size, and no pre-registration document to fix one in advance. Section 20 states why, and the report says it where the numbers appear.
+- Two of three baselines and both supervisor-only ablations. One one-shot baseline carries the comparison; the no-verifier configuration remains as a reported row.
+- The separate Evaluation Report. One report, with the run-independent counts in a labelled section, supersedes ADR 0010.
+- Evidence Reuse, whose error-propagation measurement was the expensive half of the feature.
+
+See [ADR 0014](../adr/0014-cut-the-research-grade-evaluation-protocol.md).
+
+**Superseded:** v5 (frozen 2026-08-23). Version 6 closes five gaps that the interface design surfaced by being forced to render behaviour the specification had not defined. Each was resolved silently in a mockup, which is the wrong place for a semantic decision.
 
 - Section 5.1 governs prospective anchors — "within 14 days prior to the first dose of study drug" — through an authored, recorded substitution, never a runtime one.
 - Section 6 adds `performance_status` as a fifth supported Criterion Category and `unsupported` as an explicit sixth value, so ECOG stops being filed under `disease`.
@@ -11,17 +21,15 @@
 - Section 8.1 adds the verifier check for citations that resolve but cannot establish the claimed state. The section 3 demonstration already depended on it.
 - Section 9 defines the assessed set when a top-three candidate has no authored expression, with backfill bounded at the presented rank 5.
 
-**Supersedes:** v4 (frozen 2026-08-22). Version 5 made four changes. It added the verification-induced `unknown` rate as a reported grounding result, so the verifier's cost is visible beside its benefit. It anchored the pre-registered falsification condition to Full before correction, because final-output reference validity is 100% by construction and therefore cannot serve as a comparison. It split the delivery surface into a run-scoped Trace Report and a run-independent Evaluation Report, and reordered the Trace Report verdict-first. It recorded that what each evaluation variant receives in its prompt is fixed in the pre-registration rather than left to implementation. See [ADR 0010](../adr/0010-separate-the-evaluation-report-from-the-trace-report.md).
-
 **Change policy:** Any scope or semantic change must be recorded explicitly here and, when it reverses a rejected alternative, in an ADR. Held-out evaluation results must never drive optimization.
 
-**Freeze policy.** Sections 1–3, 16–20 and the safety boundary are frozen now: they are commitments about claims and discipline, and evidence will not change them. Sections 5–13 are *provisionally* frozen and re-frozen at the exit of Gate 2. They contain decisions that cannot be validated without an implementation — the resource boundary, the tool surface, per-proposition concurrency, the Unknown Reason vocabulary — and freezing them against no evidence produces either constant change-policy churn or silent divergence. v4 was declared a frozen source of truth with zero lines of code in the repository; v5 declares which parts had earned that status and which had not.
+**Freeze policy.** Sections 1–3, 16–20 and the safety boundary are frozen: they are commitments about claims and discipline, and evidence will not change them. Sections 5–13 were provisionally frozen and are re-frozen now that Gates 1 and 2 have exercised them in code — the resource boundary, the tool surface, the Unknown Reason vocabulary, and the truth tables all have implementations and tests behind them. Section 9 is the exception and is settled by the cut above rather than by evidence.
 
 ## 1. Objective
 
-Build a portfolio system that demonstrates agent engineering: tool selection, controlled reasoning, evidence verification, bounded failure recovery, multi-turn cost control, and measured evaluation against baselines.
+Build a portfolio system that demonstrates agent engineering: tool selection, controlled reasoning, evidence verification, bounded failure recovery, bounded multi-turn cost control, and honest measurement against a one-shot baseline.
 
-Clinical trial matching is the carrier domain, not the subject. The system compares an authored synthetic FHIR R4 patient record against a frozen snapshot of public NSCLC trials, assesses individual eligibility criteria, and returns structured judgments with machine-verified patient evidence and exact trial source citations.
+Clinical trial matching is the carrier domain, not the subject. The system compares an authored synthetic FHIR R4 patient record against four frozen public NSCLC trial records, assesses individual eligibility criteria, and returns structured judgments with machine-verified patient evidence and exact trial source citations.
 
 The project is not a chatbot, an ordinary retrieval-augmented generation demo, a generic agent harness, a clinical text parser, or a clinical product.
 
@@ -38,34 +46,29 @@ Every report states that recruiting status, site availability, and actual eligib
 A reviewer opening the hosted trace report, or running the project locally, must be able to observe all of the following within five minutes:
 
 1. A patient timeline built from a synthetic FHIR R4 Bundle with per-fact provenance.
-2. Candidate selection from the frozen snapshot; when the additive retrieval gate is built, this includes hybrid retrieval with per-channel rank attribution.
+2. Candidate selection from the frozen trial records, with the assessed set and its bounded backfill visible.
 3. A trial criterion decomposed into atomic propositions.
 4. The agent choosing and calling timeline tools per proposition.
 5. Dates, numbers, and Boolean aggregation handled by deterministic code rather than the model.
 6. A structured judgment citing patient evidence and exact trial source text.
 7. The verifier rejecting a fabricated or incorrect citation and triggering exactly one correction.
-8. A side-by-side comparison against deterministic and one-shot baselines showing where the agent design pays off.
+8. A side-by-side comparison against a one-shot baseline showing where the agent design pays off, or where it does not.
 
 Requirement 7 must be reproducibly demonstrable from an injected-fault fixture. Organic verifier catches are published when observed, but a model happening to make a particular mistake is not an acceptance criterion.
 
-Five minutes is a hard constraint on the interface, not an aspiration. Requirements 3 through 8 are the ones that carry the claim, so section 15.1 orders the Trace Report to reach them first and demotes reproducibility metadata, the full timeline, and the retrieval table to the back. A document that presents the pipeline in execution order fails this requirement no matter how complete it is, because the reviewer stops reading before the interesting part.
+Five minutes is a hard constraint on the interface, not an aspiration. Requirements 3 through 8 are the ones that carry the claim, so section 15 orders the report to reach them first and demotes reproducibility metadata and the full timeline to the back. A document that presents the pipeline in execution order fails this requirement no matter how complete it is, because the reviewer stops reading before the interesting part.
 
 ## 4. Inputs
 
-### 4.1 Trial Corpus Snapshot
+### 4.1 Frozen Trial Records
 
-An immutable, versioned snapshot of 200–500 full ClinicalTrials.gov records satisfying all study-wide conditions:
+Four public ClinicalTrials.gov records, captured once and frozen: identity, recruiting status, sites, source URL, update date, conditions and MeSH terms, interventions, summaries, and the verbatim eligibility text with every published criterion preserved at its exact span and ordinal.
 
-- Interventional study
-- Overall status `RECRUITING`
-- NSCLC identified through normalized condition or MeSH metadata rather than literal string matching alone
-- At least one recruiting site in the United States
+Selection is by coverage, not convenience. The four together exercise all five supported Criterion Categories, the `unsupported` value, and every supported expression form, and they split two development and two held out.
 
-Corpus membership never uses patient-specific age, sex, biomarker, stage, histology, performance status, geography, or treatment history.
+Each record carries the SHA-256 of the eligibility text it was reviewed against, so editing the text without a new review makes the record fail to load. A record whose ClinicalTrials.gov data has since changed is not silently refreshed: published criteria do change, and a frozen artifact that quietly tracks them cannot reproduce a past run.
 
-The snapshot records the ClinicalTrials.gov `dataTimestamp`, ingestion configuration, source payload hashes, terminology mappings, index configuration, and derived-artifact versions. Refreshing creates a new snapshot and never mutates an existing Matching Run. A snapshot older than thirty days receives a `stale_snapshot` warning and remains usable for reproducible historical evaluation.
-
-Corpus size is intentionally larger than the assessed subset. A corpus of a few dozen trials would make top-5 retrieval trivial and retrieval ablations uninformative; corpus growth is nearly free because only assessed trials require authored criterion expressions.
+Four is the minimum that keeps a two-axis partition of trials and scenarios intact. Growing the set is authoring work, not engineering work, and section 18 puts the retrieval this would feed out of scope.
 
 ### 4.2 Patient Input
 
@@ -265,12 +268,12 @@ The verifier has two distinct roles, served by one implementation at two call si
 
 | Role | Applies to | Effect |
 | --- | --- | --- |
-| Grading | Every variant, including B0, B1, B2, ablations, and Full | Scores final outputs offline. Results never flow back into the system under test. |
+| Grading | Both variants: the agent and the one-shot baseline | Scores final outputs offline. Results never flow back into the system under test. |
 | Feedback | Full only | Its verdict triggers the single correction inside the agent loop. |
 
-Offline grading runs the same code with the same configuration across all variants. Only Full receives verifier feedback and a correction opportunity; baselines are graded by the same standard they were never allowed to consult. This asymmetry is the measured architectural difference, not a confound, and it is stated wherever the comparison is published.
+Offline grading runs the same code with the same configuration across both variants. Only the agent receives verifier feedback and a correction opportunity; the baseline is graded by the same standard it was never allowed to consult. This asymmetry is the measured architectural difference, not a confound, and it is stated wherever the comparison is published.
 
-Because Full's final outputs have passed through one correction, citation validity is reported at three points — B2, Full before correction, and Full after correction — so the contribution of tool-mediated evidence selection is separable from the contribution of the correction loop.
+Because the agent's final outputs have passed through one correction, citation validity is reported at three points — the baseline, the agent before correction, and the agent after correction — so the contribution of tool-mediated evidence selection is separable from the contribution of the correction loop.
 
 ### 8.2 Failure Separation
 
@@ -292,28 +295,19 @@ Benchmark difficulty comes from deliberately planted evidence hazards rather tha
 
 The right-hand column is a test obligation, not documentation. Gate 2 asserts it per hazard. Two hazards sharing a reason is acceptable where they share a nature — 1 and 6 are both disqualifying statuses, 3 and 7 both leave no qualifying fact — but a hazard resolving to a reason other than the one listed is a defect in either the timeline or the assignment table, and is treated as one.
 
-## 9. Candidate Retrieval
+## 9. Candidate Trials
 
-The Patient Retrieval Profile is a retrieval-oriented view of the timeline covering disease and histology, biomarkers, stage, prior therapy, demographics, and geography. Per-facet query decomposition is out of scope; the profile produces one query representation per channel.
+The candidate set is the frozen trial records of section 4.1, in a fixed authored order. Retrieval is out of scope for this project (section 18), so no ranking is computed, and Retrieval Rank is the position in that authored order — immutable, and never merged with Review Priority.
 
-Patient-specific Candidate Filters are limited to deterministically comparable structured age, administrative sex, and explicit geography. Unknown values never remove trials. Biomarkers, stage, and treatment history remain recoverable Retrieval Signals, never hard filters.
+Every candidate is presented. Review Priority orders assessed trials by Match Conclusion and then Retrieval Rank without overwriting Retrieval Rank.
 
-Two channels run independently over trial-level text — title, conditions and MeSH, summary, interventions, and eligibility text:
+**The assessed set is the three highest-ranked presented candidates that have an authored Criterion Expression.** Where a candidate in the top three has none, it is reported as `expression_unavailable` at its own rank and the next presented candidate with an expression takes its place. Backfill never reaches past the presented set. Where fewer than three presented candidates have expressions, fewer are assessed and the report says how many and why.
 
-- Lexical (BM25)
-- Dense (local embeddings)
+The alternative, assessing strictly the top three and returning two results when one lacks an expression, was rejected as needlessly opaque. Expression coverage is an artifact of this project's authoring budget under ADR 0004, not a property of the trial, so allowing it to shrink the assessed set would report a budget decision as though it were a finding.
 
-Deterministic reciprocal-rank fusion combines the channels. Cross-encoder reranking is out of scope.
+The policy keeps the top-20 and top-5 shape it was written against, so the same rules apply unchanged if a larger candidate list ever arrives.
 
-Retrieval returns an immutable top 20 with per-channel ranks and per-channel scores, both retained and both displayed. The top five by Retrieval Rank are presented. Review Priority orders assessed trials by Match Conclusion and then Retrieval Rank without overwriting Retrieval Rank. Ranks 6–20 remain visible Unassessed Candidates.
-
-**The assessed set is the three highest-ranked presented candidates that have an authored Criterion Expression.** Where a candidate in the top three has none, it is reported as `expression_unavailable` at its own rank and the next presented candidate with an expression takes its place. Backfill never reaches past rank 5: candidates that were not presented are not assessed. Where fewer than three of the presented five have expressions, fewer are assessed and the report says how many and why.
-
-The alternative, assessing strictly the top three and returning two results when one lacks an expression, was rejected as needlessly opaque. Expression coverage is an artifact of this project's authoring budget under ADR 0004, not a property of the trial or of retrieval, so allowing it to shrink the assessed set would report a budget decision as though it were a finding. The bound at rank 5 exists so the assessed set stays inside what the reader was shown.
-
-No blended "AI match score" combines retrieval and eligibility reasoning.
-
-Model-proposed query expansions may improve retrieval but can never independently establish a Criterion State. Whether expansions are produced deterministically or by the model is recorded in the retrieval configuration.
+No blended "AI match score" combines candidate order with eligibility reasoning.
 
 ## 10. Criterion Reasoning Agent
 
@@ -352,48 +346,47 @@ Tool calls, arguments, and results are recorded in the Reasoning Trace.
 
 ## 11. Trial Supervisor
 
-A multi-turn layer above the Criterion Reasoning Agent, owning trial-level assessment strategy. Every behavior is a configuration flag, default off.
+A thin layer above the Criterion Reasoning Agent, owning trial-level assessment strategy. Every behavior is a configuration flag, default off.
 
 | Flag | Behavior | Measured effect |
 | --- | --- | --- |
 | `order_criteria` | Assess likely-blocking exclusion criteria first | Time to first blocker |
 | `early_termination` | Stop after a blocker is confirmed; mark the remainder `not_assessed` | Token and latency reduction |
-| `evidence_reuse` | Reuse verified evidence established for an earlier criterion in the same trial | Model-call reduction |
 
-Flags are off for correctness benchmarks and on for cost benchmarks, so multi-turn behavior appears as an ablation row rather than a confound.
+Flags are off for correctness measurement and on for cost measurement, so multi-turn behavior appears as its own row rather than as a confound.
 
 Known hazards, which must be measured rather than assumed away:
 
 - `early_termination` forfeits full Criterion Coverage. Skipped criteria are reported as `not_assessed`, never `unknown`.
-- `order_criteria` and `evidence_reuse` introduce order dependence. Assessment order is deterministic given a fixed configuration and seed.
-- `evidence_reuse` can propagate one incorrect reading across criteria. Reused evidence carries the originating criterion ID, and reuse-induced error propagation is reported separately.
+- `order_criteria` introduces order dependence. Assessment order is deterministic given a fixed configuration and seed.
+
+Evidence Reuse across criteria was specified in earlier versions and is cut: it buys model calls at the cost of a new error-propagation path to measure, and the propagation measurement is the expensive half.
 
 ## 12. Architecture
 
-Four deep modules, each hiding substantial complexity behind a small stable interface:
+Three deep modules, each hiding substantial complexity behind a small stable interface:
 
 | Module | Interface | Owned complexity |
 | --- | --- | --- |
 | Patient Timeline | `build(bundle, as_of) -> PatientTimeline` | FHIR validation, supported-resource interpretation, terminology, temporal precision, provenance, tool surface |
-| Trial Retrieval | `retrieve(timeline, snapshot, k) -> CandidateSet` | Ingestion, corpus membership, candidate filters, BM25, embeddings, RRF, retrieval trace |
 | Criterion Agent | `assess(timeline, trial) -> TrialAssessment` | Tool selection, model reasoning, deterministic computation, verification, correction, supervisor strategy, aggregation |
-| Evaluation Lab | `run(manifest, variant) -> EvalReport` | Gold derivation, baselines, ablations, metrics, cost accounting, failure analysis |
+| Evaluation Lab | `run(manifest, variant) -> EvalReport` | Gold derivation, the baseline, metrics, cost accounting, failure analysis |
 
 The application entry point stays thin:
 
 ```
-match(patient, snapshot) -> MatchingRun
+match(patient, trials) -> MatchingRun
 ```
 
-A small pure Matching Policy owns the top-20, top-5, and Review Priority rules, and the assessed-set rule of section 9 including its bounded backfill. Unknown Reason assignment under section 8.0 is likewise pure and deterministic, and belongs to the Criterion Agent module rather than to the model. Parser, terminology, evidence packet construction, and index internals are module-internal and have no separate public interface.
+A small pure Matching Policy owns which candidates are presented and which are assessed, including the assessed-set rule of section 9 and its bounded backfill. Unknown Reason assignment under section 8.0 is likewise pure and deterministic, and belongs to the Criterion Agent module rather than to the model. Parser, terminology, and evidence-packet construction are module-internal and have no separate public interface.
 
-ClinicalTrials.gov has HTTP and fixture adapters. Model inference has hosted, local, and frozen-replay adapters. The retrieval index sits behind a single interface so a larger backend can replace the in-process implementation without touching callers.
+ClinicalTrials.gov has a fixture adapter. Model inference has hosted, local, and frozen-replay adapters.
 
 ## 13. Core Data Model
 
 **Patient Timeline** — scenario identity; source Bundle hash and normalization version; Assessment Time; demographics and geography; time-ordered facts with code, value, status, interval, and precision; documented medication exposures; provenance references; unsupported-content inventory.
 
-**Trial Record** — stable NCT identity; snapshot-scoped record identity and source payload hash; recruiting status, sites, source URL, update date; conditions and MeSH, interventions, summaries; source-aligned Eligibility Criteria; authored Criterion Expressions with authoring provenance.
+**Trial Record** — stable NCT identity; record identity and source text hash; recruiting status, sites, source URL, update date; conditions and MeSH, interventions, summaries; source-aligned Eligibility Criteria; authored Criterion Expressions with authoring provenance.
 
 **Eligibility Criterion** — version-scoped ID; polarity; source section, ordinal, span, exact text; Criterion Expression and Atomic Propositions; authoring provenance and review status.
 
@@ -403,40 +396,36 @@ ClinicalTrials.gov has HTTP and fixture adapters. Model inference has hosted, lo
 
 **Trial Assessment** — candidate identity and immutable Retrieval Rank; complete Criterion Assessments; blocker, unresolved, and not-assessed counts; Match Conclusion; Review Priority; Evidence Trajectory; operational measurements.
 
-**Matching Run** — timeline, snapshot, and Assessment Time identities; frozen retrieval, embedding, model, prompt, tool, supervisor, and evaluator versions; Candidate Set with assessed and unassessed status; Trial Assessments; Reasoning Trace; warnings; latency, model calls, tokens, cost estimate, hardware profile.
+**Matching Run** — timeline, trial-record, and Assessment Time identities; frozen model, prompt, tool, supervisor, and evaluator versions; Candidate Set with assessed and unassessed status; Trial Assessments; Reasoning Trace; warnings; latency, model calls, tokens, cost estimate, hardware profile.
 
 **Eval Case** — immutable versioned inputs; derived expected outputs; partition and scenario family; Scorable and Coverage-Only assessments; evidence equivalence sets; grading rules.
 
 ## 14. Trace and Reproducibility
 
-The Reasoning Trace records filter decisions, per-channel retrieval ranks, expression provenance, proposition classification, tool calls with arguments and results, deterministic computations, model metadata, verifier outcomes, correction reason, supervisor decisions, final states, tokens, latency, and configuration versions.
+The Reasoning Trace records expression provenance, proposition classification, tool calls with arguments and results, deterministic computations, model metadata, verifier outcomes, correction reason, supervisor decisions, final states, tokens, latency, and configuration versions.
 
 It is a read-only diagnostic artifact, not execution state, an authorization log, or a resumable checkpoint. Frozen traces can be re-graded and replayed offline.
 
 The coordinator-facing Evidence Trajectory is the concise subset explaining which criterion, evidence, tools, and verification steps produced an assessment. It never exposes hidden chain-of-thought or Scenario Manifest content.
 
-Each run records patient and trial hashes, partition, embedding, model, prompt and schema, decoding, tool and supervisor configuration, evaluator code version, seed, latency, tokens, estimated cost, and hardware profile.
+Each run records patient and trial hashes, partition, model, prompt and schema, decoding, tool and supervisor configuration, evaluator code version, seed, latency, tokens, estimated cost, and hardware profile.
 
 ## 15. Delivery Surface
 
-The delivery surface is **two** self-contained static artifacts, each publishable as a hosted page and viewable offline without credentials, a server, or any network fetch. Both are generated from frozen artifacts, so they are built last and never become a dependency of the reasoning modules.
+The delivery surface is **one** self-contained static artifact, publishable as a hosted page and viewable offline without credentials, a server, or any network fetch. It is generated from frozen run artifacts, so it is built last and never becomes a dependency of a reasoning module.
 
-The split exists because the two have different scopes. A Trace Report describes one Matching Run. Evaluation results describe the benchmark across every run, and cannot be derived from any single one. Presenting them as one document lets a corpus-scoped statistic sit beside a run-scoped trace as though they were the same kind of claim, which is precisely how a portfolio artifact becomes misleading. See [ADR 0010](../adr/0010-separate-the-evaluation-report-from-the-trace-report.md).
-
-### 15.1 Trace Report — scoped to one Matching Run
-
-Ordered verdict-first, not in pipeline order. The three sections carrying the engineering claim are the criterion detail, the verifier catch, and the per-criterion baseline comparison; a reader must reach them before any setup material.
+Ordered verdict-first, not in pipeline order. The three sections carrying the engineering claim are the criterion detail, the verifier catch, and the baseline comparison; a reader must reach them before any setup material.
 
 | Order | Content |
 | --- | --- |
 | 1 | Plain-language summary: one sentence on what the system does, the run's conclusions, and the single worked criterion that demonstrates the claim. Written for a reader with no domain or system vocabulary. |
 | 2 | The demonstrative criterion in full: source text, atomic propositions, state, impact, evidence, tool call sequence with arguments and results |
 | 3 | Verifier outcome for that criterion, including the rejected citation and the resulting correction |
-| 4 | Side-by-side Full, expression-aware one-shot, and raw-text one-shot results on that same criterion |
-| 5 | The top five candidates, with the assessed top three in Review Priority order |
+| 4 | Side-by-side agent and one-shot baseline results on that same criterion |
+| 5 | The four candidate trials, with the assessed ones in Review Priority order |
 | 6 | Per-trial criterion tables: state, impact, and Unknown Reason for every criterion |
 | 7 | The patient timeline with per-fact provenance |
-| 8 | The immutable top-20 retrieval table with per-channel ranks and per-channel scores |
+| 8 | Results across the scenario set: the invariant gates as pass or fail, the reported counts beside them, and the two worked failures |
 | 9 | Per-assessment latency, model calls, tokens, and cost |
 | 10 | Reproducibility header: identities, hashes, frozen configuration versions, and warnings |
 
@@ -444,26 +433,11 @@ Citations link to the cited FHIR JSON path and the exact trial source span. Sect
 
 A persistent section index is required. It is wayfinding for a long single document, not application chrome, and it does not reintroduce breadcrumbs, back buttons, in-page tabs, or per-screen headers.
 
-Every scenario with a Matching Run gets a Trace Report. At least one report covers a run in which the system fails, per the pre-registration's failure-case obligation.
+Every scenario with a Matching Run gets a report. At least one report covers a run in which the system fails.
 
-### 15.2 Evaluation Report — scoped to the benchmark, not to any run
+Section 8 is the only run-independent part of the document, and it says so where it sits: a count across the scenario set is a different kind of claim from a fact about the run above it. An earlier version of this specification made it a second artifact for that reason; one page with a labelled section is enough at this scale, and two artifacts for one demonstration cost a reader more than the separation buys. See [ADR 0014](../adr/0014-cut-the-research-grade-evaluation-protocol.md).
 
-A separate artifact. It opens by stating that its scope is the benchmark rather than a run, and it never appears as a section of a Trace Report.
-
-It presents, per the benchmark plan and the pre-registration:
-
-1. Deterministic invariants as pass or fail, in their own table, labelled release gates
-2. Reported results in a separate table, labelled as reported and explicitly not gated, with confidence intervals, realised cluster and observation counts, and per-state support
-3. The paired cost-value table, with cost per criterion assessment beside the grounding metric it purchased
-4. Citation validity at its comparable measurement points, with the verification-induced `unknown` rate beside the post-correction point
-5. The pre-registered two-sided comparison: effect size, interval, and outcome, including inconclusive and unfavourable outcomes
-6. The falsification condition and its evaluated result
-7. The failure taxonomy, with at least two failure cases linking to their full Trace Reports
-8. Its own scope and limitations statement
-
-No release gate in this report is a model-behavior statistic. Nothing in it is presented as a property of a single run.
-
-### 15.3 Constraints binding on both
+### 15.1 Constraints
 
 - Self-contained: no network fetch at view time, fonts and assets included. A report that needs the network is not offline-viewable.
 - Print styles implemented; the disclaimer appears in print output.
@@ -473,33 +447,31 @@ No release gate in this report is a model-behavior statistic. Nothing in it is p
 - Trial source text is verbatim, never rewritten, truncated, or paraphrased.
 - No Scenario Manifest content and no model chain-of-thought.
 
-An optional live mode may run a new patient-trial pair locally and produce a Trace Report.
-
 ## 16. Model Policy
 
 Model inference sits behind an adapter with hosted, local, and frozen-replay implementations. Headline results may come from a hosted small model; the adapter interface, not the model choice, is the engineering claim. Local execution is reported when available.
 
 A deliberately modest model is acceptable and arguably preferable: higher fabrication rates make verifier value larger and more measurable.
 
-Exact model, revision, prompts, schemas, decoding, and hardware are selected on development data and frozen before held-out evaluation. Structured output uses constrained decoding or schema validation with recorded, non-hidden retries. Model licenses and limitations are recorded.
+Exact model, revision, prompts, schemas, decoding, and hardware are recorded with every run and frozen before the held-out scenarios are assessed. Structured output uses constrained decoding or schema validation with recorded, non-hidden retries. Model licenses and limitations are recorded.
 
 Plain typed Python is the orchestration baseline. LangGraph, multi-agent execution, and fine-tuning are out of scope.
 
 ## 17. Authoring Policy
 
-AI assistance is permitted for drafting criterion expressions, synthetic scenario resources, distractor designs, corpus normalization, code, tests, and documentation. Every AI-drafted artifact is human-reviewed before freezing, and its authoring provenance and review status are recorded.
+AI assistance is permitted for drafting criterion expressions, synthetic scenario resources, distractor designs, code, tests, and documentation. Every AI-drafted artifact is human-reviewed before freezing, and its authoring provenance and review status are recorded.
 
 AI-generated expected-state labels are prohibited. Using a model to produce the ground truth that scores a model measures agreement, not correctness.
 
 Expected states are instead derived deterministically by code from the hidden Scenario Manifest and the authored Criterion Expression. Because scenario facts are authored, the expected state for a supported proposition is computable rather than a matter of judgment.
 
-Propositions whose semantics cannot be operationalized this way remain visible as Coverage-Only Assessments and are excluded from accuracy metrics.
+Propositions whose semantics cannot be operationalized this way remain visible as Coverage-Only Assessments and are excluded from accuracy counts.
 
 This makes the benchmark a test of evidence retrieval, citation validity, and logic application — not of clinical judgment. The specification states this limitation explicitly rather than implying broader validity.
 
 ## 18. Scope Line
 
-Excluded from this MVP: real PHI, live EHRs, MIMIC, HAPI FHIR, full SNOMED CT and UMLS, automatic criterion parsing, unstructured-note reasoning, imaging interpretation, TNM derivation, UCUM unit conversion, line-of-therapy inference, assay-actionability inference, cross-encoder reranking, per-facet retrieval decomposition, PostgreSQL and pgvector, TREC benchmark tracks, manual gold labeling at scale, clinical validation, chat interfaces, external writes, permissions, approval workflows, human-in-the-loop workflows, idempotency, durable execution, MCP, generic agent harnesses, LangGraph, multi-agent orchestration, and fine-tuning.
+Excluded from this MVP: real PHI, live EHRs, MIMIC, HAPI FHIR, full SNOMED CT and UMLS, automatic criterion parsing, unstructured-note reasoning, imaging interpretation, TNM derivation, UCUM unit conversion, line-of-therapy inference, assay-actionability inference, **candidate retrieval of any kind — lexical, dense, or fused — and the trial corpus it would rank**, cross-encoder reranking, PostgreSQL and pgvector, TREC benchmark tracks, manual gold labeling at scale, **inferential statistics: hypothesis tests, confidence intervals, bootstrap resampling, and pre-registered effect sizes**, clinical validation, chat interfaces, external writes, permissions, approval workflows, human-in-the-loop workflows, idempotency, durable execution, MCP, generic agent harnesses, LangGraph, multi-agent orchestration, and fine-tuning.
 
 Progress is governed by acceptance criteria, not a calendar.
 
@@ -510,23 +482,20 @@ Not every gate is essential. If time is constrained, cut from the bottom of this
 **Core** — without these the project does not demonstrate its claim:
 
 - Gate 1 Contracts and fixtures
-- Gate 2 Patient Timeline and Timeline Tools
-- Gate 4 Criterion Agent and Evidence Verifier
-- Gate 6 Evaluation, baselines, and core ablations
-- Gate 7 Trace Report and Evaluation Report, because an unseen result is not a portfolio result
+- Gate 2 Patient Timeline, Timeline Tools, and authored scenarios
+- Gate 3 Criterion Agent and Evidence Verifier
+- Gate 4 Measurement against the one-shot baseline
+- Gate 5 Trace Report, because an unseen result is not a portfolio result
 
 **Additive** — real value, but the project remains complete and honest without them:
 
-- Gate 3 Hybrid retrieval. Fallback: the four frozen core trial fixtures selected in Gate 1, which preserve two-axis partitioning, with retrieval declared out of scope.
-- Gate 5 Trial Supervisor. Fallback: single-turn per-criterion assessment only.
+- Early Termination, the one supervisor behaviour kept. Fallback: single-turn per-criterion assessment.
 
 **Cut order under schedule pressure:**
 
-1. Gate 5 Trial Supervisor entirely, including its two supervisor-only ablations
-2. Dense retrieval and RRF, keeping BM25 only
-3. Scenarios from six to four
-4. Live report mode, keeping the static report
-5. Authored trials from twelve to eight
+1. Early Termination
+2. Scenarios from six to four
+3. The failure-taxonomy section of the report, keeping the two worked failures
 
 Cutting a stage requires deleting its claims from the report as well. Reduced scope stated plainly is stronger than scope implied but unmeasured.
 
@@ -538,18 +507,17 @@ Only deterministic invariants are release gates. These are properties the implem
 - Deterministic aggregation accuracy: 100%
 - Verifier catch rate on injected faults: 100%
 - Unsupported assessments surviving verification in final output: 0
-- Criterion Coverage with supervisor flags off: 100%
+- Criterion Coverage with Early Termination off: 100%
 - Citations dated after `assessment_as_of` in final output: 0
 - Infrastructure Failures scored as `unknown`: 0
 
-Every model-behavior measurement is a reported result, not a gate. This includes criterion-state macro F1, per-state precision and recall, patient-evidence precision and recall, Match Conclusion accuracy, the pre-correction unsupported-assessment rate, the verification-induced `unknown` rate, and every cost figure. Gating on them at this sample size would invite optimizing toward a threshold, and held-out results must never drive optimization.
+Every model-behavior measurement is a reported result, not a gate: criterion-state accuracy per state, patient-evidence precision, the pre-correction unsupported-assessment rate, the verification-induced `unknown` rate, and every cost figure. Gating on them would invite optimizing toward a threshold on a sample far too small to carry one.
 
-**The first invariant is structural, and that has a consequence for how it may be used.** Reference validity in final output reaches 100% because the verifier degrades every assessment it cannot verify to `unknown` with reason `verification_failed`. It is therefore a statement about the implementation, not a measurement of model behavior, and it may never be compared against a baseline: a variant with no verifier has no such guarantee, so the comparison would report an architectural difference as a result. Comparisons use Full *before* correction.
+**The first invariant is structural, and that has a consequence for how it may be used.** Reference validity in final output reaches 100% because the verifier degrades every assessment it cannot verify to `unknown` with reason `verification_failed`. It is a statement about the implementation, not a measurement of model behavior, and it may never be compared against the baseline: a variant with no verifier has no such guarantee, so the comparison would report an architectural difference as a result. Comparisons use the agent *before* correction.
 
-**What the guarantee costs is itself a reported result.** The verification-induced `unknown` rate — propositions Full committed to before correction and returned as `unknown` after it — is published wherever post-correction validity is published, at equal prominence. A verifier that rejected everything would satisfy every invariant above and produce a worthless system; this metric is what distinguishes the two.
+**What the guarantee costs is itself a reported result.** The verification-induced `unknown` rate — propositions the agent committed to before correction and returned as `unknown` after it — is published wherever post-correction validity is published, at equal prominence. A verifier that rejected everything would satisfy every invariant above and produce a worthless system; this number is what distinguishes the two.
 
-The comparison against the expression-aware one-shot control B2 is a pre-registered, two-sided hypothesis test with no minimum effect threshold, evaluated on Full before correction. Effect sizes and confidence intervals are published whether or not the test is significant, and a null or negative result is published as such. What each variant receives in its prompt — as distinct from what it is permitted to see — is fixed in the pre-registration and is not an implementation choice.
+**Reported numbers are counts, not estimates.** Every accuracy and grounding figure is published as a raw count and a percentage over a stated denominator, with the number of scenarios, trials, and propositions behind it. No confidence interval, hypothesis test, or effect size is computed: at this sample size an interval would be wider than any difference worth claiming, and computing one would dress a demonstration up as a study. The report says so in the results section rather than leaving a reader to infer it.
 
-The pre-registration document — metrics, comparison units, per-variant prompt contents, statistical procedure, precision, and falsification condition — is committed before any held-out run, and the published report cites its commit hash. See [`../evaluation/pre-registration.md`](../evaluation/pre-registration.md).
+**A result that goes the wrong way is published as it stands.** If the agent shows no advantage over the one-shot baseline in citation validity, that is the finding, and the report states it plainly beside what the architecture cost to build.
 
-Precision is stated as a procedure rather than as a number. The detectable-difference band is governed by the count of held-out clusters — scenario-trial pairs — not by the count of graded observations inside them, and it is recomputed from development-set data and committed as a dated amendment before the held-out run begins. A band asserted in advance without being derived from anything constrains nothing.

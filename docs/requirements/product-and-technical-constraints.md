@@ -1,20 +1,22 @@
 # Clinical Trial Matching Agent: Product and Technical Constraints
 
 **Status:** Binding project constraints
-**Date:** 2026-08-22
+**Date:** 2026-08-22, amended 2026-08-24 for specification v7
 **Primary audience:** Project contributors and portfolio reviewers
 
 The frozen design is specified in [`../specs/phase-1-mvp-specification.md`](../specs/phase-1-mvp-specification.md). Where this document and the specification differ in level of detail, the specification governs behavior. Scope changes must be recorded explicitly.
 
+Specification v7 cut candidate retrieval and the inferential-statistics apparatus; this document is amended to match. See [ADR 0014](../adr/0014-cut-the-research-grade-evaluation-protocol.md).
+
 ## Product Definition
 
-The Clinical Trial Matching Agent is an agent-engineering portfolio system. It accepts a synthetic patient record, retrieves candidate studies from a frozen ClinicalTrials.gov snapshot, evaluates individual inclusion and exclusion criteria, and returns evidence-grounded candidate trial reports.
+The Clinical Trial Matching Agent is an agent-engineering portfolio system. It accepts a synthetic patient record, evaluates individual inclusion and exclusion criteria of four frozen ClinicalTrials.gov records, and returns evidence-grounded candidate trial reports.
 
-Clinical trial matching is the carrier domain. The demonstrated skills are agent tool selection, controlled reasoning, deterministic routing, evidence verification, bounded failure recovery, multi-turn cost control, and measured evaluation.
+Clinical trial matching is the carrier domain. The demonstrated skills are agent tool selection, controlled reasoning, deterministic routing, evidence verification, bounded failure recovery, bounded multi-turn cost control, and honest measurement.
 
 It is not a general medical chatbot. Its primary surface is a static trace report, not an open-ended chat interface.
 
-The surface is two artifacts, not one: a Trace Report scoped to a single matching run, and a separate Evaluation Report scoped to the benchmark. Benchmark statistics never appear as a section of a run's trace, because a corpus-scoped number and a run-scoped fact are different kinds of claim and must not share a page as though they were not. See specification section 15.
+The surface is one static report per run. Counts across the scenario set sit in a labelled section that says it is not a fact about the run above it, because a corpus-scoped number and a run-scoped fact are different kinds of claim. See specification section 15.
 
 ## Intended Reviewer Journey
 
@@ -24,9 +26,9 @@ Ordered by what the reviewer encounters, which is deliberately not the order the
 2. In plain language, with no domain or system vocabulary: what the system does, what this run concluded, and which single criterion demonstrates the claim.
 3. They see that criterion decomposed into atomic propositions and assessed through tool calls, with a structured judgment citing patient evidence and exact trial source text.
 4. They see the verifier reproducibly reject an injected bad citation on that criterion and trigger exactly one correction.
-5. They see the same criterion assessed by the deterministic, raw-text one-shot, and expression-aware one-shot variants, side by side, with cost.
-6. Only then: the remaining criteria, the candidate set, hybrid retrieval with per-channel attribution, the full patient timeline with per-fact provenance, and the reproducibility header.
-7. From a separate Evaluation Report: the benchmark results, ablations, invariants, and the pre-registered comparison with its outcome.
+5. They see the same criterion assessed by the one-shot baseline, side by side, with cost.
+6. Only then: the remaining criteria, the candidate set, the full patient timeline with per-fact provenance, and the reproducibility header.
+7. In a labelled section: the invariant gates as pass or fail, the reported counts beside them, and two worked failures.
 
 Steps 1 through 5 must be reachable within five minutes and must not require credentials or a network connection. Step 6 is the same requirement applied to depth rather than to speed: nothing is omitted, it is merely placed after the argument it supports.
 
@@ -34,12 +36,11 @@ Steps 1 through 5 must be reachable within five minutes and must not require cre
 
 Ranked by intended emphasis:
 
-- **Agent engineering.** Tool selection per proposition, explicit division of labor between model and deterministic code, bounded correction, structured degradation to `unknown`, flag-gated multi-turn strategy with measured cost effects.
+- **Agent engineering.** Tool selection per proposition, explicit division of labor between model and deterministic code, bounded correction, structured degradation to `unknown`, and Early Termination as a flag-gated budget with measured cost effects.
 - **Grounding and verification.** Every supported assessment cites machine-verified patient evidence and exact trial source text; a deterministic verifier rejects fabricated or altered citations.
-- **Evaluation engineering.** Deterministic grading, derived gold labels, frozen held-out partitions, deterministic and one-shot baselines, core and conditional ablations, confidence intervals, failure taxonomy, and cost accounting from traces.
+- **Evaluation engineering.** Deterministic grading, derived gold labels, a held-out partition assessed once, one one-shot baseline, a no-verifier row, a failure taxonomy, and cost accounting from traces. Counts over stated denominators, with no interval or test at this sample size.
 - **Longitudinal FHIR modeling.** Preservation of clinical time, temporal precision, status, values, provenance, and unsupported content rather than flattening the record.
-- **Hybrid retrieval.** Deterministic filters plus lexical and dense channels with reciprocal-rank fusion, evaluated with per-channel attribution.
-- **Interface design.** Four deep modules behind small stable interfaces, with a thin application entry point and adapter seams for data sources and model inference.
+- **Interface design.** Three deep modules behind small stable interfaces, with a thin application entry point and adapter seams for data sources and model inference.
 
 The project must not derive its value from a chat UI, a conventional vector-search RAG pipeline, installing agent frameworks, or presenting framework names without measurable task improvement.
 
@@ -107,24 +108,22 @@ The published demo uses only authored synthetic patients. A real coordinator mus
 
 ### Permitted later additions
 
-Any later addition must not retroactively alter frozen held-out results: a larger index backend, a reranker, retrieval benchmark tracks, broader FHIR coverage, additional disease areas, LangGraph behind the same agent interface, and an equal-budget multi-agent ablation.
+Any later addition must not retroactively alter frozen held-out results: candidate retrieval, broader FHIR coverage, additional disease areas, or a different orchestration behind the same agent interface. Each needs an ADR saying which question it answers.
 
 ## Evaluation Requirements
 
 Evaluation is designed before model or orchestration optimization. At minimum:
 
-- A deterministic structured-field baseline, a raw-text one-shot baseline, and an expression-aware one-shot control. All model variants share the patient-evidence boundary, output schema, model family, decoding policy, and cost accounting; deliberate criterion-context differences are labeled.
-- What each variant actually receives in its prompt is fixed in the pre-registration, not left to implementation. A shared evidence *boundary* is not shared *context*: the expression-aware control is handed the whole timeline while the full agent sees only its tool results, so the full agent is the information-disadvantaged arm and this is stated wherever the comparison appears.
+- One one-shot baseline: the criterion, its authored expression, and the whole patient timeline in one prompt. It shares the output schema, model family, decoding policy, and cost accounting with the agent.
+- What each variant receives in its prompt is recorded in the run configuration, not decided at the call site. A shared evidence *boundary* is not shared *context*: the baseline is handed the whole timeline while the agent sees only its tool results, so the agent is the information-disadvantaged arm and this is stated wherever the comparison appears.
 - Gold expected states derived deterministically from hidden scenario manifests. No model-generated labels, and no LLM judge in any primary metric.
-- Held-out partitions separated by both trial and scenario, frozen against all optimization.
+- Held-out partitions separated by both trial and scenario, assessed once at the end and never used while tuning.
 - Release gates restricted to deterministic invariants: citation validity, deterministic aggregation, verifier catch rate on injected faults, zero unsupported assessments surviving verification, criterion coverage, zero post-cutoff citations, and zero infrastructure failures scored as uncertainty. No model-behavior statistic is gated.
 - Final-output citation validity is an invariant reached by degrading unverifiable assessments to `unknown`, so it is never used as a comparison against a baseline. Comparisons use the full agent *before* correction, and the verification-induced `unknown` rate is published wherever post-correction validity is, at equal prominence.
-- A pre-registration committed before the first held-out run, fixing metrics, comparison units, per-variant prompt contents, statistical procedure, precision, cost-value pairing, and a falsification condition, cited by commit hash in the report. Precision is a procedure recomputed from development data and committed as a dated amendment, not a number asserted in advance.
 - One verifier implementation in two separated roles: offline grading of every variant with identical configuration, and runtime feedback for the full agent only.
-- Criterion-state macro F1, per-state precision and recall with attention to `unknown`, and per-category breakdown, all reported with bootstrap confidence intervals from cluster-level resampling and with realised cluster and observation counts, compared against the expression-aware control by a two-sided test with no minimum effect size.
-- Retrieval metrics reported separately from criterion-state metrics, with per-channel attribution.
+- Criterion State agreement per state, and Unknown Reason agreement separately, each as a count over a stated denominator with the scenarios, trials, and propositions behind it shown. No confidence interval, hypothesis test, or effect size: at a few dozen observations an interval would be wider than any difference worth claiming, and the report says so where the numbers appear.
 - Latency, model calls, token usage, and estimated cost measured from run traces.
-- Two core ablations: no deterministic tools and no verifier. If the additive Trial Supervisor is built, also report no evidence reuse and early termination.
+- Two reported configurations beside the agent: no deterministic tools, and no verifier. If Early Termination is built, report it as a third.
 - A published failure taxonomy with representative traces.
 
 Small-sample results are stated as such. No number is published without a link to a reproducible run artifact.

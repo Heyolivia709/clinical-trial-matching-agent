@@ -17,28 +17,14 @@ from pydantic import Field, model_validator
 
 from ctma.domain.assessment import TrialAssessment
 from ctma.domain.base import Frozen
-from ctma.domain.enums import CandidateStatus, Partition, RetrievalChannel
+from ctma.domain.enums import CandidateStatus, Partition
 from ctma.domain.trace import InfrastructureFailure, Measurements, ReasoningTrace
 
 
-class ChannelRank(Frozen):
-    """Where one retrieval channel placed a trial, and what it scored it.
-
-    Per-channel ranks and scores are kept beside the fused rank because the
-    report shows all of them and the benchmark reports BM25-only, dense-only,
-    and fused configurations separately. Fusion is not a channel: it is what
-    combined these.
-    """
-
-    channel: RetrievalChannel
-    rank: int = Field(ge=1)
-    score: float
-
-
 class CandidateTrial(Frozen):
-    """One trial returned by Candidate Retrieval, with its immutable rank.
+    """One trial in the candidate set, with its immutable rank.
 
-    Candidate status is retrieval relevance, never clinical eligibility, and
+    Candidate status says nothing about clinical eligibility, and
     `retrieval_rank` is never recomputed from anything a later criterion
     assessment concluded. Keeping the rank here and the Review Priority
     elsewhere is what stops the two from being quietly merged into one number
@@ -49,26 +35,15 @@ class CandidateTrial(Frozen):
     snapshot_record_id: str = Field(min_length=1)
     retrieval_rank: int = Field(ge=1)
     status: CandidateStatus
-    fused_score: float | None = None
-    channel_ranks: tuple[ChannelRank, ...] = ()
-
-    @model_validator(mode="after")
-    def _each_channel_ranks_a_trial_once(self) -> Self:
-        channels = [entry.channel for entry in self.channel_ranks]
-        if len(channels) != len(set(channels)):
-            msg = f"a channel appears twice for {self.nct_id}: {channels}"
-            raise ValueError(msg)
-        return self
 
 
 class CandidateSet(Frozen):
-    """The immutable ranked collection one run retrieved.
+    """The immutable ordered collection of candidates for one run.
 
     The tuple order is the ranking, and the ranks are dense and start at one, so
     a candidate cannot be dropped from the middle without the set failing to
-    validate. Section 9's cardinalities — twenty retained, five presented, three
-    assessed — are the Matching Policy's and are not repeated here; what this
-    type holds is the structure those numbers are applied to.
+    validate. Section 9's cardinalities are the Matching Policy's and are not
+    repeated here; what this type holds is the structure they are applied to.
     """
 
     candidates: tuple[CandidateTrial, ...] = Field(min_length=1)
@@ -145,9 +120,9 @@ class ModelAdapter(StrEnum):
 class ModelConfiguration(Frozen):
     """Exact model, revision, decoding, and the prompt and schema versions.
 
-    Section 16 freezes all of these on development data before the held-out run.
-    Recording them per run is what lets the pre-registered comparison state that
-    the arms differed in architecture and in nothing else.
+    Section 16 freezes all of these before the held-out scenarios are assessed.
+    Recording them per run is what lets the comparison state that the two variants
+    differed in architecture and in nothing else.
     """
 
     adapter: ModelAdapter
@@ -161,16 +136,15 @@ class ModelConfiguration(Frozen):
 
 
 class SupervisorConfiguration(Frozen):
-    """The three flags of specification section 11, every one default off.
+    """The two flags of specification section 11, both default off.
 
-    Off for correctness benchmarks and on for cost benchmarks, so multi-turn
-    behaviour appears as an ablation row rather than as a confound inside a
-    single reported number.
+    Off for correctness measurement and on for cost measurement, so multi-turn
+    behaviour appears as its own reported row rather than as a confound inside a
+    single number.
     """
 
     order_criteria: bool = False
     early_termination: bool = False
-    evidence_reuse: bool = False
 
 
 class RunConfiguration(Frozen):
@@ -181,8 +155,6 @@ class RunConfiguration(Frozen):
     unless both are recorded.
     """
 
-    retrieval_version: str = Field(min_length=1)
-    embedding_model: str = Field(min_length=1)
     tool_version: str = Field(min_length=1)
     evaluator_version: str = Field(min_length=1)
     hardware_profile: str = Field(min_length=1)
@@ -224,9 +196,9 @@ class MatchingRun(Frozen):
     """One patient, one snapshot, one Assessment Time, under frozen configuration.
 
     `trial_assessments` are held in Review Priority order — Match Conclusion
-    first, then Retrieval Rank — while each assessment keeps the rank retrieval
-    gave it. The ordering and the rank are both recoverable and neither is
-    derived from the other, which is what section 15.3 requires of the two.
+    first, then Retrieval Rank — while each assessment keeps the rank the candidate
+    order gave it. The ordering and the rank are both recoverable and neither is
+    derived from the other, which is what section 15 requires of the two.
 
     Infrastructure Failures are recorded here, in their own field, and never as
     a Criterion State. That separation is a release gate, and this is where it is

@@ -1,8 +1,8 @@
 """The Trial Record: one trial as one snapshot captured it.
 
-Specification sections 4.1, 4.3 and 13. The record holds the trial metadata
-retrieval ranks on, the verbatim eligibility text, and the source-aligned
-criteria with their authored expressions.
+Specification sections 4.1, 4.3 and 13. The record holds the trial metadata, the
+verbatim eligibility text, and the source-aligned criteria with their authored
+expressions.
 
 The eligibility text is kept whole, and each criterion carries a span into it.
 That is what makes a citation checkable: a report quotes the criterion, and the
@@ -51,9 +51,9 @@ class TrialRecord(Frozen):
     what ties the review status below to a particular wording. Editing the text
     without a new review makes the record fail to load.
 
-    Gate 1 fixtures freeze the eligibility text rather than the whole
-    ClinicalTrials.gov payload. The full-payload hash arrives with the snapshot
-    in Gate 3.
+    The fixtures freeze the eligibility text rather than the whole
+    ClinicalTrials.gov payload, because the eligibility text is the part every
+    citation resolves against.
     """
 
     criteria: tuple[EligibilityCriterion, ...] = Field(min_length=1)

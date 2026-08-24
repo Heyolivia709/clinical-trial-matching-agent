@@ -1,9 +1,8 @@
 """The fixture adapter for ClinicalTrials.gov records.
 
-Specification section 12 gives ClinicalTrials.gov an HTTP adapter and a fixture
-adapter. This is the fixture one: it reads the four frozen Gate 1 trials from
-`fixtures/trials/`, so the core path has trial data before retrieval exists and
-without a network call in a test.
+Specification section 12 gives ClinicalTrials.gov a fixture adapter. This is it:
+it reads the four frozen trial records from `fixtures/trials/`, so a run has
+trial data without a network call in a test.
 
 Criterion spans are not stored in the fixture files. They are located here, by
 searching the frozen eligibility text for the criterion's own text. An authored

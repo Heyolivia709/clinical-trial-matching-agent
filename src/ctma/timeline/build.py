@@ -184,6 +184,7 @@ def _inventory(
         resource_id=resource.get("id"),
         json_path=path,
         reason=reason,
+        code=_code(kind, resource),
     )
 
 
@@ -219,7 +220,14 @@ def _status(kind: str, resource: Resource) -> str | None:
 
 
 def _code(kind: str, resource: Resource) -> Coding | None:
-    field = "medicationCodeableConcept" if kind == "MedicationAdministration" else "code"
+    """The code that says what the resource is about.
+
+    Medication resources put it in `medicationCodeableConcept`, and that includes
+    `MedicationRequest`: an order is inventoried rather than interpreted, but the
+    inventory still records which drug was ordered, so a tool can tell an order
+    for this drug from an order for something else.
+    """
+    field = "medicationCodeableConcept" if kind.startswith("Medication") else "code"
     return _coding(resource.get(field))
 
 

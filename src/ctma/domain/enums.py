@@ -100,9 +100,9 @@ EVIDENCE_DERIVED_REASONS: frozenset[UnknownReason] = frozenset(
         UnknownReason.UNSUPPORTED_EVIDENCE_TYPE,
     }
 )
-"""Reasons an authored scenario can produce, so the benchmark plan's balance
-requirement applies to them. The remaining three arise from configuration or
-injected faults and are covered by Gate 4 fixtures instead."""
+"""Reasons an authored scenario can produce. The remaining three arise from
+configuration or injected faults and are covered by the Gate 3 fixtures
+instead."""
 
 
 class EvidenceRelation(StrEnum):
@@ -121,9 +121,9 @@ class CandidateStatus(StrEnum):
     """How far a Candidate Trial got: retained, presented, or assessed.
 
     One ordered vocabulary rather than two flags, because the states nest.
-    Section 9 retains twenty, presents five, and assesses three of those five,
-    so "assessed but never presented" is not a state a run can be in — and with
-    two independent booleans it would be.
+    Section 9 presents the candidates and assesses three of them, so "assessed
+    but never presented" is not a state a run can be in — and with two
+    independent booleans it would be.
     """
 
     RETAINED = "retained"
@@ -131,18 +131,11 @@ class CandidateStatus(StrEnum):
     ASSESSED = "assessed"
 
 
-class RetrievalChannel(StrEnum):
-    """The two ranking channels fused in section 9. Fusion is not a channel."""
-
-    BM25 = "bm25"
-    DENSE = "dense"
-
-
 class Partition(StrEnum):
     """Which half of the two-axis split an artifact belongs to.
 
     Held-out scenarios and trials stay frozen and must not influence prompts,
-    models, retrieval, tools, or supervisor configuration, so every run records
+    models, tools, or supervisor configuration, so every run records
     which partition it ran on.
     """
 

@@ -59,7 +59,10 @@ def inventoried(resource_id: str) -> UnsupportedContent:
 def test_the_four_evidence_bearing_resource_types_are_parsed() -> None:
     assert TIMELINE.demographics.administrative_sex == "female"
     assert {item.resource_type for item in TIMELINE.facts} == {"Condition", "Observation"}
-    assert [item.fact_id for item in TIMELINE.exposures] == ["MedicationAdministration/medadmin-1"]
+    assert [item.fact_id for item in TIMELINE.exposures] == [
+        "MedicationAdministration/medadmin-1",
+        "MedicationAdministration/medadmin-2",
+    ]
 
 
 def test_every_bundle_entry_is_accounted_for() -> None:
@@ -102,7 +105,7 @@ def test_an_exposure_keeps_its_interval_status_and_route() -> None:
     assert exposure.route == "Oral route"
     assert exposure.time is not None
     assert (exposure.time.start, exposure.time.end) == (dt.date(2025, 2, 1), dt.date(2026, 6, 30))
-    assert exposure.medication.code == "2117292"
+    assert exposure.medication.code == "1721581"
 
 
 def test_a_quantity_keeps_its_comparator_unit_and_reference_range() -> None:
@@ -117,18 +120,22 @@ def test_a_qualitative_result_stays_qualitative() -> None:
     """Section 5.2: no conversion to a number without a reviewed mapping."""
     value = fact("Observation/obs-3").value
     assert isinstance(value, CodedValue)
-    assert value.text == "EGFR L858R mutation present"
+    assert value.text == "Present"
 
 
 def test_a_corrected_result_supersedes_the_earlier_one_which_stays() -> None:
-    """Provenance is retained: the report can show that the value was revised."""
+    """Provenance is retained: the report can show that the value was revised.
+
+    This correction flips the answer — PD-L1 negative became positive — which is
+    why showing only the correction would not be enough for a reader.
+    """
     superseded = fact("Observation/obs-1")
     correction = fact("Observation/obs-2")
     assert superseded.superseded_by == correction.fact_id
     assert correction.superseded_by is None
-    assert isinstance(superseded.value, QuantityValue)
-    assert isinstance(correction.value, QuantityValue)
-    assert (superseded.value.value, correction.value.value) == (22.0, 45.0)
+    assert isinstance(superseded.value, CodedValue)
+    assert isinstance(correction.value, CodedValue)
+    assert (superseded.value.text, correction.value.text) == ("Negative", "Positive")
 
 
 def test_a_disqualifying_status_keeps_its_fact() -> None:
