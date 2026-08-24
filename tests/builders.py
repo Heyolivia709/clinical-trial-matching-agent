@@ -47,6 +47,7 @@ from ctma.domain.run import (
     SupervisorConfiguration,
 )
 from ctma.domain.trace import Measurements
+from ctma.policy import RetrievedTrial
 
 REVIEWED = AuthoringProvenance(
     drafted_by="assistant",
@@ -195,10 +196,11 @@ def assessed_exc7(propositions: tuple[PropositionAssessment, ...]) -> AssessedCr
 def exc7_trial_assessment(
     criteria: tuple[CriterionAssessment, ...] | None = None,
     retrieval_rank: int = 1,
+    nct_id: str = NCT,
 ) -> TrialAssessment:
     return TrialAssessment(
-        nct_id=NCT,
-        snapshot_record_id=f"{SNAPSHOT_ID}:{NCT}",
+        nct_id=nct_id,
+        snapshot_record_id=f"{SNAPSHOT_ID}:{nct_id}",
         retrieval_rank=retrieval_rank,
         criteria=criteria if criteria is not None else (assessed_exc7((met("P1"), unknown("P2"))),),
         measurements=Measurements(
@@ -287,4 +289,16 @@ def matching_run(
             completion_tokens=540,
             estimated_cost_usd=0.0063,
         ),
+    )
+
+
+def retrieved(rank: int, *, has_expression: bool = True) -> RetrievedTrial:
+    """One retrieval hit. `rank` only names the trial; the policy numbers them."""
+    nct_id = f"NCT0500{rank:04d}"
+    return RetrievedTrial(
+        nct_id=nct_id,
+        snapshot_record_id=f"{SNAPSHOT_ID}:{nct_id}",
+        has_authored_expression=has_expression,
+        fused_score=1.0 / rank,
+        channel_ranks=(ChannelRank(channel=RetrievalChannel.BM25, rank=rank, score=12.5),),
     )
