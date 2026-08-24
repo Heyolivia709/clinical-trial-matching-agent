@@ -229,10 +229,10 @@
    "scenario_id": "SCN-04",
    "nct_id": "NCT07185997",
    "expected_rejection": "citation_cannot_establish_state",
-   "intent": "An osimertinib order cited as treatment exposure. The resource exists, the path resolves, the drug is right and the date is real — every other check passes. Order intent is not exposure, so the assessment rests on nothing. This is the fault the section 3 demonstration turns on.",
+   "intent": "An osimertinib order cited as treatment exposure. The resource exists, the path resolves, the drug is right and the date is real — every other check passes, and the relation is the one the state needs. Order intent is not exposure, so the assessment rests on nothing. This is the fault the section 3 demonstration turns on.",
    "proposal": {
     "proposition_id": "P2",
-    "state": "met",
+    "state": "not_met",
     "trial_evidence": {
      "snapshot_id": "gate1-trial-fixtures-v1:NCT07185997",
      "nct_id": "NCT07185997",

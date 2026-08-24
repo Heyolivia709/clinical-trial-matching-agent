@@ -231,6 +231,9 @@ def _check_fact(
     timeline: PatientTimeline,
     findings: _Findings,
 ) -> None:
+    if fact.resource_type == "Patient":
+        _check_demographics(fact, timeline, findings)
+        return
     resolved = _resolve(fact, timeline)
     if resolved is None:
         findings.add(
@@ -244,6 +247,35 @@ def _check_fact(
     _check_agreement(fact, resolved, findings)
     _check_usability(proposal, fact, resolved, findings)
     _check_time(fact, timeline.assessment_as_of, findings)
+
+
+def _check_demographics(
+    fact: PatientFactReference, timeline: PatientTimeline, findings: _Findings
+) -> None:
+    """A citation of the `Patient` resource, which holds a date and no result.
+
+    Only what the record actually has is compared: the resource identity, the
+    path, and the birth date with its precision. The status and code on such a
+    citation are written by the loop rather than by the model — the `Patient`
+    resource has neither — so comparing them would be comparing a constant with
+    itself.
+    """
+    demographics = timeline.demographics
+    if demographics.resource_id != fact.resource_id or demographics.json_path != fact.json_path:
+        findings.add(
+            VerifierRejection.NONEXISTENT_REFERENCE,
+            f"Patient/{fact.resource_id} at {fact.json_path} is not this timeline's patient",
+        )
+        return
+    if (
+        fact.clinical_time != demographics.birth_date
+        or fact.precision != demographics.birth_date_precision
+    ):
+        findings.add(
+            VerifierRejection.CITATION_DISAGREES_WITH_TIMELINE,
+            f"the citation gives a birth date of {fact.clinical_time} and the record "
+            f"holds {demographics.birth_date}",
+        )
 
 
 def _check_unsupported(
