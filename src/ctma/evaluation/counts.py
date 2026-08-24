@@ -28,7 +28,7 @@ from collections.abc import Mapping, Sequence
 from pydantic import Field
 
 from ctma.domain.base import Frozen
-from ctma.domain.enums import CriterionState
+from ctma.domain.enums import CriterionState, Partition
 from ctma.domain.trace import Measurements, VerifierVerdict
 from ctma.evaluation.grading import GradedProposition, Variant
 
@@ -77,6 +77,11 @@ class ReportedCounts(Frozen):
     """One variant's row, with the denominators it was computed over."""
 
     variant: Variant
+    partition: Partition
+    """Which half these came from. Development and held-out results are reported
+    separately, so a row that did not say which it was could be read as the
+    other one."""
+
     scenarios: int = Field(ge=0)
     trials: int = Field(ge=0)
     propositions: int = Field(ge=0)
@@ -101,9 +106,9 @@ class ReportedCounts(Frozen):
         numbers appear, rather than leaving a reader to work it out.
         """
         return (
-            f"{self.propositions} propositions across {self.scenarios} scenarios and "
-            f"{self.trials} trials. Counts only: at this size no interval, test, or "
-            f"effect size would mean anything."
+            f"{self.propositions} propositions across {self.scenarios} {self.partition.value} "
+            f"scenarios and {self.trials} trials. Counts only: at this size no interval, "
+            f"test, or effect size would mean anything."
         )
 
 
@@ -111,6 +116,7 @@ def report_counts(
     graded: Sequence[GradedProposition],
     *,
     variant: Variant,
+    partition: Partition,
     scenarios: int,
     trials: int,
     cost: Measurements,
@@ -121,6 +127,7 @@ def report_counts(
     unknowns = [item for item in scorable if item.expected_state is CriterionState.UNKNOWN]
     return ReportedCounts(
         variant=variant,
+        partition=partition,
         scenarios=scenarios,
         trials=trials,
         propositions=len(graded),

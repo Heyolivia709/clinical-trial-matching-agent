@@ -82,6 +82,19 @@ transcript spends nothing. The unit is fixed at the criterion assessment (68 of
 them here), and cost is published beside the grounding number it purchased, so
 this table is a placeholder shape until a recorded run fills it.
 
+## The held-out half has not been assessed
+
+Deliberately. It is assessed once, at the end, and reported separately — and
+spending that once on a replayed authored transcript would spend it on a
+measurement of the harness. The machinery is there and takes an explicit
+argument: `eval_cases(Partition.HELD_OUT)` has no default, so reaching the
+held-out half is something someone has to write down.
+
+It is worth assessing when there is a recorded model run to assess it with. The
+two-axis split means the held-out set is larger than the development one: 16 of
+the 24 scenario-trial pairs, because a development scenario against a held-out
+trial is held out too.
+
 ## What these numbers do not support
 
 The agent agrees with gold on every scorable proposition. That is not a claim

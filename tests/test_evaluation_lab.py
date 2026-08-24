@@ -154,7 +154,8 @@ def test_the_counts_state_their_denominators() -> None:
     assert counts.scenarios == 4
     assert counts.trials == 2
     assert counts.propositions == sum(len(result.graded) for result in AGENT)
-    assert "4 scenarios and 2 trials" in counts.sample_sentence()
+    assert "4 development scenarios and 2 trials" in counts.sample_sentence()
+    assert counts.partition is Partition.DEVELOPMENT
     assert "no interval, test, or effect size" in counts.sample_sentence()
 
 
