@@ -10,7 +10,7 @@ Do not add Chinese or bilingual repository content unless the user explicitly re
 
 This project is a research-coordinator decision-support prototype for matching synthetic or public patient information to clinical trials. It must not claim to diagnose, determine clinical eligibility, enroll patients automatically, or demonstrate clinical effectiveness.
 
-Before changing MVP behavior, read `CONTEXT.md` and `docs/specs/phase-1-mvp-specification.md`. The specification is the source of truth and is frozen in stages: claims and discipline are settled, while the sections describing behaviour no implementation has yet exercised re-freeze at the exit of Gate 2. Record scope changes explicitly rather than introducing them implicitly during implementation.
+Before changing MVP behavior, read `CONTEXT.md` and `docs/specs/phase-1-mvp-specification.md`. The specification is the source of truth. Record scope changes explicitly rather than introducing them implicitly during implementation — v7 cuts candidate retrieval and the inferential-statistics apparatus, and it says so in its own header and in an ADR.
 
 ## Subject of the Project
 
@@ -32,15 +32,15 @@ Do not turn the project into a chat UI, an ordinary retrieval-augmented generati
 
 ## Evaluation Discipline
 
-Gold expected states are derived deterministically from the hidden Scenario Manifest and the authored Criterion Expression. Never generate expected-state labels with a model, and never let an LLM judge produce a primary metric.
+Gold expected states are derived deterministically from the hidden Scenario Manifest and the authored Criterion Expression. Never generate expected-state labels with a model, and never let an LLM judge produce a metric.
 
-Held-out scenarios and trials stay frozen and must not influence prompts, models, retrieval, tools, or supervisor configuration.
+Held-out scenarios and trials are assessed once, at the end. They must not influence prompts, models, tools, or supervisor configuration.
 
-Only deterministic invariants are release gates. Never add a threshold gate on a model-behavior statistic; report it with a confidence interval instead. The accuracy comparison against the expression-aware control is a pre-registered two-sided test with no minimum effect size, and null results are published as results.
+Only deterministic invariants are release gates. Never add a threshold gate on a model-behavior statistic.
 
-The verifier has two roles that must not be conflated: offline grading of every variant with identical configuration, and runtime feedback inside the full agent loop only.
+The verifier has two roles that must not be conflated: offline grading of every variant with identical configuration, and runtime feedback inside the agent loop only.
 
-Report sample size, per-state support, and confidence intervals with every accuracy number. Small-sample results are stated as such. Publish cost beside the value it purchased, including when the ratio is unfavorable.
+Report every number as a count over a stated denominator, with the number of scenarios, trials, and propositions behind it. No confidence interval, hypothesis test, or effect size: this is a demonstration set of a few dozen observations, and an interval computed over it would be wider than any difference worth claiming. Say that where the numbers appear rather than leaving a reader to work it out. Publish cost beside the value it purchased, including when the ratio is unfavorable, and publish a result that goes against the architecture as it stands.
 
 ## AI-Assisted Authoring
 
@@ -52,18 +52,17 @@ Anything a tool can check lives in `pyproject.toml` and CI, not here. This secti
 
 **Toolchain.** Python 3.12, uv for dependencies, ruff for lint and format, pyright in strict mode, pytest. CI runs all four on every pull request. Add a dependency only with a reason recorded in the pull request; the specification names several things this project deliberately does not use.
 
-**Layout.** `src/ctma/`, one package per deep module in specification section 12.
+**Layout.** `src/ctma/`, one package per deep module in specification section 12. Gate numbers below are the five-gate sequence in `docs/plans/phase-1-implementation-sequence.md`.
 
 | Package | Owns | Gate |
 | --- | --- | --- |
 | `domain` | Core types, Criterion State semantics, aggregation, impact mapping | 1 |
 | `timeline` | Patient Timeline and the five Timeline Tools | 2 |
-| `retrieval` | Corpus, filters, BM25, embeddings, fusion | 3 |
-| `agent` | Tool selection, verification, correction | 4 |
-| `supervisor` | Flag-gated multi-turn strategy | 5 |
-| `evaluation` | Gold derivation, baselines, ablations, metrics | 6 |
-| `report` | Trace Report and Evaluation Report generation | 7 |
-| `adapters` | ClinicalTrials.gov, model inference, retrieval index | as needed |
+| `agent` | Tool selection, verification, correction | 3 |
+| `supervisor` | Flag-gated Early Termination | 3 |
+| `evaluation` | Gold derivation, the baseline, metrics | 4 |
+| `report` | Report generation | 5 |
+| `adapters` | ClinicalTrials.gov fixtures, model inference | as needed |
 | `policy.py` | The pure Matching Policy: top-20, top-5, assessed set, Review Priority | 1 |
 | `match.py` | The thin entry point | 1 |
 
@@ -83,9 +82,9 @@ Parser, terminology, evidence-packet construction, and index internals are modul
 
 Implementation is acceptance-criteria-driven with no calendar plan. Gate scope is classified as core or additive in specification section 19; cut from the bottom of that list under schedule pressure, and delete the corresponding claims from the report when a stage is cut.
 
-Gates 8 and above are post-MVP and defined in `docs/plans/post-mvp-implementation-sequence.md`. They start only after Gate 7 publishes, add no Criterion State, Unknown Reason, truth table, or reporting status, and never reopen a held-out partition. A component enters that sequence only if it answers a question the specification already owes an answer to; rejected candidates are recorded in an ADR or in the sequence's rejected list rather than dropped silently.
+Nothing is planned beyond Gate 5. A component that looks worth adding after the report publishes needs an ADR saying which question it answers, and it may not add a Criterion State, an Unknown Reason, a truth table, or a reporting status.
 
-The trace report is generated from frozen traces and is built last. It must never become a dependency of any reasoning module.
+The report is generated from frozen traces and is built last. It must never become a dependency of any reasoning module.
 
 ## Agent skills
 

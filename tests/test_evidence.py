@@ -112,17 +112,6 @@ def test_a_citation_may_name_a_resource_outside_the_evidence_boundary() -> None:
     assert order.resource_type == "MedicationRequest"
 
 
-def test_reused_evidence_names_the_criterion_it_came_from() -> None:
-    """Reuse-induced error propagation is reported, so reuse is recorded."""
-    evidence = PatientEvidence(
-        facts=(osimertinib_administration(),),
-        relation=EvidenceRelation.SUPPORTS,
-        reused_from_criterion_id="NCT05123456:EXC-6",
-    )
-    restored = PatientEvidence.model_validate_json(evidence.model_dump_json())
-    assert restored.reused_from_criterion_id == "NCT05123456:EXC-6"
-
-
 def test_a_trial_span_must_contain_the_text_it_claims() -> None:
     """A span that does not fit the text points somewhere else in the snapshot."""
     with pytest.raises(ValidationError, match="span width"):

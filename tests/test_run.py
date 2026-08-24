@@ -12,8 +12,8 @@ import pytest
 from pydantic import ValidationError
 
 from ctma.domain.assessment import UnexpressedCriterion
-from ctma.domain.enums import CandidateStatus, CriterionPolarity, Partition, RetrievalChannel
-from ctma.domain.run import CandidateSet, CandidateTrial, ChannelRank, MatchingRun
+from ctma.domain.enums import CandidateStatus, CriterionPolarity, Partition
+from ctma.domain.run import CandidateSet, MatchingRun
 from ctma.domain.trace import Measurements
 from tests.builders import (
     NCT,
@@ -59,27 +59,14 @@ def test_a_presented_candidate_below_a_retained_one_is_refused() -> None:
         )
 
 
-def test_a_channel_ranks_a_trial_once() -> None:
-    """Two ranks from one channel means one of them is from somewhere else."""
-    with pytest.raises(ValidationError, match="a channel appears twice"):
-        CandidateTrial(
-            nct_id=NCT,
-            snapshot_record_id=f"snapshot:{NCT}",
-            retrieval_rank=1,
-            status=CandidateStatus.ASSESSED,
-            channel_ranks=(
-                ChannelRank(channel=RetrievalChannel.BM25, rank=1, score=12.5),
-                ChannelRank(channel=RetrievalChannel.BM25, rank=4, score=9.0),
-            ),
-        )
-
-
-def test_per_channel_provenance_survives_the_round_trip() -> None:
-    """The report shows per-channel ranks and scores, and never a blended one."""
+def test_the_candidate_set_survives_the_round_trip() -> None:
     restored = CandidateSet.model_validate_json(candidate_set().model_dump_json())
-    channels = restored.candidates[0].channel_ranks
-    assert [entry.channel for entry in channels] == [RetrievalChannel.BM25, RetrievalChannel.DENSE]
-    assert channels[0].score == 12.5
+    assert restored == candidate_set()
+    assert [entry.status for entry in restored.candidates] == [
+        CandidateStatus.ASSESSED,
+        CandidateStatus.PRESENTED,
+        CandidateStatus.RETAINED,
+    ]
 
 
 def test_a_run_round_trips_through_json_without_losing_a_provenance_field() -> None:

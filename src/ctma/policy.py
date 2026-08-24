@@ -1,13 +1,12 @@
-"""The Matching Policy: what is retained, presented, assessed, and in what order.
+"""The Matching Policy: what is presented, what is assessed, and in what order.
 
-Specification section 9. Pure functions over the retrieval order, so the rules
-that decide what a reader sees can be tested without retrieval, a model, or a
-timeline.
+Specification section 9. Pure functions over the candidate order, so the rules
+that decide what a reader sees can be tested without a model or a timeline.
 
-Two orderings live here and never merge. Retrieval Rank is where retrieval put a
-trial. Review Priority is where the reader should look first, which is decided
-after assessment. A single sorted list holding both would be an "AI match score"
-by another name, and section 15.3 forbids one.
+Two orderings live here and never merge. Retrieval Rank is a trial's position in
+the candidate order. Review Priority is where the reader should look first, which
+is decided after assessment. A single sorted list holding both would be an "AI
+match score" by another name, and section 15 forbids one.
 """
 
 from __future__ import annotations
@@ -20,11 +19,13 @@ from pydantic import Field
 from ctma.domain.assessment import TrialAssessment
 from ctma.domain.base import Frozen
 from ctma.domain.enums import CandidateStatus, MatchConclusion
-from ctma.domain.run import CandidateSet, CandidateTrial, ChannelRank
+from ctma.domain.run import CandidateSet, CandidateTrial
 
 RETAINED_LIMIT = 20
-"""Retrieval returns an immutable top 20. Ranks 6-20 stay visible as Unassessed
-Candidates rather than disappearing."""
+"""The candidate list is capped at twenty, and anything past the presented five
+stays visible as an Unassessed Candidate rather than disappearing. Four frozen
+trial records never reach the cap; the rule stays because the policy is written
+against a ranked list and would take a longer one unchanged."""
 
 PRESENTED_LIMIT = 5
 """The top five by Retrieval Rank are shown to the reader."""
@@ -46,19 +47,17 @@ class AssessmentShortfall(StrEnum):
     FEWER_EXPRESSIONS_AUTHORED = "fewer_expressions_authored"
 
 
-class RetrievedTrial(Frozen):
-    """One trial in retrieval order, before the policy gives it a status.
+class CandidateInput(Frozen):
+    """One trial in candidate order, before the policy gives it a status.
 
-    Retrieval decides the order; the policy numbers it. `has_authored_expression`
-    comes from the trial record, not from retrieval, and is the only reason a
-    presented trial can go unassessed.
+    The authored order decides the sequence; the policy numbers it.
+    `has_authored_expression` comes from the trial record and is the only reason
+    a presented trial can go unassessed.
     """
 
     nct_id: str = Field(pattern=r"^NCT\d{8}$")
     snapshot_record_id: str = Field(min_length=1)
     has_authored_expression: bool
-    fused_score: float | None = None
-    channel_ranks: tuple[ChannelRank, ...] = ()
 
 
 class MatchingPlan(Frozen):
@@ -74,7 +73,7 @@ class MatchingPlan(Frozen):
     shortfall: AssessmentShortfall | None = None
 
 
-def plan(retrieved: Sequence[RetrievedTrial]) -> MatchingPlan:
+def plan(retrieved: Sequence[CandidateInput]) -> MatchingPlan:
     """Retain the top 20, present the top 5, assess up to 3 of the presented.
 
     The assessed set is the three highest-ranked presented candidates with an
@@ -98,8 +97,6 @@ def plan(retrieved: Sequence[RetrievedTrial]) -> MatchingPlan:
             snapshot_record_id=trial.snapshot_record_id,
             retrieval_rank=rank,
             status=_status_of(trial, rank, assessed),
-            fused_score=trial.fused_score,
-            channel_ranks=trial.channel_ranks,
         )
         for rank, trial in enumerate(retained, start=1)
     )
@@ -112,7 +109,7 @@ def plan(retrieved: Sequence[RetrievedTrial]) -> MatchingPlan:
     )
 
 
-def _status_of(trial: RetrievedTrial, rank: int, assessed: set[str]) -> CandidateStatus:
+def _status_of(trial: CandidateInput, rank: int, assessed: set[str]) -> CandidateStatus:
     if trial.nct_id in assessed:
         return CandidateStatus.ASSESSED
     if rank <= PRESENTED_LIMIT:
@@ -123,9 +120,9 @@ def _status_of(trial: RetrievedTrial, rank: int, assessed: set[str]) -> Candidat
 def _shortfall(presented: int, assessed: int) -> AssessmentShortfall | None:
     """Which of the two causes bound, when fewer than three were assessed.
 
-    Retrieval returning fewer than three candidates is reported ahead of missing
+    A candidate list holding fewer than three is reported ahead of missing
     expressions, because it is the one that would still hold if every trial in
-    the corpus had an authored expression.
+    the set had an authored expression.
     """
     if assessed >= ASSESSED_LIMIT:
         return None

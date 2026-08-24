@@ -16,9 +16,9 @@ pick one.
 
 The trace does not copy the tool calls, verifier outcomes, or states of an
 assessment. Those live on the assessment they explain, and this module keeps
-only what belongs to no single assessment: filter decisions, supervisor
-decisions, and the measurements. Duplicating them is how a trace comes to
-contradict the answer it is supposed to explain.
+only what belongs to no single assessment: the supervisor's decisions.
+Duplicating them is how a trace comes to contradict the answer it is supposed to
+explain.
 """
 
 from __future__ import annotations
@@ -119,7 +119,7 @@ class VerifierRejection(StrEnum):
     Two of these are unrepresentable in this package's own assessment types: a
     `met` without patient evidence, and an incorrectly aggregated criterion,
     cannot be built here. They stay in the vocabulary because the verifier also
-    grades the baselines, whose raw model output is under no such constraint,
+    grades the one-shot baseline, whose raw model output is under no such constraint,
     and grading them by a weaker standard would be the confound the comparison
     exists to avoid.
     """
@@ -202,37 +202,19 @@ class Measurements(Frozen):
         )
 
 
-class FilterDecision(Frozen):
-    """A Candidate Filter's verdict on one trial, and the two values behind it.
-
-    Section 9 allows a filter to remove a trial only when both the patient value
-    and the trial constraint are structured and known, so both are recorded.
-    "Candidate filters cause zero loss of known relevant trials" is checked per
-    scenario, and a decision that did not record what it compared cannot be
-    audited when that check fails.
-    """
-
-    nct_id: str = Field(pattern=r"^NCT\d{8}$")
-    filter_name: str = Field(min_length=1)
-    removed: bool
-    patient_value: str = Field(min_length=1)
-    trial_constraint: str = Field(min_length=1)
-
-
 class SupervisorAction(StrEnum):
-    """The three flag-gated behaviours of specification section 11."""
+    """The two flag-gated behaviours of specification section 11."""
 
     ORDER_CRITERIA = "order_criteria"
     EARLY_TERMINATION = "early_termination"
-    EVIDENCE_REUSE = "evidence_reuse"
 
 
 class SupervisorDecision(Frozen):
     """One trial-level strategy decision, with the criterion it acted on.
 
-    `order_criteria` and `evidence_reuse` introduce order dependence, which
-    section 11 requires to be measured rather than assumed away. Measuring it
-    means the order the supervisor chose is recorded, not reconstructed.
+    `order_criteria` introduces order dependence, which section 11 requires to be
+    measured rather than assumed away. Measuring it means the order the
+    supervisor chose is recorded, not reconstructed.
     """
 
     nct_id: str = Field(pattern=r"^NCT\d{8}$")
@@ -244,12 +226,11 @@ class SupervisorDecision(Frozen):
 class ReasoningTrace(Frozen):
     """The run-level diagnostic account, and only the parts nothing else holds.
 
-    Filter and supervisor decisions belong to no single assessment, so they live
-    here. Tool calls, verifier outcomes, and final states belong to the
-    assessment they explain and stay there; see this module's docstring.
+    Supervisor decisions belong to no single assessment, so they live here. Tool
+    calls, verifier outcomes, and final states belong to the assessment they
+    explain and stay there; see this module's docstring.
     """
 
-    filter_decisions: tuple[FilterDecision, ...] = ()
     supervisor_decisions: tuple[SupervisorDecision, ...] = ()
 
 

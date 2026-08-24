@@ -1,5 +1,7 @@
 # Pre-register metrics and gate only deterministic invariants
 
+**Status:** Partly superseded by [ADR 0014](0014-cut-the-research-grade-evaluation-protocol.md), 2026-08-24. Gating only deterministic invariants stands. Pre-registration, the statistical procedure, and the falsification condition are cut: the sample never supported an inferential claim, and the apparatus for making one was a larger share of the work than the agent it was measuring.
+
 Release gates are restricted to deterministic invariants — reference validity, aggregation correctness, verifier catch rate on injected faults, criterion coverage, zero post-cutoff citations, zero infrastructure failures scored as uncertainty. Every model-behavior measurement, including criterion-state macro F1 and every cost figure, is a reported result with a confidence interval rather than a gate.
 
 Threshold gates on statistics were rejected. At roughly 80 held-out atomic propositions, a target such as "macro F1 at least 70%" or "at least 5 percentage points over the control" creates pressure to reach a number on data that must never inform optimization, and the interval around it is wide enough that the threshold would be close to arbitrary. Invariants are different in kind: they are software-correctness properties the implementation controls, so gating on them commits to nothing but correctness.

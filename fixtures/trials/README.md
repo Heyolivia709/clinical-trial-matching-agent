@@ -11,8 +11,8 @@ before retrieval exists (specification sections 4.1 and 4.3). Loaded by
 | [NCT05920356](https://clinicaltrials.gov/study/NCT05920356) | held out | A four-part `all_of` with a nested stage `any_of`, and an actionability criterion that is out of scope |
 | [NCT07100080](https://clinicaltrials.gov/study/NCT07100080) | held out | Two EGFR variants as an `any_of`, and line-of-therapy reasoning that is out of scope |
 
-Two development and two held out, which keeps the two-axis partition of Gate 6
-intact if Gate 3 is cut. Together they cover all five supported Criterion
+Two development and two held out, which keeps the two-axis partition of the
+measurement gate intact. Together they cover all five supported Criterion
 Categories, `unsupported`, and every supported expression form.
 
 ## What is frozen
@@ -37,5 +37,5 @@ record fail to load until it is reviewed again.
 
 Don't, unless the review is redone. These are frozen artifacts, and the held-out
 pair must not change at all. A trial's published criteria do change over time —
-that is what `last_update_posted` records, and what the Gate 3 snapshot handles
-properly with cached payloads and freshness warnings.
+that is what `last_update_posted` records, and a frozen record that quietly
+tracked them could not reproduce a past run.

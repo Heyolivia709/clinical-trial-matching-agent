@@ -76,17 +76,12 @@ class PatientEvidence(Frozen):
 
     facts: tuple[PatientFactReference, ...] = Field(min_length=1)
     relation: EvidenceRelation
-    reused_from_criterion_id: str | None = None
-    """The criterion this evidence was first verified for, when the supervisor
-    reused it (specification section 11). Reuse can propagate one bad reading
-    across a trial, and reuse-induced error propagation is reported separately,
-    which is only possible if the reused citations say so."""
 
 
 class TrialEvidence(Frozen):
     """The exact trial source text a proposition was assessed against.
 
-    Trial text is verbatim everywhere it appears (section 15.3), so this records
+    Trial text is verbatim everywhere it appears (section 15), so this records
     the span as well as the text. The span is what makes the text checkable: a
     paraphrase that reads plausibly still fails against the snapshot, and a span
     that does not contain this text means the citation points somewhere else.

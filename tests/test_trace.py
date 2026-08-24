@@ -23,7 +23,6 @@ from ctma.domain.assessment import (
 from ctma.domain.enums import CriterionState, ReportingStatus, UnknownReason
 from ctma.domain.trace import (
     FailureKind,
-    FilterDecision,
     InfrastructureFailure,
     Measurements,
     ReasoningTrace,
@@ -139,15 +138,6 @@ def test_measurements_start_at_zero_rather_than_at_nothing() -> None:
 
 def test_the_trace_holds_what_no_assessment_holds() -> None:
     trace = ReasoningTrace(
-        filter_decisions=(
-            FilterDecision(
-                nct_id="NCT05222222",
-                filter_name="age",
-                removed=True,
-                patient_value="61",
-                trial_constraint="18-55",
-            ),
-        ),
         supervisor_decisions=(
             SupervisorDecision(
                 nct_id="NCT05123456",
@@ -161,8 +151,8 @@ def test_the_trace_holds_what_no_assessment_holds() -> None:
 
 
 def test_an_empty_trace_is_a_valid_trace() -> None:
-    """Flags default off, and no filter ran in a Gate 1 run."""
-    assert ReasoningTrace() == ReasoningTrace(filter_decisions=(), supervisor_decisions=())
+    """Both supervisor flags default off, so a run may make no decision at all."""
+    assert ReasoningTrace() == ReasoningTrace(supervisor_decisions=())
 
 
 def test_a_tool_outcome_has_no_state_variant() -> None:

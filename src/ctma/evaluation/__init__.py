@@ -1,7 +1,7 @@
-"""Evaluation Lab deep module. Gate 6.
+"""Evaluation Lab deep module. Gate 4.
 
     run(manifest, variant) -> EvalReport
 
 The only module permitted to read a Scenario Manifest. Owns gold derivation,
-baselines, ablations, metrics, cost accounting, and failure analysis.
+the one-shot baseline, metrics, cost accounting, and failure analysis.
 """
