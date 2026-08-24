@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import hashlib
 
 from ctma.domain.aggregation import aggregate
 from ctma.domain.assessment import (
@@ -45,6 +46,7 @@ from ctma.domain.run import (
     SupervisorConfiguration,
 )
 from ctma.domain.trace import Measurements
+from ctma.domain.trial import TrialRecord
 from ctma.policy import CandidateInput
 
 REVIEWED = AuthoringProvenance(
@@ -290,4 +292,82 @@ def retrieved(rank: int, *, has_expression: bool = True) -> CandidateInput:
         nct_id=nct_id,
         snapshot_record_id=f"{SNAPSHOT_ID}:{nct_id}",
         has_authored_expression=has_expression,
+    )
+
+
+SCREENING_TEXT = (
+    "Inclusion Criteria:\n"
+    "* Eastern Cooperative Oncology Group (ECOG) performance status of 0 or 1.\n"
+    "Exclusion Criteria:\n"
+    "* Symptomatic brain metastases."
+)
+
+
+def screening_trial() -> TrialRecord:
+    """A two-criterion trial, built here to exercise trial-level strategy.
+
+    Not a benchmark artifact and not one of the four frozen records: the
+    supervisor needs a criterion that comes out blocking, and no development
+    scenario meets an exclusion of the two development trials, because the
+    reviewed terminology mapping does not cover the conditions they exclude.
+    That gap belongs in the published limitations; a test of `early_termination`
+    should not wait on it.
+    """
+    exclusion_text = "Symptomatic brain metastases."
+    inclusion_text = "Eastern Cooperative Oncology Group (ECOG) performance status of 0 or 1."
+    return TrialRecord(
+        nct_id="NCT00000001",
+        snapshot_record_id="supervisor-fixture-v1:NCT00000001",
+        source_url="https://clinicaltrials.gov/study/NCT00000001",
+        overall_status="RECRUITING",
+        study_type="INTERVENTIONAL",
+        brief_title="A two-criterion trial for supervisor tests",
+        brief_summary="Authored for tests. Not a real study.",
+        conditions=("Non-small cell lung cancer",),
+        eligibility_source_text=SCREENING_TEXT,
+        eligibility_sha256=hashlib.sha256(SCREENING_TEXT.encode()).hexdigest(),
+        partition=Partition.DEVELOPMENT,
+        last_update_posted=dt.date(2026, 8, 1),
+        criteria=(
+            EligibilityCriterion(
+                criterion_id="NCT00000001:EXC-1",
+                polarity=CriterionPolarity.EXCLUSION,
+                source_section="exclusionCriteria",
+                ordinal=1,
+                span_start=SCREENING_TEXT.index(exclusion_text),
+                span_end=SCREENING_TEXT.index(exclusion_text) + len(exclusion_text),
+                source_text=exclusion_text,
+                expression_version="v1",
+                propositions=(
+                    AtomicProposition(
+                        proposition_id="P1",
+                        statement="Brain metastases are documented",
+                        category=CriterionCategory.DISEASE,
+                        concept="BRAIN_METASTASIS",
+                    ),
+                ),
+                expression=PropositionRef(proposition_id="P1"),
+                provenance=REVIEWED,
+            ),
+            EligibilityCriterion(
+                criterion_id="NCT00000001:INC-1",
+                polarity=CriterionPolarity.INCLUSION,
+                source_section="inclusionCriteria",
+                ordinal=1,
+                span_start=SCREENING_TEXT.index(inclusion_text),
+                span_end=SCREENING_TEXT.index(inclusion_text) + len(inclusion_text),
+                source_text=inclusion_text,
+                expression_version="v1",
+                propositions=(
+                    AtomicProposition(
+                        proposition_id="P1",
+                        statement="ECOG performance status is 0 or 1",
+                        category=CriterionCategory.PERFORMANCE_STATUS,
+                        concept="ECOG_SCORE",
+                    ),
+                ),
+                expression=PropositionRef(proposition_id="P1"),
+                provenance=REVIEWED,
+            ),
+        ),
     )

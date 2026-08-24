@@ -39,7 +39,10 @@ ALLOWED: dict[str, frozenset[str]] = {
     "policy": frozenset({"domain"}),
     "timeline": frozenset({"domain", "adapters"}),
     "agent": frozenset({"domain", "adapters", "timeline", "policy"}),
-    "supervisor": frozenset({"domain", "agent"}),
+    # The supervisor hands a `ModelClient` to the agent, so it sees the adapter
+    # interface. It never builds one: which model a run uses is a decision the
+    # entry point makes and the run records.
+    "supervisor": frozenset({"domain", "adapters", "agent"}),
     "match": frozenset({"domain", "adapters", "timeline", "agent", "supervisor", "policy"}),
     "evaluation": frozenset(
         {"domain", "adapters", "timeline", "agent", "supervisor", "policy", "match"}

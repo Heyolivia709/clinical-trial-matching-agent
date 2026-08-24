@@ -16,6 +16,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from ctma.domain.enums import Partition
 from ctma.domain.trial import TrialRecord
 
 FIXTURES = Path(__file__).resolve().parents[3] / "fixtures" / "trials"
@@ -25,13 +26,23 @@ class FixtureError(ValueError):
     """A frozen fixture does not describe the source it claims to come from."""
 
 
-def load_trial_fixtures() -> tuple[TrialRecord, ...]:
-    """The four frozen Gate 1 trials, in NCT order."""
+def load_trial_fixtures(partition: Partition | None = None) -> tuple[TrialRecord, ...]:
+    """The four frozen Gate 1 trials in NCT order, or one half of the split.
+
+    NCT order is the fixed authored order section 9 calls for: no ranking is
+    computed, and Retrieval Rank is the position in this list. Asking for a
+    partition is how a run keeps the held-out pair out of development work,
+    which is a discipline the caller has to apply — the records say which half
+    they belong to, and nothing here enforces when they may be read.
+    """
     paths = sorted(FIXTURES.glob("NCT*.json"))
     if not paths:
         msg = f"no trial fixtures found under {FIXTURES}"
         raise FixtureError(msg)
-    return tuple(_load(path) for path in paths)
+    loaded = tuple(_load(path) for path in paths)
+    if partition is None:
+        return loaded
+    return tuple(trial for trial in loaded if trial.partition is partition)
 
 
 def _load(path: Path) -> TrialRecord:
