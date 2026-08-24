@@ -21,7 +21,7 @@ from typing import Self
 from pydantic import Field, model_validator
 
 from ctma.domain.base import Frozen
-from ctma.domain.enums import TemporalPrecision, UnknownReason
+from ctma.domain.enums import Partition, TemporalPrecision, UnknownReason
 from ctma.domain.expression import AuthoringProvenance
 
 
@@ -108,6 +108,16 @@ class ScenarioManifest(Frozen):
     """
 
     scenario_id: str = Field(min_length=1)
+    partition: Partition
+    """Four scenarios are development and two are held out. A run records which
+    it read, because a held-out scenario that influenced a prompt is no longer
+    held out and nothing else in the artifact would say so."""
+
+    design_intent: str = Field(min_length=1)
+    """What this scenario is for, in the coverage matrix of section 4.4. It sits
+    in the hidden artifact rather than in the fixture README because it names
+    the hazards, which is the answer key."""
+
     bundle_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     assessment_as_of: dt.date
     facts: tuple[AuthoredFact, ...] = Field(min_length=1)

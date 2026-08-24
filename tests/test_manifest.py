@@ -7,7 +7,7 @@ import datetime as dt
 import pytest
 from pydantic import ValidationError
 
-from ctma.domain.enums import EVIDENCE_DERIVED_REASONS, TemporalPrecision
+from ctma.domain.enums import EVIDENCE_DERIVED_REASONS, Partition, TemporalPrecision
 from ctma.evaluation.manifest import (
     EXPECTED_REASON_BY_DISTRACTOR,
     AuthoredFact,
@@ -39,6 +39,8 @@ def preliminary_ecog() -> AuthoredFact:
 def scn03() -> ScenarioManifest:
     return ScenarioManifest(
         scenario_id="SCN-03",
+        partition=Partition.DEVELOPMENT,
+        design_intent="A preliminary ECOG score is the only performance status in the record.",
         bundle_sha256=BUNDLE_HASH,
         assessment_as_of=dt.date(2026, 8, 4),
         facts=(preliminary_ecog(),),

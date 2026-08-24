@@ -19,10 +19,11 @@ It does not diagnose, determine clinical eligibility, recommend treatment, or en
 
 ## Current Status
 
-Gate 1 is complete and Gate 2 is half built: the domain types, the deterministic
+Gate 1 is complete and Gate 2 is nearly so: the domain types, the deterministic
 aggregation and Unknown Reason table, the Matching Policy, four frozen trial
-records with 34 authored criterion expressions, the FHIR parser, and the five
-Timeline Tools. The agent loop, the verifier, measurement, and the report remain.
+records with 34 authored criterion expressions, the FHIR parser, the five
+Timeline Tools, and six authored synthetic scenarios with hidden manifests. The
+agent loop, the verifier, measurement, and the report remain.
 
 Specification v7 cut candidate retrieval and the inferential-statistics
 apparatus. Both were defensible and neither demonstrated an agent; see
