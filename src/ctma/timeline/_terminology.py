@@ -33,6 +33,12 @@ class _Concept(NamedTuple):
     codes: frozenset[str]
 
 
+_OSIMERTINIB = frozenset({"1721565", "1721581", "1721571", "1721583"})
+"""Every RxNorm form of the one EGFR TKI these fixtures carry: the 40 mg and
+80 mg tablets, generic and branded. A drug concept mapped to a single product
+code would miss the same drug recorded in another strength."""
+
+
 _MAPPING: dict[str, _Concept] = {
     "NSCLC": _Concept(CriterionCategory.DISEASE, frozenset({"254637007"})),
     "BRAIN_METASTASIS": _Concept(CriterionCategory.DISEASE, frozenset({"94225005"})),
@@ -40,16 +46,27 @@ _MAPPING: dict[str, _Concept] = {
     "EGFR_L858R": _Concept(CriterionCategory.BIOMARKER, frozenset({"55766-0"})),
     "ALK_REARRANGEMENT": _Concept(CriterionCategory.BIOMARKER, frozenset({"78205-2"})),
     "ECOG_SCORE": _Concept(CriterionCategory.PERFORMANCE_STATUS, frozenset({"89247-1"})),
-    "NEUTROPHIL_COUNT": _Concept(CriterionCategory.PERFORMANCE_STATUS, frozenset({"751-8"})),
-    "EGFR_TKI": _Concept(CriterionCategory.PRIOR_THERAPY, frozenset({"1721581"})),
-    "THIRD_GENERATION_EGFR_TKI": _Concept(CriterionCategory.PRIOR_THERAPY, frozenset({"1721581"})),
+    "EGFR_TKI": _Concept(CriterionCategory.PRIOR_THERAPY, _OSIMERTINIB),
+    "THIRD_GENERATION_EGFR_TKI": _Concept(CriterionCategory.PRIOR_THERAPY, _OSIMERTINIB),
 }
 """Concept to source codes, with the category the concept belongs to.
 
 A code here means "a fact with this code may carry this concept", not "a fact
 with this code establishes it". `EGFR_L858R` maps to the code for the *test*; the
 result is in the value, and reading the value is the model's job, with a citation
-the verifier can check."""
+the verifier can check.
+
+Every concept here belongs to one of the five supported Criterion Categories of
+section 6. A laboratory count is not one of them — `performance_status` is ECOG —
+so there is no entry for one, and a criterion about organ function is authored
+`unsupported` instead. Filing it under a neighbouring category would report a
+category breakdown the system had not assessed.
+
+Coverage is the authoring budget, not a claim about the domain. `EGFR_TKI` is a
+drug class and the table holds the one agent these fixtures use, so an exposure
+to another EGFR TKI is not found. That reports as nothing found, which section
+8.0 turns into `missing_evidence` — never into a confident negative — and the gap
+belongs in the published limitations rather than in a wider guess here."""
 
 
 def codes_for_concept(concept: str) -> frozenset[str] | None:

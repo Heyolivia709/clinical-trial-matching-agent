@@ -48,7 +48,10 @@ class ClinicalInterval(Frozen):
     question.
 
     `end` absent means the source recorded no end, not that the event ended
-    today.
+    today. An `end` after the Assessment Time is legal and means the event had not
+    finished by then — a drug the patient is still taking. Only the start is
+    checked against the Assessment Time, because an event that *began* later did
+    not exist at screening, while one still running did.
     """
 
     start: dt.date

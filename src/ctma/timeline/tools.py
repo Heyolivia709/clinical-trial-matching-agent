@@ -307,7 +307,17 @@ def check_temporal_window(
     Endpoints are inclusive unless the criterion says otherwise (section 5.1).
     A coarse date is read as the range it stands for — `"2026"` is the whole of
     2026 — so it decides the question when the whole range falls on one side and
-    refuses when it straddles the boundary.
+    refuses when it straddles the boundary. That is a reading of section 5.1:
+    precision coarser than a comparison *requires* yields `insufficient_precision`,
+    and a year that falls entirely outside a window is not coarser than this
+    comparison required. A scenario planting hazard 5 of section 8.3 therefore has
+    to place the coarse date so that its range straddles the boundary; a year far
+    from the window is answerable, and reporting it as unresolved would
+    manufacture uncertainty.
+
+    An event still running at the anchor is exposure *now*: nothing after the
+    anchor is reasoned about, so an interval that has not ended by then is placed
+    at the anchor rather than at its recorded end.
     """
     start = anchor - window.duration
     if event is None:
@@ -318,7 +328,7 @@ def check_temporal_window(
             window_end=anchor,
         )
     inclusive = window.endpoints_inclusive
-    span = _span(event)
+    span = _span(event, anchor)
     frame = (
         (start.toordinal(), 0 if inclusive else 1),
         (anchor.toordinal(), 0 if inclusive else -1),
@@ -399,13 +409,23 @@ def _place(observed: _Range, predicate: _Range) -> Verdict:
     return Verdict.REFUSED
 
 
-def _span(event: ClinicalInterval) -> _Range:
-    """The days an event could have happened on, given its source precision."""
+def _span(event: ClinicalInterval, anchor: dt.date) -> _Range:
+    """The days an event could have happened on, given its source precision.
+
+    A washout counts from the end of exposure, so the end decides when there is
+    one. An end after the anchor means the exposure had not stopped by then, and
+    section 5.1 reasons about nothing after the anchor: the event is placed at the
+    anchor instead. Without that, a drug the patient is still taking reads as an
+    exposure that ended in the future, which lands outside every washout window
+    and answers "no recent exposure" about a patient who is on the drug.
+    """
     if event.end is not None and event.end_precision is not None:
         moment, precision = event.end, event.end_precision
     else:
         moment, precision = event.start, event.start_precision
     first, last = _widen(moment, precision)
+    if event.start <= anchor:
+        first, last = min(first, anchor), min(last, anchor)
     return (first.toordinal(), 0), (last.toordinal(), 0)
 
 
@@ -422,13 +442,21 @@ def _widen(moment: dt.date, precision: TemporalPrecision) -> tuple[dt.date, dt.d
 
 
 def _mismatched(recorded_unit: str | None, criterion_unit: str | None) -> bool:
-    """Units must match exactly when both are stated. Conversion is out of scope.
+    """Units must match exactly. Conversion is out of scope (section 5.2).
+
+    Two asymmetric cases, and only one of them is a comparison:
 
     A criterion that states no unit is read as unitless — an ECOG score, a count
     of prior regimens — and compares against whatever the record holds.
+
+    A criterion that states one against a record that does not is a mismatch. A
+    bare `1.2` might be 1.2 or 1200 in the criterion's unit, and choosing is the
+    conversion this refuses to perform.
     """
-    if criterion_unit is None or recorded_unit is None:
+    if criterion_unit is None:
         return False
+    if recorded_unit is None:
+        return True
     return recorded_unit.strip().casefold() != criterion_unit.strip().casefold()
 
 

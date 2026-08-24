@@ -265,6 +265,15 @@ def test_a_comparison_across_units_is_refused_rather_than_converted() -> None:
     assert result.refusal is Refusal.UNIT_MISMATCH
 
 
+def test_a_record_with_no_unit_against_a_criterion_that_states_one_is_refused() -> None:
+    """A bare 1.2 might be 1.2 or 1200 in the criterion's unit. Choosing is conversion."""
+    result = compare_numeric(
+        QuantityValue(value=1.2), operator=Operator.GTE, threshold=1.5, unit="10*9/L"
+    )
+    assert result.verdict is Verdict.REFUSED
+    assert result.refusal is Refusal.UNIT_MISMATCH
+
+
 def test_a_criterion_that_states_no_unit_compares_against_a_score() -> None:
     """ECOG has no unit worth matching, and refusing every score would be silly."""
     ecog = QuantityValue(value=1.0, unit="{score}")
@@ -343,6 +352,19 @@ def test_the_window_is_placed_against_the_end_of_an_exposure() -> None:
         end_precision=TemporalPrecision.DAY,
     )
     assert check_temporal_window(course, anchor=AS_OF, window=FOURTEEN_DAYS).verdict is (
+        Verdict.HOLDS
+    )
+
+
+def test_an_event_that_has_not_ended_is_placed_at_the_anchor() -> None:
+    """Section 5.1 reasons about nothing after the anchor, in either direction."""
+    ongoing = ClinicalInterval(
+        start=dt.date(2026, 6, 1),
+        start_precision=TemporalPrecision.DAY,
+        end=dt.date(2026, 12, 31),
+        end_precision=TemporalPrecision.DAY,
+    )
+    assert check_temporal_window(ongoing, anchor=AS_OF, window=FOURTEEN_DAYS).verdict is (
         Verdict.HOLDS
     )
 
