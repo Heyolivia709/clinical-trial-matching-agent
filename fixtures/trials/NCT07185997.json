@@ -1,259 +1,264 @@
 {
-  "nct_id": "NCT07185997",
-  "snapshot_record_id": "gate1-trial-fixtures-v1:NCT07185997",
-  "partition": "development",
-  "source_url": "https://clinicaltrials.gov/study/NCT07185997",
-  "overall_status": "RECRUITING",
-  "study_type": "INTERVENTIONAL",
-  "phases": [
-    "PHASE3"
-  ],
-  "last_update_posted": "2026-08-03",
-  "recruiting_countries": [
-    "Australia",
-    "Canada",
-    "France",
-    "Greece",
-    "Hong Kong",
-    "Italy",
-    "Japan",
-    "Malaysia",
-    "Singapore",
-    "South Korea",
-    "Spain",
-    "Taiwan",
-    "Thailand",
-    "Turkey (Türkiye)",
-    "United Kingdom",
-    "United States"
-  ],
-  "brief_title": "Study to Evaluate Efficacy and Safety of Firmonertinib Compared With Investigator's Choice of EGFR Inhibitor as First-Line Treatment in Participants Who Have Locally Advanced or Metastatic NSCLC With EGFR P-Loop and Alpha C-Helix Compressing (PACC) Uncommon Mutations",
-  "brief_summary": "Global, Phase 3, randomized, multicenter, open-label study evaluating the efficacy and safety of firmonertinib at a dose level of 240 mg QD compared to investigator's choice of osimertinib (80 mg QD) or afatinib (40 mg QD) in participants who have locally advanced or metastatic NSCLC with EGFR PACC mutations, and who have not received any prior therapy for advanced disease. Participants will be randomized in a 1:1 ratio to treatment with firmonertinib or osimertinib or afatinib and will take the assigned dose daily.",
-  "conditions": [
-    "Non-Small-Cell Lung Cancer",
-    "Metastatic Non-Small-Cell Lung Cancer",
-    "Advanced Non-Small-Cell Lung Cancer",
-    "EGFR P-Loop and Alpha C-Helix Compressing",
-    "EGFR PACC",
-    "EGFR Uncommon Mutations"
-  ],
-  "mesh_terms": [
-    "Carcinoma, Non-Small-Cell Lung",
-    "Respiratory Tract Neoplasms",
-    "Bronchial Neoplasms",
-    "Lung Neoplasms"
-  ],
-  "interventions": [
-    "Firmonertinib",
-    "EGFR-TKI inhibitor based on investigator's choice"
-  ],
-  "eligibility_source_text": "Key Eligibility Criteria:\n\n* Histologically or cytologically documented, locally advanced or metastatic Non-Small Cell Lung Cancer (NSCLC) not amenable to curative surgery or radiotherapy.\n* Documented results of the presence of an Epidermal Growth Factor Receptor (EGFR) PACC mutation in tumor tissue or blood from local testing.\n* No prior systemic anticancer therapy regimens received for locally advanced or metastatic Non-Small Cell Lung Cancer (NSCLC) including prior treatment with any Epidermal Growth Factor Receptor (EGFR)-targeting agents (e.g., previous (EGFR) TKIs, monoclonal antibodies, or bispecific antibodies).\n* Patients who have received prior neo-adjuvant and/or adjuvant chemotherapy, immunotherapy, or chemo radiotherapy for non-metastatic disease must have experienced a treatment free interval of at least 12 months.\n* Patients with asymptomatic CNS metastases are eligible.",
-  "eligibility_sha256": "c54be8f9719b11ceb3ec7ea2ffa2931943669c1eb4d1138791190683c9a07cea",
-  "criteria": [
+ "nct_id": "NCT07185997",
+ "snapshot_record_id": "gate1-trial-fixtures-v1:NCT07185997",
+ "partition": "development",
+ "source_url": "https://clinicaltrials.gov/study/NCT07185997",
+ "overall_status": "RECRUITING",
+ "study_type": "INTERVENTIONAL",
+ "phases": [
+  "PHASE3"
+ ],
+ "last_update_posted": "2026-08-03",
+ "recruiting_countries": [
+  "Australia",
+  "Canada",
+  "France",
+  "Greece",
+  "Hong Kong",
+  "Italy",
+  "Japan",
+  "Malaysia",
+  "Singapore",
+  "South Korea",
+  "Spain",
+  "Taiwan",
+  "Thailand",
+  "Turkey (Türkiye)",
+  "United Kingdom",
+  "United States"
+ ],
+ "brief_title": "Study to Evaluate Efficacy and Safety of Firmonertinib Compared With Investigator's Choice of EGFR Inhibitor as First-Line Treatment in Participants Who Have Locally Advanced or Metastatic NSCLC With EGFR P-Loop and Alpha C-Helix Compressing (PACC) Uncommon Mutations",
+ "brief_summary": "Global, Phase 3, randomized, multicenter, open-label study evaluating the efficacy and safety of firmonertinib at a dose level of 240 mg QD compared to investigator's choice of osimertinib (80 mg QD) or afatinib (40 mg QD) in participants who have locally advanced or metastatic NSCLC with EGFR PACC mutations, and who have not received any prior therapy for advanced disease. Participants will be randomized in a 1:1 ratio to treatment with firmonertinib or osimertinib or afatinib and will take the assigned dose daily.",
+ "conditions": [
+  "Non-Small-Cell Lung Cancer",
+  "Metastatic Non-Small-Cell Lung Cancer",
+  "Advanced Non-Small-Cell Lung Cancer",
+  "EGFR P-Loop and Alpha C-Helix Compressing",
+  "EGFR PACC",
+  "EGFR Uncommon Mutations"
+ ],
+ "mesh_terms": [
+  "Carcinoma, Non-Small-Cell Lung",
+  "Respiratory Tract Neoplasms",
+  "Bronchial Neoplasms",
+  "Lung Neoplasms"
+ ],
+ "interventions": [
+  "Firmonertinib",
+  "EGFR-TKI inhibitor based on investigator's choice"
+ ],
+ "eligibility_source_text": "Key Eligibility Criteria:\n\n* Histologically or cytologically documented, locally advanced or metastatic Non-Small Cell Lung Cancer (NSCLC) not amenable to curative surgery or radiotherapy.\n* Documented results of the presence of an Epidermal Growth Factor Receptor (EGFR) PACC mutation in tumor tissue or blood from local testing.\n* No prior systemic anticancer therapy regimens received for locally advanced or metastatic Non-Small Cell Lung Cancer (NSCLC) including prior treatment with any Epidermal Growth Factor Receptor (EGFR)-targeting agents (e.g., previous (EGFR) TKIs, monoclonal antibodies, or bispecific antibodies).\n* Patients who have received prior neo-adjuvant and/or adjuvant chemotherapy, immunotherapy, or chemo radiotherapy for non-metastatic disease must have experienced a treatment free interval of at least 12 months.\n* Patients with asymptomatic CNS metastases are eligible.",
+ "eligibility_sha256": "c54be8f9719b11ceb3ec7ea2ffa2931943669c1eb4d1138791190683c9a07cea",
+ "criteria": [
+  {
+   "criterion_id": "NCT07185997:INC-1",
+   "polarity": "inclusion",
+   "source_section": "inclusionCriteria",
+   "ordinal": 1,
+   "source_text": "Histologically or cytologically documented, locally advanced or metastatic Non-Small Cell Lung Cancer (NSCLC) not amenable to curative surgery or radiotherapy.",
+   "expression_version": "v1",
+   "propositions": [
     {
-      "criterion_id": "NCT07185997:INC-1",
-      "polarity": "inclusion",
-      "source_section": "inclusionCriteria",
-      "ordinal": 1,
-      "source_text": "Histologically or cytologically documented, locally advanced or metastatic Non-Small Cell Lung Cancer (NSCLC) not amenable to curative surgery or radiotherapy.",
-      "expression_version": "v1",
-      "propositions": [
-        {
-          "proposition_id": "P1",
-          "statement": "Non-small cell lung cancer is histologically or cytologically documented",
-          "category": "disease",
-          "concept": "NSCLC"
-        },
-        {
-          "proposition_id": "P2",
-          "statement": "The disease is locally advanced",
-          "category": "disease",
-          "concept": "LOCALLY_ADVANCED_DISEASE"
-        },
-        {
-          "proposition_id": "P3",
-          "statement": "The disease is metastatic",
-          "category": "disease",
-          "concept": "METASTATIC_DISEASE"
-        },
-        {
-          "proposition_id": "P4",
-          "statement": "The disease is not amenable to curative surgery or radiotherapy",
-          "category": "unsupported"
-        }
-      ],
-      "expression": {
-        "kind": "all_of",
-        "children": [
-          {
-            "kind": "proposition",
-            "proposition_id": "P1"
-          },
-          {
-            "kind": "any_of",
-            "children": [
-              {
-                "kind": "proposition",
-                "proposition_id": "P2"
-              },
-              {
-                "kind": "proposition",
-                "proposition_id": "P3"
-              }
-            ]
-          },
-          {
-            "kind": "proposition",
-            "proposition_id": "P4"
-          }
-        ]
-      },
-      "provenance": {
-        "drafted_by": "assistant",
-        "ai_assisted": true,
-        "reviewed_by": "rendong",
-        "reviewed_on": "2026-08-24",
-        "review_status": "reviewed"
-      }
+     "proposition_id": "P1",
+     "statement": "Non-small cell lung cancer is histologically or cytologically documented",
+     "category": "disease",
+     "concept": "NSCLC"
     },
     {
-      "criterion_id": "NCT07185997:INC-2",
-      "polarity": "inclusion",
-      "source_section": "inclusionCriteria",
-      "ordinal": 2,
-      "source_text": "Documented results of the presence of an Epidermal Growth Factor Receptor (EGFR) PACC mutation in tumor tissue or blood from local testing.",
-      "expression_version": "v1",
-      "propositions": [
-        {
-          "proposition_id": "P1",
-          "statement": "A documented EGFR PACC mutation result is present",
-          "category": "biomarker",
-          "concept": "EGFR_PACC_MUTATION"
-        }
-      ],
-      "expression": {
-        "kind": "proposition",
-        "proposition_id": "P1"
-      },
-      "provenance": {
-        "drafted_by": "assistant",
-        "ai_assisted": true,
-        "reviewed_by": "rendong",
-        "reviewed_on": "2026-08-24",
-        "review_status": "reviewed"
-      }
+     "proposition_id": "P2",
+     "statement": "The disease is locally advanced",
+     "category": "disease",
+     "concept": "LOCALLY_ADVANCED_DISEASE"
     },
     {
-      "criterion_id": "NCT07185997:INC-3",
-      "polarity": "inclusion",
-      "source_section": "inclusionCriteria",
-      "ordinal": 3,
-      "source_text": "No prior systemic anticancer therapy regimens received for locally advanced or metastatic Non-Small Cell Lung Cancer (NSCLC) including prior treatment with any Epidermal Growth Factor Receptor (EGFR)-targeting agents (e.g., previous (EGFR) TKIs, monoclonal antibodies, or bispecific antibodies).",
-      "expression_version": "v1",
-      "propositions": [
-        {
-          "proposition_id": "P1",
-          "statement": "No documented exposure to systemic anticancer therapy for locally advanced or metastatic disease",
-          "category": "prior_therapy",
-          "concept": "SYSTEMIC_ANTICANCER_THERAPY"
-        },
-        {
-          "proposition_id": "P2",
-          "statement": "No documented exposure to an EGFR-targeting agent",
-          "category": "prior_therapy",
-          "concept": "EGFR_TARGETED_AGENT"
-        }
-      ],
-      "expression": {
-        "kind": "all_of",
-        "children": [
-          {
-            "kind": "proposition",
-            "proposition_id": "P1"
-          },
-          {
-            "kind": "proposition",
-            "proposition_id": "P2"
-          }
-        ]
-      },
-      "provenance": {
-        "drafted_by": "assistant",
-        "ai_assisted": true,
-        "reviewed_by": "rendong",
-        "reviewed_on": "2026-08-24",
-        "review_status": "reviewed"
-      }
+     "proposition_id": "P3",
+     "statement": "The disease is metastatic",
+     "category": "disease",
+     "concept": "METASTATIC_DISEASE"
     },
     {
-      "criterion_id": "NCT07185997:INC-4",
-      "polarity": "inclusion",
-      "source_section": "inclusionCriteria",
-      "ordinal": 4,
-      "source_text": "Patients who have received prior neo-adjuvant and/or adjuvant chemotherapy, immunotherapy, or chemo radiotherapy for non-metastatic disease must have experienced a treatment free interval of at least 12 months.",
-      "expression_version": "v1",
-      "propositions": [
-        {
-          "proposition_id": "P1",
-          "statement": "Documented exposure to neo-adjuvant or adjuvant chemotherapy, immunotherapy or chemoradiotherapy for non-metastatic disease",
-          "category": "prior_therapy",
-          "concept": "NEOADJUVANT_OR_ADJUVANT_THERAPY"
-        },
-        {
-          "proposition_id": "P2",
-          "statement": "The most recent such exposure ended at least 12 months before Assessment Time",
-          "category": "prior_therapy",
-          "concept": "NEOADJUVANT_OR_ADJUVANT_THERAPY",
-          "window": {
-            "duration": "P365D",
-            "endpoints_inclusive": true
-          }
-        }
-      ],
-      "expression": {
-        "kind": "conditional",
-        "antecedent": {
-          "kind": "proposition",
-          "proposition_id": "P1"
-        },
-        "consequent": {
-          "kind": "proposition",
-          "proposition_id": "P2"
-        }
-      },
-      "provenance": {
-        "drafted_by": "assistant",
-        "ai_assisted": true,
-        "reviewed_by": "rendong",
-        "reviewed_on": "2026-08-24",
-        "review_status": "reviewed"
-      }
-    },
-    {
-      "criterion_id": "NCT07185997:INC-5",
-      "polarity": "inclusion",
-      "source_section": "inclusionCriteria",
-      "ordinal": 5,
-      "source_text": "Patients with asymptomatic CNS metastases are eligible.",
-      "expression_version": "v1",
-      "propositions": [
-        {
-          "proposition_id": "P1",
-          "statement": "This criterion states an allowance rather than a requirement to assess",
-          "category": "unsupported"
-        }
-      ],
-      "expression": {
-        "kind": "proposition",
-        "proposition_id": "P1"
-      },
-      "provenance": {
-        "drafted_by": "assistant",
-        "ai_assisted": true,
-        "reviewed_by": "rendong",
-        "reviewed_on": "2026-08-24",
-        "review_status": "reviewed"
-      }
+     "proposition_id": "P4",
+     "statement": "The disease is not amenable to curative surgery or radiotherapy",
+     "category": "unsupported"
     }
-  ]
+   ],
+   "expression": {
+    "kind": "all_of",
+    "children": [
+     {
+      "kind": "proposition",
+      "proposition_id": "P1"
+     },
+     {
+      "kind": "any_of",
+      "children": [
+       {
+        "kind": "proposition",
+        "proposition_id": "P2"
+       },
+       {
+        "kind": "proposition",
+        "proposition_id": "P3"
+       }
+      ]
+     },
+     {
+      "kind": "proposition",
+      "proposition_id": "P4"
+     }
+    ]
+   },
+   "provenance": {
+    "drafted_by": "assistant",
+    "ai_assisted": true,
+    "reviewed_by": "rendong",
+    "reviewed_on": "2026-08-24",
+    "review_status": "reviewed"
+   }
+  },
+  {
+   "criterion_id": "NCT07185997:INC-2",
+   "polarity": "inclusion",
+   "source_section": "inclusionCriteria",
+   "ordinal": 2,
+   "source_text": "Documented results of the presence of an Epidermal Growth Factor Receptor (EGFR) PACC mutation in tumor tissue or blood from local testing.",
+   "expression_version": "v1",
+   "propositions": [
+    {
+     "proposition_id": "P1",
+     "statement": "A documented EGFR PACC mutation result is present",
+     "category": "biomarker",
+     "concept": "EGFR_PACC_MUTATION"
+    }
+   ],
+   "expression": {
+    "kind": "proposition",
+    "proposition_id": "P1"
+   },
+   "provenance": {
+    "drafted_by": "assistant",
+    "ai_assisted": true,
+    "reviewed_by": "rendong",
+    "reviewed_on": "2026-08-24",
+    "review_status": "reviewed"
+   }
+  },
+  {
+   "criterion_id": "NCT07185997:INC-3",
+   "polarity": "inclusion",
+   "source_section": "inclusionCriteria",
+   "ordinal": 3,
+   "source_text": "No prior systemic anticancer therapy regimens received for locally advanced or metastatic Non-Small Cell Lung Cancer (NSCLC) including prior treatment with any Epidermal Growth Factor Receptor (EGFR)-targeting agents (e.g., previous (EGFR) TKIs, monoclonal antibodies, or bispecific antibodies).",
+   "expression_version": "v1",
+   "propositions": [
+    {
+     "proposition_id": "P1",
+     "statement": "No documented exposure to systemic anticancer therapy for locally advanced or metastatic disease",
+     "category": "prior_therapy",
+     "concept": "SYSTEMIC_ANTICANCER_THERAPY"
+    },
+    {
+     "proposition_id": "P2",
+     "statement": "No documented exposure to an EGFR-targeting agent",
+     "category": "prior_therapy",
+     "concept": "EGFR_TARGETED_AGENT"
+    }
+   ],
+   "expression": {
+    "kind": "all_of",
+    "children": [
+     {
+      "kind": "proposition",
+      "proposition_id": "P1"
+     },
+     {
+      "kind": "proposition",
+      "proposition_id": "P2"
+     }
+    ]
+   },
+   "provenance": {
+    "drafted_by": "assistant",
+    "ai_assisted": true,
+    "reviewed_by": "rendong",
+    "reviewed_on": "2026-08-24",
+    "review_status": "reviewed"
+   }
+  },
+  {
+   "criterion_id": "NCT07185997:INC-4",
+   "polarity": "inclusion",
+   "source_section": "inclusionCriteria",
+   "ordinal": 4,
+   "source_text": "Patients who have received prior neo-adjuvant and/or adjuvant chemotherapy, immunotherapy, or chemo radiotherapy for non-metastatic disease must have experienced a treatment free interval of at least 12 months.",
+   "expression_version": "v1",
+   "propositions": [
+    {
+     "proposition_id": "P1",
+     "statement": "Documented exposure to neo-adjuvant or adjuvant chemotherapy, immunotherapy or chemoradiotherapy for non-metastatic disease",
+     "category": "prior_therapy",
+     "concept": "NEOADJUVANT_OR_ADJUVANT_THERAPY"
+    },
+    {
+     "proposition_id": "P2",
+     "statement": "The most recent such exposure ended at least 12 months before Assessment Time",
+     "category": "prior_therapy",
+     "concept": "NEOADJUVANT_OR_ADJUVANT_THERAPY",
+     "window": {
+      "duration": "P365D",
+      "source_anchor_text": "a treatment free interval of at least 12 months",
+      "anchor_substitution": {
+       "substituted_with": "assessment_as_of",
+       "rationale": "The interval is counted back from the start of study treatment, which has not happened at screening. Assessment Time is the screening-time proxy a coordinator uses, and substituting it changes what the criterion asks, so the substitution is declared here rather than applied at runtime."
+      },
+      "endpoints_inclusive": true
+     }
+    }
+   ],
+   "expression": {
+    "kind": "conditional",
+    "antecedent": {
+     "kind": "proposition",
+     "proposition_id": "P1"
+    },
+    "consequent": {
+     "kind": "proposition",
+     "proposition_id": "P2"
+    }
+   },
+   "provenance": {
+    "drafted_by": "assistant",
+    "ai_assisted": true,
+    "reviewed_by": "rendong",
+    "reviewed_on": "2026-08-24",
+    "review_status": "reviewed"
+   }
+  },
+  {
+   "criterion_id": "NCT07185997:INC-5",
+   "polarity": "inclusion",
+   "source_section": "inclusionCriteria",
+   "ordinal": 5,
+   "source_text": "Patients with asymptomatic CNS metastases are eligible.",
+   "expression_version": "v1",
+   "propositions": [
+    {
+     "proposition_id": "P1",
+     "statement": "This criterion states an allowance rather than a requirement to assess",
+     "category": "unsupported"
+    }
+   ],
+   "expression": {
+    "kind": "proposition",
+    "proposition_id": "P1"
+   },
+   "provenance": {
+    "drafted_by": "assistant",
+    "ai_assisted": true,
+    "reviewed_by": "rendong",
+    "reviewed_on": "2026-08-24",
+    "review_status": "reviewed"
+   }
+  }
+ ]
 }

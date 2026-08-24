@@ -97,12 +97,12 @@ A source term linked through a versioned, provenance-preserving reviewed mapping
 _Avoid_: Model synonym, replacement source code
 
 **Authored Synthetic Scenario**:
-A reproducible synthetic patient case created from a Synthea FHIR R4 Bundle plus controlled, standards-conformant FHIR augmentations for benchmark coverage.
+A reproducible synthetic patient case: one frozen FHIR R4 Bundle with controlled, standards-conformant content for benchmark coverage, plus the Assessment Time it is screened at. Six of them, four development and two held out.
 _Avoid_: Real patient, untouched Synthea patient
 
 **Scenario Manifest**:
-Evaluator-only ground truth describing the authored facts, transformations, Planted Distractors, and expected assessments for an Authored Synthetic Scenario. It is never available to the matching system.
-_Avoid_: Patient input, model context
+Evaluator-only ground truth describing the authored facts, the Planted Distractors, and the design intent of an Authored Synthetic Scenario. It carries no expected Criterion State: those are derived by code from these facts and the Authored Criterion Expression. It is never available to the matching system.
+_Avoid_: Patient input, model context, expected assessments
 
 **Planted Distractor**:
 A deliberately authored evidence hazard — an error-status result, an order without an administration, a post-assessment date, a conflicting value, insufficient date precision, a preliminary result, or a near-miss concept — that supplies benchmark difficulty in place of clinical subtlety.

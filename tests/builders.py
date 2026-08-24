@@ -86,8 +86,8 @@ def exc7() -> EligibilityCriterion:
                 concept="EGFR_TKI",
                 window=TemporalWindow(
                     duration=dt.timedelta(days=14),
+                    source_anchor_text="the first dose of study drug",
                     anchor_substitution=AnchorSubstitution(
-                        source_anchor_text="the first dose of study drug",
                         rationale=(
                             "The anchor event has not occurred at screening. "
                             "Assessment time is the screening-time proxy."

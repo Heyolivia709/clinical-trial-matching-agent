@@ -53,19 +53,53 @@ class AnchorSubstitution(Frozen):
     rationale, and is displayed beside the criterion. The model never selects
     an anchor; a proposition needing one without this declaration resolves to
     `unknown` with `ambiguous_criterion`.
+
+    The anchor being substituted for is named by the window that declares this,
+    not repeated here: two copies of one phrase are two things to keep in step.
     """
 
-    source_anchor_text: str = Field(min_length=1)
     substituted_with: Literal["assessment_as_of"] = "assessment_as_of"
     rationale: str = Field(min_length=1)
 
 
 class TemporalWindow(Frozen):
-    """A relative window, anchored to the assessment time unless substituted."""
+    """A relative window, anchored to the Assessment Time unless the criterion
+    names another anchor.
+
+    `source_anchor_text` is what makes an unresolvable anchor visible. A window
+    that leaves it unset says the criterion counts back from screening, which is
+    the default rule of section 5.1. A window that names one and declares no
+    substitution says the criterion counts back from an event the patient record
+    cannot supply, and the proposition resolves to `unknown` with
+    `ambiguous_criterion` rather than being quietly anchored at the Assessment
+    Time.
+    """
 
     duration: dt.timedelta
+    source_anchor_text: str | None = None
+    """The anchor phrase the criterion names, when it is not the Assessment
+    Time: "the first dose of study drug", "randomization", "cycle 1 day 1"."""
+
     anchor_substitution: AnchorSubstitution | None = None
     endpoints_inclusive: bool = True
+
+    @property
+    def anchor_is_resolvable(self) -> bool:
+        """Whether this window can be placed against the patient record at all."""
+        return self.source_anchor_text is None or self.anchor_substitution is not None
+
+    @model_validator(mode="after")
+    def _a_substitution_names_what_it_substitutes_for(self) -> Self:
+        """A substitution with no source anchor replaces nothing.
+
+        It would also be indistinguishable in the report from a window that was
+        always anchored at the Assessment Time, which is the difference the
+        declaration exists to publish.
+        """
+        if self.anchor_substitution is not None and self.source_anchor_text is None:
+            msg = "an anchor substitution requires the source_anchor_text it replaces"
+            raise ValueError(msg)
+        return self
 
 
 class AtomicProposition(Frozen):

@@ -31,7 +31,8 @@ def test_the_anchor_substitution_survives_the_round_trip() -> None:
     window = restored.propositions[1].window
     assert window is not None
     assert window.anchor_substitution is not None
-    assert window.anchor_substitution.source_anchor_text == "the first dose of study drug"
+    assert window.source_anchor_text == "the first dose of study drug"
+    assert window.anchor_substitution.substituted_with == "assessment_as_of"
 
 
 def test_criteria_are_immutable() -> None:

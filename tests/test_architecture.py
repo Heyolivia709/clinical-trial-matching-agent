@@ -113,6 +113,21 @@ def test_nothing_depends_on_report_or_evaluation() -> None:
         assert "evaluation" not in allowed, f"{name} may not import ctma.evaluation"
 
 
+def test_only_the_evaluation_package_reads_the_scenario_manifests() -> None:
+    """Section 4.4: the matching system never receives a Scenario Manifest.
+
+    The layering test above keeps `ctma.evaluation` un-importable, which stops a
+    module from reading a manifest through the loader. This closes the other
+    route: naming the frozen directory directly, which no import would reveal.
+    """
+    readers = {
+        str(path.relative_to(SRC))
+        for path in _source_files()
+        if '"manifests"' in path.read_text() and _subpackage(path) != "evaluation"
+    }
+    assert not readers, f"these reach for the manifest fixtures directly: {sorted(readers)}"
+
+
 def _models() -> list[type[BaseModel]]:
     """Every Pydantic model this package defines, private ones included.
 

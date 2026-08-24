@@ -1,0 +1,427 @@
+{
+ "scenario_id": "SCN-05",
+ "partition": "held_out",
+ "design_intent": "A held-out record carrying the same hazards as the development set in different places: the retraction is on the EGFR result rather than PD-L1, the disagreement is between two PD-L1 percentages, and the near miss is again an ALK protein stain.",
+ "bundle_sha256": "3140cd779908bcb56ee4e63c297b21cfee1dd248925148b5afa2661eebffaf18",
+ "assessment_as_of": "2026-05-18",
+ "facts": [
+  {
+   "fact_id": "Condition/cond-nsclc",
+   "resource_type": "Condition",
+   "resource_id": "cond-nsclc",
+   "json_path": "entry[1].resource.onsetDateTime",
+   "concept": "NSCLC",
+   "value": "Non-small cell lung cancer",
+   "status": "confirmed",
+   "clinical_time": "2024-08-19",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Condition/cond-brainmet",
+   "resource_type": "Condition",
+   "resource_id": "cond-brainmet",
+   "json_path": "entry[2].resource.onsetDateTime",
+   "concept": "BRAIN_METASTASIS",
+   "value": "Secondary malignant neoplasm of brain",
+   "status": "confirmed",
+   "clinical_time": "2025-03-27",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Condition/cond-htn",
+   "resource_type": "Condition",
+   "resource_id": "cond-htn",
+   "json_path": "entry[3].resource.onsetDateTime",
+   "concept": "HYPERTENSION",
+   "value": "Hypertensive disorder",
+   "status": "confirmed",
+   "clinical_time": "2005-07-12",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Condition/cond-oa",
+   "resource_type": "Condition",
+   "resource_id": "cond-oa",
+   "json_path": "entry[4].resource.onsetDateTime",
+   "concept": "OSTEOARTHRITIS",
+   "value": "Osteoarthritis",
+   "status": "confirmed",
+   "clinical_time": "2011-10-03",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-egfr-error",
+   "resource_type": "Observation",
+   "resource_id": "obs-egfr-error",
+   "json_path": "entry[5].resource.valueCodeableConcept.text",
+   "concept": "EGFR_L858R",
+   "value": "Present",
+   "status": "entered-in-error",
+   "clinical_time": "2024-09-01",
+   "precision": "day",
+   "usable_as_evidence": false
+  },
+  {
+   "fact_id": "Observation/obs-alk-ihc",
+   "resource_type": "Observation",
+   "resource_id": "obs-alk-ihc",
+   "json_path": "entry[6].resource.valueCodeableConcept.text",
+   "concept": "ALK_PROTEIN_EXPRESSION",
+   "value": "Absent",
+   "status": "final",
+   "clinical_time": "2024-09-01",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-pdl1-local",
+   "resource_type": "Observation",
+   "resource_id": "obs-pdl1-local",
+   "json_path": "entry[7].resource.valueQuantity.value",
+   "concept": "PD_L1_EXPRESSION",
+   "value": "15.0 %",
+   "status": "final",
+   "clinical_time": "2024-09-03",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-pdl1-central",
+   "resource_type": "Observation",
+   "resource_id": "obs-pdl1-central",
+   "json_path": "entry[8].resource.valueQuantity.value",
+   "concept": "PD_L1_EXPRESSION",
+   "value": "65.0 %",
+   "status": "final",
+   "clinical_time": "2024-09-03",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-ecog",
+   "resource_type": "Observation",
+   "resource_id": "obs-ecog",
+   "json_path": "entry[9].resource.valueQuantity.value",
+   "concept": "ECOG_SCORE",
+   "value": "0.0 {score}",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "MedicationAdministration/medadmin-osi",
+   "resource_type": "MedicationAdministration",
+   "resource_id": "medadmin-osi",
+   "json_path": "entry[10].resource.effectivePeriod.start",
+   "concept": "EGFR_TKI",
+   "value": "osimertinib 80 MG Oral Tablet",
+   "status": "completed",
+   "clinical_time": "2024-10-01",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-01",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-01",
+   "json_path": "entry[11].resource.valueQuantity.value",
+   "concept": "BODY_WEIGHT",
+   "value": "71.5 kg",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-02",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-02",
+   "json_path": "entry[12].resource.valueQuantity.value",
+   "concept": "BODY_HEIGHT",
+   "value": "168.0 cm",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-03",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-03",
+   "json_path": "entry[13].resource.valueQuantity.value",
+   "concept": "BODY_MASS_INDEX",
+   "value": "25.3 kg/m2",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-04",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-04",
+   "json_path": "entry[14].resource.valueQuantity.value",
+   "concept": "HEART_RATE",
+   "value": "78.0 /min",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-05",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-05",
+   "json_path": "entry[15].resource.valueQuantity.value",
+   "concept": "RESPIRATORY_RATE",
+   "value": "16.0 /min",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-06",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-06",
+   "json_path": "entry[16].resource.valueQuantity.value",
+   "concept": "SYSTOLIC_BLOOD_PRESSURE",
+   "value": "128.0 mm[Hg]",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-07",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-07",
+   "json_path": "entry[17].resource.valueQuantity.value",
+   "concept": "DIASTOLIC_BLOOD_PRESSURE",
+   "value": "76.0 mm[Hg]",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-08",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-08",
+   "json_path": "entry[18].resource.valueQuantity.value",
+   "concept": "BODY_TEMPERATURE",
+   "value": "36.7 Cel",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-09",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-09",
+   "json_path": "entry[19].resource.valueQuantity.value",
+   "concept": "OXYGEN_SATURATION",
+   "value": "97.0 %",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-10",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-10",
+   "json_path": "entry[20].resource.valueQuantity.value",
+   "concept": "HEMOGLOBIN",
+   "value": "12.4 g/dL",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-11",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-11",
+   "json_path": "entry[21].resource.valueQuantity.value",
+   "concept": "LEUKOCYTES",
+   "value": "6.1 10*3/uL",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-12",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-12",
+   "json_path": "entry[22].resource.valueQuantity.value",
+   "concept": "PLATELETS",
+   "value": "245.0 10*3/uL",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-13",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-13",
+   "json_path": "entry[23].resource.valueQuantity.value",
+   "concept": "NEUTROPHILS",
+   "value": "3.8 10*9/L",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-14",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-14",
+   "json_path": "entry[24].resource.valueQuantity.value",
+   "concept": "CREATININE",
+   "value": "0.9 mg/dL",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-15",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-15",
+   "json_path": "entry[25].resource.valueQuantity.value",
+   "concept": "ALANINE_AMINOTRANSFERASE",
+   "value": "22.0 U/L",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-16",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-16",
+   "json_path": "entry[26].resource.valueQuantity.value",
+   "concept": "ASPARTATE_AMINOTRANSFERASE",
+   "value": "25.0 U/L",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-17",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-17",
+   "json_path": "entry[27].resource.valueQuantity.value",
+   "concept": "TOTAL_BILIRUBIN",
+   "value": "0.6 mg/dL",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-18",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-18",
+   "json_path": "entry[28].resource.valueQuantity.value",
+   "concept": "ALBUMIN",
+   "value": "3.4 g/dL",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-19",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-19",
+   "json_path": "entry[29].resource.valueQuantity.value",
+   "concept": "SODIUM",
+   "value": "139.0 mmol/L",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-20",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-20",
+   "json_path": "entry[30].resource.valueQuantity.value",
+   "concept": "POTASSIUM",
+   "value": "4.2 mmol/L",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-21",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-21",
+   "json_path": "entry[31].resource.valueQuantity.value",
+   "concept": "GLUCOSE",
+   "value": "98.0 mg/dL",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Observation/obs-routine-22",
+   "resource_type": "Observation",
+   "resource_id": "obs-routine-22",
+   "json_path": "entry[32].resource.valueQuantity.value",
+   "concept": "CALCIUM",
+   "value": "9.4 mg/dL",
+   "status": "final",
+   "clinical_time": "2026-05-10",
+   "precision": "day",
+   "usable_as_evidence": true
+  }
+ ],
+ "distractors": [
+  {
+   "distractor_id": "D1",
+   "kind": "error_status_result",
+   "fact_ids": [
+    "Observation/obs-egfr-error"
+   ],
+   "intent": "The only EGFR L858R result was retracted as entered in error, so an EGFR criterion has a fact it cannot use."
+  },
+  {
+   "distractor_id": "D2",
+   "kind": "conflicting_results",
+   "fact_ids": [
+    "Observation/obs-pdl1-local",
+    "Observation/obs-pdl1-central"
+   ],
+   "intent": "Local and central laboratories report PD-L1 on the same day as 15% and 65%, which fall on opposite sides of every threshold a trial uses."
+  },
+  {
+   "distractor_id": "D3",
+   "kind": "near_miss_concept",
+   "fact_ids": [
+    "Observation/obs-alk-ihc"
+   ],
+   "intent": "An absent ALK protein stain is not a negative rearrangement test, and reading it as one would produce a confident answer about an assay the record does not contain."
+  }
+ ],
+ "provenance": {
+  "drafted_by": "assistant",
+  "ai_assisted": true,
+  "reviewed_by": "rendong",
+  "reviewed_on": "2026-08-24",
+  "review_status": "reviewed"
+ }
+}
