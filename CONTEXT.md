@@ -26,6 +26,10 @@ _Avoid_: Parsed criterion, ground truth, model output
 The smallest independently assessable clinical statement within a Criterion Expression.
 _Avoid_: Eligibility criterion, source bullet
 
+**Criterion Predicate**:
+The authored statement of what satisfies an Atomic Proposition — a numeric comparison or a presence expectation. It is a property of the trial text and never of a patient: the criterion says what counts, and the record decides only whether it does. Derived Gold Labels are computed by applying it to the authored facts, which is what keeps expected states out of a model's hands and out of a clinical text parser's. A proposition with no predicate is Coverage-Only.
+_Avoid_: Expected answer, gold value, rule
+
 **Criterion Category**:
 The clinical reasoning category assigned to an Atomic Proposition: `demographic`, `disease`, `biomarker`, `prior_therapy`, `performance_status`, or `unsupported`. `unsupported` is a value rather than an absence of one, so a proposition outside the supported set never acquires a misleading category.
 _Avoid_: Criterion polarity, retrieval facet
