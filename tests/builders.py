@@ -136,7 +136,7 @@ def osimertinib_administration() -> PatientFactReference:
         clinical_time=dt.date(2024, 1, 1),
         precision=TemporalPrecision.YEAR,
         status="completed",
-        code="RxNorm:2117292",
+        code="RxNorm:1721581",
         value="osimertinib 80 mg oral tablet",
         display="Osimertinib administration, 2024",
     )

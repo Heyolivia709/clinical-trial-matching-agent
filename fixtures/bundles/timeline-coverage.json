@@ -114,8 +114,8 @@
           "coding": [
             {
               "system": "http://loinc.org",
-              "code": "85337-4",
-              "display": "PD-L1 tumor proportion score"
+              "code": "83052-1",
+              "display": "PD-L1 by clone 22C3 [Presence] in Tissue by Immune stain"
             }
           ]
         },
@@ -124,11 +124,8 @@
         },
         "effectiveDateTime": "2025-01-15",
         "issued": "2025-01-17T09:12:00Z",
-        "valueQuantity": {
-          "value": 22,
-          "unit": "%",
-          "system": "http://unitsofmeasure.org",
-          "code": "%"
+        "valueCodeableConcept": {
+          "text": "Negative"
         }
       }
     },
@@ -142,8 +139,8 @@
           "coding": [
             {
               "system": "http://loinc.org",
-              "code": "85337-4",
-              "display": "PD-L1 tumor proportion score"
+              "code": "83052-1",
+              "display": "PD-L1 by clone 22C3 [Presence] in Tissue by Immune stain"
             }
           ]
         },
@@ -152,11 +149,8 @@
         },
         "effectiveDateTime": "2025-01-15",
         "issued": "2025-02-03T14:40:00Z",
-        "valueQuantity": {
-          "value": 45,
-          "unit": "%",
-          "system": "http://unitsofmeasure.org",
-          "code": "%"
+        "valueCodeableConcept": {
+          "text": "Positive"
         }
       }
     },
@@ -170,8 +164,8 @@
           "coding": [
             {
               "system": "http://loinc.org",
-              "code": "21667-9",
-              "display": "EGFR gene mutation analysis"
+              "code": "55766-0",
+              "display": "EGFR gene c.2573T>G [Presence] in Blood or Tissue by Molecular genetics method"
             }
           ]
         },
@@ -180,14 +174,7 @@
         },
         "effectiveDateTime": "2024-11-20",
         "valueCodeableConcept": {
-          "coding": [
-            {
-              "system": "http://loinc.org",
-              "code": "LA9633-4",
-              "display": "EGFR L858R mutation present"
-            }
-          ],
-          "text": "EGFR L858R mutation present"
+          "text": "Present"
         }
       }
     },
@@ -201,8 +188,8 @@
           "coding": [
             {
               "system": "http://loinc.org",
-              "code": "83088-9",
-              "display": "ALK gene rearrangement"
+              "code": "78205-2",
+              "display": "ALK gene rearrangements [Presence] in Blood or Tissue by FISH"
             }
           ]
         },
@@ -211,7 +198,7 @@
         },
         "effectiveDateTime": "2025-02-01",
         "valueCodeableConcept": {
-          "text": "ALK rearrangement present"
+          "text": "Present"
         }
       }
     },
@@ -288,8 +275,8 @@
           "coding": [
             {
               "system": "http://loinc.org",
-              "code": "85337-4",
-              "display": "PD-L1 tumor proportion score"
+              "code": "83052-1",
+              "display": "PD-L1 by clone 22C3 [Presence] in Tissue by Immune stain"
             }
           ]
         },
@@ -297,9 +284,8 @@
           "reference": "Patient/patient-1"
         },
         "effectiveDateTime": "2026-09-15",
-        "valueQuantity": {
-          "value": 60,
-          "unit": "%"
+        "valueCodeableConcept": {
+          "text": "Positive"
         }
       }
     },
@@ -313,8 +299,8 @@
           "coding": [
             {
               "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
-              "code": "2117292",
-              "display": "Osimertinib 80 MG Oral Tablet"
+              "code": "1721581",
+              "display": "osimertinib 80 MG Oral Tablet"
             }
           ]
         },

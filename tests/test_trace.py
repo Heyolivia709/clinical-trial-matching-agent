@@ -67,7 +67,7 @@ def test_a_tool_call_round_trips_through_json_without_loss() -> None:
 def test_a_failed_tool_call_round_trips_as_a_failure() -> None:
     original = ToolCall(
         tool="get_latest_observation",
-        arguments_json='{"code": "LOINC:85337-4", "as_of": "2026-08-24"}',
+        arguments_json='{"code": "LOINC:83052-1", "as_of": "2026-08-24"}',
         outcome=ToolFailed(
             failure=InfrastructureFailure(
                 kind=FailureKind.TOOL_EXCEPTION,

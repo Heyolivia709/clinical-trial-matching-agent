@@ -47,8 +47,8 @@ def test_a_dated_fact_declares_its_precision() -> None:
             json_path="entry[3].resource.effectiveDateTime",
             clinical_time=dt.date(2024, 1, 1),
             status="final",
-            code="LOINC:85337-4",
-            display="PD-L1 22%",
+            code="LOINC:83052-1",
+            display="PD-L1 by 22C3: Positive",
         )
 
 
@@ -60,8 +60,8 @@ def test_a_precision_without_a_date_is_refused_too() -> None:
             json_path="entry[3].resource.valueQuantity",
             precision=TemporalPrecision.DAY,
             status="final",
-            code="LOINC:85337-4",
-            display="PD-L1 22%",
+            code="LOINC:83052-1",
+            display="PD-L1 by 22C3: Positive",
         )
 
 
@@ -105,7 +105,7 @@ def test_a_citation_may_name_a_resource_outside_the_evidence_boundary() -> None:
         clinical_time=dt.date(2026, 6, 1),
         precision=TemporalPrecision.DAY,
         status="active",
-        code="RxNorm:2117292",
+        code="RxNorm:1721581",
         value="osimertinib 80 mg oral tablet",
         display="Osimertinib order, 2026-06-01",
     )
