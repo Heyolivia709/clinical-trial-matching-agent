@@ -183,7 +183,7 @@ A typed, read-only Python function the agent may call to query the Patient Timel
 _Avoid_: Plugin, skill, retrieval call
 
 **Trial Supervisor**:
-The strategy layer above the Criterion Reasoning Agent that owns criterion ordering, Early Termination, and Evidence Reuse within one trial.
+The thin layer above the Criterion Reasoning Agent that owns criterion ordering and Early Termination within one trial.
 _Avoid_: Orchestrator framework, multi-agent coordinator
 
 **Early Termination**:
