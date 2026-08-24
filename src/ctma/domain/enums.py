@@ -105,6 +105,51 @@ requirement applies to them. The remaining three arise from configuration or
 injected faults and are covered by Gate 4 fixtures instead."""
 
 
+class EvidenceRelation(StrEnum):
+    """What cited Patient Evidence does to the proposition it is cited for.
+
+    Section 8 requires the relation to be explicit, and section 8.1 rejects a
+    citation that omits it. Two members and no third: "relevant" is not a
+    relation, and a relevance score is what this deliberately is not.
+    """
+
+    SUPPORTS = "supports"
+    CONTRADICTS = "contradicts"
+
+
+class CandidateStatus(StrEnum):
+    """How far a Candidate Trial got: retained, presented, or assessed.
+
+    One ordered vocabulary rather than two flags, because the states nest.
+    Section 9 retains twenty, presents five, and assesses three of those five,
+    so "assessed but never presented" is not a state a run can be in — and with
+    two independent booleans it would be.
+    """
+
+    RETAINED = "retained"
+    PRESENTED = "presented"
+    ASSESSED = "assessed"
+
+
+class RetrievalChannel(StrEnum):
+    """The two ranking channels fused in section 9. Fusion is not a channel."""
+
+    BM25 = "bm25"
+    DENSE = "dense"
+
+
+class Partition(StrEnum):
+    """Which half of the two-axis split an artifact belongs to.
+
+    Held-out scenarios and trials stay frozen and must not influence prompts,
+    models, retrieval, tools, or supervisor configuration, so every run records
+    which partition it ran on.
+    """
+
+    DEVELOPMENT = "development"
+    HELD_OUT = "held_out"
+
+
 class TemporalPrecision(StrEnum):
     """Source-supported granularity. Never widened to invent a finer instant."""
 
