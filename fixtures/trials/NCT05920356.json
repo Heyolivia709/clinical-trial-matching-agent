@@ -1,409 +1,459 @@
 {
-  "nct_id": "NCT05920356",
-  "snapshot_record_id": "gate1-trial-fixtures-v1:NCT05920356",
-  "partition": "held_out",
-  "source_url": "https://clinicaltrials.gov/study/NCT05920356",
-  "overall_status": "RECRUITING",
-  "study_type": "INTERVENTIONAL",
-  "phases": [
-    "PHASE3"
-  ],
-  "last_update_posted": "2026-08-21",
-  "recruiting_countries": [
-    "Argentina",
-    "Australia",
-    "Austria",
-    "Belgium",
-    "Brazil",
-    "Bulgaria",
-    "Canada",
-    "Chile",
-    "China",
-    "Colombia",
-    "Czechia",
-    "Denmark",
-    "France",
-    "Germany",
-    "Greece",
-    "Hong Kong",
-    "Hungary",
-    "Italy",
-    "Japan",
-    "Latvia",
-    "Malaysia",
-    "Mexico",
-    "Netherlands",
-    "Peru",
-    "Poland",
-    "Portugal",
-    "Puerto Rico",
-    "Romania",
-    "Singapore",
-    "South Korea",
-    "Spain",
-    "Sweden",
-    "Switzerland",
-    "Taiwan",
-    "Thailand",
-    "Turkey (Türkiye)",
-    "United Kingdom",
-    "United States"
-  ],
-  "brief_title": "A Study Evaluating Sotorasib Platinum Doublet Combination Versus Pembrolizumab Platinum Doublet Combination as a Front-Line Therapy in Participants With Stage IV or Advanced Stage IIIB/C Nonsquamous Non-Small Cell Lung Cancers (CodeBreaK 202)",
-  "brief_summary": "The primary objectives are to compare progression-free survival (PFS) and overall survival (OS) in participants who receive sotorasib with platinum doublet chemotherapy versus participants who receive pembrolizumab with platinum doublet chemotherapy.",
-  "conditions": [
-    "Non-Small Cell Lung Cancer (NSCLC)"
-  ],
-  "mesh_terms": [
-    "Carcinoma, Non-Small-Cell Lung",
-    "Neoplasms",
-    "Lung Neoplasms"
-  ],
-  "interventions": [
-    "Sotorasib",
-    "Pembrolizumab"
-  ],
-  "eligibility_source_text": "Inclusion Criteria:\n\n* Histologically or cytologically confirmed diagnosis of nonsquamous stage IV or advanced Stage IIIB or IIIC NSCLC with KRAS p. G12C mutation and negative for PD-L1 expression by central testing or local laboratory testing confirmed through central testing\n* No history of systemic anticancer therapy in metastatic/non-curable settings\n* Eastern Cooperative Oncology Group (ECOG) ≤ 1\n\nExclusion Criteria:\n\n* Mixed histology NSCLC with either small-cell or large-cell neuroendocrine cell component or predominant squamous cell histology\n* Participants with tumors known to harbor molecular alterations for which targeted therapy is locally approved as a front-line therapy\n* Symptomatic (treated or untreated) brain metastases\n* Gastrointestinal (GI) tract disease causing the inability to take oral medication\n* Myocardial infarction within 6 months of randomization, unstable arrhythmias, or unstable angina\n* Prior therapy with a KRAS G12C inhibitor",
-  "eligibility_sha256": "623ed6508bca5ca4d503638524b27601dd774afd97455b29e53e96690fda1239",
-  "criteria": [
+ "nct_id": "NCT05920356",
+ "snapshot_record_id": "gate1-trial-fixtures-v1:NCT05920356",
+ "partition": "held_out",
+ "source_url": "https://clinicaltrials.gov/study/NCT05920356",
+ "overall_status": "RECRUITING",
+ "study_type": "INTERVENTIONAL",
+ "phases": [
+  "PHASE3"
+ ],
+ "last_update_posted": "2026-08-21",
+ "recruiting_countries": [
+  "Argentina",
+  "Australia",
+  "Austria",
+  "Belgium",
+  "Brazil",
+  "Bulgaria",
+  "Canada",
+  "Chile",
+  "China",
+  "Colombia",
+  "Czechia",
+  "Denmark",
+  "France",
+  "Germany",
+  "Greece",
+  "Hong Kong",
+  "Hungary",
+  "Italy",
+  "Japan",
+  "Latvia",
+  "Malaysia",
+  "Mexico",
+  "Netherlands",
+  "Peru",
+  "Poland",
+  "Portugal",
+  "Puerto Rico",
+  "Romania",
+  "Singapore",
+  "South Korea",
+  "Spain",
+  "Sweden",
+  "Switzerland",
+  "Taiwan",
+  "Thailand",
+  "Turkey (Türkiye)",
+  "United Kingdom",
+  "United States"
+ ],
+ "brief_title": "A Study Evaluating Sotorasib Platinum Doublet Combination Versus Pembrolizumab Platinum Doublet Combination as a Front-Line Therapy in Participants With Stage IV or Advanced Stage IIIB/C Nonsquamous Non-Small Cell Lung Cancers (CodeBreaK 202)",
+ "brief_summary": "The primary objectives are to compare progression-free survival (PFS) and overall survival (OS) in participants who receive sotorasib with platinum doublet chemotherapy versus participants who receive pembrolizumab with platinum doublet chemotherapy.",
+ "conditions": [
+  "Non-Small Cell Lung Cancer (NSCLC)"
+ ],
+ "mesh_terms": [
+  "Carcinoma, Non-Small-Cell Lung",
+  "Neoplasms",
+  "Lung Neoplasms"
+ ],
+ "interventions": [
+  "Sotorasib",
+  "Pembrolizumab"
+ ],
+ "eligibility_source_text": "Inclusion Criteria:\n\n* Histologically or cytologically confirmed diagnosis of nonsquamous stage IV or advanced Stage IIIB or IIIC NSCLC with KRAS p. G12C mutation and negative for PD-L1 expression by central testing or local laboratory testing confirmed through central testing\n* No history of systemic anticancer therapy in metastatic/non-curable settings\n* Eastern Cooperative Oncology Group (ECOG) ≤ 1\n\nExclusion Criteria:\n\n* Mixed histology NSCLC with either small-cell or large-cell neuroendocrine cell component or predominant squamous cell histology\n* Participants with tumors known to harbor molecular alterations for which targeted therapy is locally approved as a front-line therapy\n* Symptomatic (treated or untreated) brain metastases\n* Gastrointestinal (GI) tract disease causing the inability to take oral medication\n* Myocardial infarction within 6 months of randomization, unstable arrhythmias, or unstable angina\n* Prior therapy with a KRAS G12C inhibitor",
+ "eligibility_sha256": "623ed6508bca5ca4d503638524b27601dd774afd97455b29e53e96690fda1239",
+ "criteria": [
+  {
+   "criterion_id": "NCT05920356:INC-1",
+   "polarity": "inclusion",
+   "source_section": "inclusionCriteria",
+   "ordinal": 1,
+   "source_text": "Histologically or cytologically confirmed diagnosis of nonsquamous stage IV or advanced Stage IIIB or IIIC NSCLC with KRAS p. G12C mutation and negative for PD-L1 expression by central testing or local laboratory testing confirmed through central testing",
+   "expression_version": "v2",
+   "propositions": [
     {
-      "criterion_id": "NCT05920356:INC-1",
-      "polarity": "inclusion",
-      "source_section": "inclusionCriteria",
-      "ordinal": 1,
-      "source_text": "Histologically or cytologically confirmed diagnosis of nonsquamous stage IV or advanced Stage IIIB or IIIC NSCLC with KRAS p. G12C mutation and negative for PD-L1 expression by central testing or local laboratory testing confirmed through central testing",
-      "expression_version": "v1",
-      "propositions": [
-        {
-          "proposition_id": "P1",
-          "statement": "Nonsquamous non-small cell lung cancer is confirmed",
-          "category": "disease",
-          "concept": "NSCLC_NONSQUAMOUS"
-        },
-        {
-          "proposition_id": "P2",
-          "statement": "The disease is stage IV",
-          "category": "disease",
-          "concept": "STAGE_IV"
-        },
-        {
-          "proposition_id": "P3",
-          "statement": "The disease is stage IIIB",
-          "category": "disease",
-          "concept": "STAGE_IIIB"
-        },
-        {
-          "proposition_id": "P4",
-          "statement": "The disease is stage IIIC",
-          "category": "disease",
-          "concept": "STAGE_IIIC"
-        },
-        {
-          "proposition_id": "P5",
-          "statement": "A KRAS G12C mutation is documented",
-          "category": "biomarker",
-          "concept": "KRAS_G12C"
-        },
-        {
-          "proposition_id": "P6",
-          "statement": "PD-L1 expression is negative",
-          "category": "biomarker",
-          "concept": "PD_L1_EXPRESSION"
-        }
-      ],
-      "expression": {
-        "kind": "all_of",
-        "children": [
-          {
-            "kind": "proposition",
-            "proposition_id": "P1"
-          },
-          {
-            "kind": "any_of",
-            "children": [
-              {
-                "kind": "proposition",
-                "proposition_id": "P2"
-              },
-              {
-                "kind": "proposition",
-                "proposition_id": "P3"
-              },
-              {
-                "kind": "proposition",
-                "proposition_id": "P4"
-              }
-            ]
-          },
-          {
-            "kind": "proposition",
-            "proposition_id": "P5"
-          },
-          {
-            "kind": "proposition",
-            "proposition_id": "P6"
-          }
-        ]
-      },
-      "provenance": {
-        "drafted_by": "assistant",
-        "ai_assisted": true,
-        "reviewed_by": "rendong",
-        "reviewed_on": "2026-08-24",
-        "review_status": "reviewed"
-      }
+     "proposition_id": "P1",
+     "statement": "Nonsquamous non-small cell lung cancer is confirmed",
+     "category": "disease",
+     "concept": "NSCLC_NONSQUAMOUS",
+     "predicate": {
+      "kind": "presence",
+      "expects": "present"
+     }
     },
     {
-      "criterion_id": "NCT05920356:INC-2",
-      "polarity": "inclusion",
-      "source_section": "inclusionCriteria",
-      "ordinal": 2,
-      "source_text": "No history of systemic anticancer therapy in metastatic/non-curable settings",
-      "expression_version": "v1",
-      "propositions": [
-        {
-          "proposition_id": "P1",
-          "statement": "No documented exposure to systemic anticancer therapy in a metastatic or non-curable setting",
-          "category": "prior_therapy",
-          "concept": "SYSTEMIC_ANTICANCER_THERAPY"
-        }
-      ],
-      "expression": {
-        "kind": "proposition",
-        "proposition_id": "P1"
-      },
-      "provenance": {
-        "drafted_by": "assistant",
-        "ai_assisted": true,
-        "reviewed_by": "rendong",
-        "reviewed_on": "2026-08-24",
-        "review_status": "reviewed"
-      }
+     "proposition_id": "P2",
+     "statement": "The disease is stage IV",
+     "category": "disease",
+     "concept": "STAGE_IV",
+     "predicate": {
+      "kind": "presence",
+      "expects": "present"
+     }
     },
     {
-      "criterion_id": "NCT05920356:INC-3",
-      "polarity": "inclusion",
-      "source_section": "inclusionCriteria",
-      "ordinal": 3,
-      "source_text": "Eastern Cooperative Oncology Group (ECOG) ≤ 1",
-      "expression_version": "v1",
-      "propositions": [
-        {
-          "proposition_id": "P1",
-          "statement": "ECOG performance status is 1 or lower",
-          "category": "performance_status",
-          "concept": "ECOG_SCORE"
-        }
-      ],
-      "expression": {
-        "kind": "proposition",
-        "proposition_id": "P1"
-      },
-      "provenance": {
-        "drafted_by": "assistant",
-        "ai_assisted": true,
-        "reviewed_by": "rendong",
-        "reviewed_on": "2026-08-24",
-        "review_status": "reviewed"
-      }
+     "proposition_id": "P3",
+     "statement": "The disease is stage IIIB",
+     "category": "disease",
+     "concept": "STAGE_IIIB",
+     "predicate": {
+      "kind": "presence",
+      "expects": "present"
+     }
     },
     {
-      "criterion_id": "NCT05920356:EXC-1",
-      "polarity": "exclusion",
-      "source_section": "exclusionCriteria",
-      "ordinal": 1,
-      "source_text": "Mixed histology NSCLC with either small-cell or large-cell neuroendocrine cell component or predominant squamous cell histology",
-      "expression_version": "v1",
-      "propositions": [
-        {
-          "proposition_id": "P1",
-          "statement": "A small-cell component is documented",
-          "category": "disease",
-          "concept": "SMALL_CELL_COMPONENT"
-        },
-        {
-          "proposition_id": "P2",
-          "statement": "A large-cell neuroendocrine component is documented",
-          "category": "disease",
-          "concept": "LARGE_CELL_NEUROENDOCRINE_COMPONENT"
-        },
-        {
-          "proposition_id": "P3",
-          "statement": "Predominant squamous cell histology is documented",
-          "category": "disease",
-          "concept": "SQUAMOUS_HISTOLOGY"
-        }
-      ],
-      "expression": {
-        "kind": "any_of",
-        "children": [
-          {
-            "kind": "proposition",
-            "proposition_id": "P1"
-          },
-          {
-            "kind": "proposition",
-            "proposition_id": "P2"
-          },
-          {
-            "kind": "proposition",
-            "proposition_id": "P3"
-          }
-        ]
-      },
-      "provenance": {
-        "drafted_by": "assistant",
-        "ai_assisted": true,
-        "reviewed_by": "rendong",
-        "reviewed_on": "2026-08-24",
-        "review_status": "reviewed"
-      }
+     "proposition_id": "P4",
+     "statement": "The disease is stage IIIC",
+     "category": "disease",
+     "concept": "STAGE_IIIC",
+     "predicate": {
+      "kind": "presence",
+      "expects": "present"
+     }
     },
     {
-      "criterion_id": "NCT05920356:EXC-2",
-      "polarity": "exclusion",
-      "source_section": "exclusionCriteria",
-      "ordinal": 2,
-      "source_text": "Participants with tumors known to harbor molecular alterations for which targeted therapy is locally approved as a front-line therapy",
-      "expression_version": "v1",
-      "propositions": [
-        {
-          "proposition_id": "P1",
-          "statement": "A documented molecular alteration has a locally approved front-line targeted therapy",
-          "category": "unsupported"
-        }
-      ],
-      "expression": {
-        "kind": "proposition",
-        "proposition_id": "P1"
-      },
-      "provenance": {
-        "drafted_by": "assistant",
-        "ai_assisted": true,
-        "reviewed_by": "rendong",
-        "reviewed_on": "2026-08-24",
-        "review_status": "reviewed"
-      }
+     "proposition_id": "P5",
+     "statement": "A KRAS G12C mutation is documented",
+     "category": "biomarker",
+     "concept": "KRAS_G12C",
+     "predicate": {
+      "kind": "presence",
+      "expects": "present"
+     }
     },
     {
-      "criterion_id": "NCT05920356:EXC-3",
-      "polarity": "exclusion",
-      "source_section": "exclusionCriteria",
-      "ordinal": 3,
-      "source_text": "Symptomatic (treated or untreated) brain metastases",
-      "expression_version": "v1",
-      "propositions": [
-        {
-          "proposition_id": "P1",
-          "statement": "Brain metastases are documented",
-          "category": "disease",
-          "concept": "BRAIN_METASTASIS"
-        },
-        {
-          "proposition_id": "P2",
-          "statement": "The brain metastases are symptomatic",
-          "category": "unsupported"
-        }
-      ],
-      "expression": {
-        "kind": "all_of",
-        "children": [
-          {
-            "kind": "proposition",
-            "proposition_id": "P1"
-          },
-          {
-            "kind": "proposition",
-            "proposition_id": "P2"
-          }
-        ]
-      },
-      "provenance": {
-        "drafted_by": "assistant",
-        "ai_assisted": true,
-        "reviewed_by": "rendong",
-        "reviewed_on": "2026-08-24",
-        "review_status": "reviewed"
-      }
-    },
-    {
-      "criterion_id": "NCT05920356:EXC-4",
-      "polarity": "exclusion",
-      "source_section": "exclusionCriteria",
-      "ordinal": 4,
-      "source_text": "Gastrointestinal (GI) tract disease causing the inability to take oral medication",
-      "expression_version": "v1",
-      "propositions": [
-        {
-          "proposition_id": "P1",
-          "statement": "Gastrointestinal tract disease prevents taking oral medication",
-          "category": "unsupported"
-        }
-      ],
-      "expression": {
-        "kind": "proposition",
-        "proposition_id": "P1"
-      },
-      "provenance": {
-        "drafted_by": "assistant",
-        "ai_assisted": true,
-        "reviewed_by": "rendong",
-        "reviewed_on": "2026-08-24",
-        "review_status": "reviewed"
-      }
-    },
-    {
-      "criterion_id": "NCT05920356:EXC-5",
-      "polarity": "exclusion",
-      "source_section": "exclusionCriteria",
-      "ordinal": 5,
-      "source_text": "Myocardial infarction within 6 months of randomization, unstable arrhythmias, or unstable angina",
-      "expression_version": "v1",
-      "propositions": [
-        {
-          "proposition_id": "P1",
-          "statement": "A recent myocardial infarction, unstable arrhythmia or unstable angina is documented",
-          "category": "unsupported"
-        }
-      ],
-      "expression": {
-        "kind": "proposition",
-        "proposition_id": "P1"
-      },
-      "provenance": {
-        "drafted_by": "assistant",
-        "ai_assisted": true,
-        "reviewed_by": "rendong",
-        "reviewed_on": "2026-08-24",
-        "review_status": "reviewed"
-      }
-    },
-    {
-      "criterion_id": "NCT05920356:EXC-6",
-      "polarity": "exclusion",
-      "source_section": "exclusionCriteria",
-      "ordinal": 6,
-      "source_text": "Prior therapy with a KRAS G12C inhibitor",
-      "expression_version": "v1",
-      "propositions": [
-        {
-          "proposition_id": "P1",
-          "statement": "Documented exposure to a KRAS G12C inhibitor",
-          "category": "prior_therapy",
-          "concept": "KRAS_G12C_INHIBITOR"
-        }
-      ],
-      "expression": {
-        "kind": "proposition",
-        "proposition_id": "P1"
-      },
-      "provenance": {
-        "drafted_by": "assistant",
-        "ai_assisted": true,
-        "reviewed_by": "rendong",
-        "reviewed_on": "2026-08-24",
-        "review_status": "reviewed"
-      }
+     "proposition_id": "P6",
+     "statement": "PD-L1 expression is negative",
+     "category": "biomarker",
+     "concept": "PD_L1_EXPRESSION"
     }
-  ]
+   ],
+   "expression": {
+    "kind": "all_of",
+    "children": [
+     {
+      "kind": "proposition",
+      "proposition_id": "P1"
+     },
+     {
+      "kind": "any_of",
+      "children": [
+       {
+        "kind": "proposition",
+        "proposition_id": "P2"
+       },
+       {
+        "kind": "proposition",
+        "proposition_id": "P3"
+       },
+       {
+        "kind": "proposition",
+        "proposition_id": "P4"
+       }
+      ]
+     },
+     {
+      "kind": "proposition",
+      "proposition_id": "P5"
+     },
+     {
+      "kind": "proposition",
+      "proposition_id": "P6"
+     }
+    ]
+   },
+   "provenance": {
+    "drafted_by": "assistant",
+    "ai_assisted": true,
+    "reviewed_by": "rendong",
+    "reviewed_on": "2026-08-25",
+    "review_status": "reviewed"
+   }
+  },
+  {
+   "criterion_id": "NCT05920356:INC-2",
+   "polarity": "inclusion",
+   "source_section": "inclusionCriteria",
+   "ordinal": 2,
+   "source_text": "No history of systemic anticancer therapy in metastatic/non-curable settings",
+   "expression_version": "v2",
+   "propositions": [
+    {
+     "proposition_id": "P1",
+     "statement": "No documented exposure to systemic anticancer therapy in a metastatic or non-curable setting",
+     "category": "prior_therapy",
+     "concept": "SYSTEMIC_ANTICANCER_THERAPY",
+     "predicate": {
+      "kind": "presence",
+      "expects": "absent"
+     }
+    }
+   ],
+   "expression": {
+    "kind": "proposition",
+    "proposition_id": "P1"
+   },
+   "provenance": {
+    "drafted_by": "assistant",
+    "ai_assisted": true,
+    "reviewed_by": "rendong",
+    "reviewed_on": "2026-08-25",
+    "review_status": "reviewed"
+   }
+  },
+  {
+   "criterion_id": "NCT05920356:INC-3",
+   "polarity": "inclusion",
+   "source_section": "inclusionCriteria",
+   "ordinal": 3,
+   "source_text": "Eastern Cooperative Oncology Group (ECOG) ≤ 1",
+   "expression_version": "v2",
+   "propositions": [
+    {
+     "proposition_id": "P1",
+     "statement": "ECOG performance status is 1 or lower",
+     "category": "performance_status",
+     "concept": "ECOG_SCORE",
+     "predicate": {
+      "kind": "numeric",
+      "operator": "<=",
+      "threshold": 1.0,
+      "unit": null
+     }
+    }
+   ],
+   "expression": {
+    "kind": "proposition",
+    "proposition_id": "P1"
+   },
+   "provenance": {
+    "drafted_by": "assistant",
+    "ai_assisted": true,
+    "reviewed_by": "rendong",
+    "reviewed_on": "2026-08-25",
+    "review_status": "reviewed"
+   }
+  },
+  {
+   "criterion_id": "NCT05920356:EXC-1",
+   "polarity": "exclusion",
+   "source_section": "exclusionCriteria",
+   "ordinal": 1,
+   "source_text": "Mixed histology NSCLC with either small-cell or large-cell neuroendocrine cell component or predominant squamous cell histology",
+   "expression_version": "v2",
+   "propositions": [
+    {
+     "proposition_id": "P1",
+     "statement": "A small-cell component is documented",
+     "category": "disease",
+     "concept": "SMALL_CELL_COMPONENT",
+     "predicate": {
+      "kind": "presence",
+      "expects": "present"
+     }
+    },
+    {
+     "proposition_id": "P2",
+     "statement": "A large-cell neuroendocrine component is documented",
+     "category": "disease",
+     "concept": "LARGE_CELL_NEUROENDOCRINE_COMPONENT",
+     "predicate": {
+      "kind": "presence",
+      "expects": "present"
+     }
+    },
+    {
+     "proposition_id": "P3",
+     "statement": "Predominant squamous cell histology is documented",
+     "category": "disease",
+     "concept": "SQUAMOUS_HISTOLOGY",
+     "predicate": {
+      "kind": "presence",
+      "expects": "present"
+     }
+    }
+   ],
+   "expression": {
+    "kind": "any_of",
+    "children": [
+     {
+      "kind": "proposition",
+      "proposition_id": "P1"
+     },
+     {
+      "kind": "proposition",
+      "proposition_id": "P2"
+     },
+     {
+      "kind": "proposition",
+      "proposition_id": "P3"
+     }
+    ]
+   },
+   "provenance": {
+    "drafted_by": "assistant",
+    "ai_assisted": true,
+    "reviewed_by": "rendong",
+    "reviewed_on": "2026-08-25",
+    "review_status": "reviewed"
+   }
+  },
+  {
+   "criterion_id": "NCT05920356:EXC-2",
+   "polarity": "exclusion",
+   "source_section": "exclusionCriteria",
+   "ordinal": 2,
+   "source_text": "Participants with tumors known to harbor molecular alterations for which targeted therapy is locally approved as a front-line therapy",
+   "expression_version": "v1",
+   "propositions": [
+    {
+     "proposition_id": "P1",
+     "statement": "A documented molecular alteration has a locally approved front-line targeted therapy",
+     "category": "unsupported"
+    }
+   ],
+   "expression": {
+    "kind": "proposition",
+    "proposition_id": "P1"
+   },
+   "provenance": {
+    "drafted_by": "assistant",
+    "ai_assisted": true,
+    "reviewed_by": "rendong",
+    "reviewed_on": "2026-08-24",
+    "review_status": "reviewed"
+   }
+  },
+  {
+   "criterion_id": "NCT05920356:EXC-3",
+   "polarity": "exclusion",
+   "source_section": "exclusionCriteria",
+   "ordinal": 3,
+   "source_text": "Symptomatic (treated or untreated) brain metastases",
+   "expression_version": "v2",
+   "propositions": [
+    {
+     "proposition_id": "P1",
+     "statement": "Brain metastases are documented",
+     "category": "disease",
+     "concept": "BRAIN_METASTASIS",
+     "predicate": {
+      "kind": "presence",
+      "expects": "present"
+     }
+    },
+    {
+     "proposition_id": "P2",
+     "statement": "The brain metastases are symptomatic",
+     "category": "unsupported"
+    }
+   ],
+   "expression": {
+    "kind": "all_of",
+    "children": [
+     {
+      "kind": "proposition",
+      "proposition_id": "P1"
+     },
+     {
+      "kind": "proposition",
+      "proposition_id": "P2"
+     }
+    ]
+   },
+   "provenance": {
+    "drafted_by": "assistant",
+    "ai_assisted": true,
+    "reviewed_by": "rendong",
+    "reviewed_on": "2026-08-25",
+    "review_status": "reviewed"
+   }
+  },
+  {
+   "criterion_id": "NCT05920356:EXC-4",
+   "polarity": "exclusion",
+   "source_section": "exclusionCriteria",
+   "ordinal": 4,
+   "source_text": "Gastrointestinal (GI) tract disease causing the inability to take oral medication",
+   "expression_version": "v1",
+   "propositions": [
+    {
+     "proposition_id": "P1",
+     "statement": "Gastrointestinal tract disease prevents taking oral medication",
+     "category": "unsupported"
+    }
+   ],
+   "expression": {
+    "kind": "proposition",
+    "proposition_id": "P1"
+   },
+   "provenance": {
+    "drafted_by": "assistant",
+    "ai_assisted": true,
+    "reviewed_by": "rendong",
+    "reviewed_on": "2026-08-24",
+    "review_status": "reviewed"
+   }
+  },
+  {
+   "criterion_id": "NCT05920356:EXC-5",
+   "polarity": "exclusion",
+   "source_section": "exclusionCriteria",
+   "ordinal": 5,
+   "source_text": "Myocardial infarction within 6 months of randomization, unstable arrhythmias, or unstable angina",
+   "expression_version": "v1",
+   "propositions": [
+    {
+     "proposition_id": "P1",
+     "statement": "A recent myocardial infarction, unstable arrhythmia or unstable angina is documented",
+     "category": "unsupported"
+    }
+   ],
+   "expression": {
+    "kind": "proposition",
+    "proposition_id": "P1"
+   },
+   "provenance": {
+    "drafted_by": "assistant",
+    "ai_assisted": true,
+    "reviewed_by": "rendong",
+    "reviewed_on": "2026-08-24",
+    "review_status": "reviewed"
+   }
+  },
+  {
+   "criterion_id": "NCT05920356:EXC-6",
+   "polarity": "exclusion",
+   "source_section": "exclusionCriteria",
+   "ordinal": 6,
+   "source_text": "Prior therapy with a KRAS G12C inhibitor",
+   "expression_version": "v2",
+   "propositions": [
+    {
+     "proposition_id": "P1",
+     "statement": "Documented exposure to a KRAS G12C inhibitor",
+     "category": "prior_therapy",
+     "concept": "KRAS_G12C_INHIBITOR",
+     "predicate": {
+      "kind": "presence",
+      "expects": "present"
+     }
+    }
+   ],
+   "expression": {
+    "kind": "proposition",
+    "proposition_id": "P1"
+   },
+   "provenance": {
+    "drafted_by": "assistant",
+    "ai_assisted": true,
+    "reviewed_by": "rendong",
+    "reviewed_on": "2026-08-25",
+    "review_status": "reviewed"
+   }
+  }
+ ]
 }

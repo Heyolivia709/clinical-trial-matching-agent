@@ -12,14 +12,13 @@ import json
 
 import pytest
 
-from ctma.domain.enums import CriterionCategory, TemporalPrecision
+from ctma.domain.enums import ComparisonOperator, CriterionCategory, TemporalPrecision
 from ctma.domain.expression import TemporalWindow
 from ctma.domain.timeline import ClinicalInterval, CodedValue, PatientTimeline, QuantityValue
 from ctma.domain.trace import ToolCall, ToolReturned
 from ctma.timeline.build import build
 from ctma.timeline.tools import (
     Comparison,
-    Operator,
     Refusal,
     Verdict,
     check_temporal_window,
@@ -220,15 +219,15 @@ def test_an_unmapped_drug_concept_is_not_an_empty_record() -> None:
 @pytest.mark.parametrize(
     ("value", "operator", "threshold", "expected"),
     [
-        (1.0, Operator.LTE, 1.0, Verdict.HOLDS),
-        (2.0, Operator.LTE, 1.0, Verdict.FAILS),
-        (0.0, Operator.EQ, 0.0, Verdict.HOLDS),
-        (1.0, Operator.EQ, 0.0, Verdict.FAILS),
-        (22.0, Operator.GTE, 1.0, Verdict.HOLDS),
+        (1.0, ComparisonOperator.LTE, 1.0, Verdict.HOLDS),
+        (2.0, ComparisonOperator.LTE, 1.0, Verdict.FAILS),
+        (0.0, ComparisonOperator.EQ, 0.0, Verdict.HOLDS),
+        (1.0, ComparisonOperator.EQ, 0.0, Verdict.FAILS),
+        (22.0, ComparisonOperator.GTE, 1.0, Verdict.HOLDS),
     ],
 )
 def test_a_plain_number_compares_exactly(
-    value: float, operator: Operator, threshold: float, expected: Verdict
+    value: float, operator: ComparisonOperator, threshold: float, expected: Verdict
 ) -> None:
     assert compare_numeric(value, operator=operator, threshold=threshold).verdict is expected
 
@@ -236,7 +235,7 @@ def test_a_plain_number_compares_exactly(
 def test_a_bound_decides_the_question_when_it_can() -> None:
     """ "< 0.5" is definitely not "at least 1.5", and refusing there is not humility."""
     anc = QuantityValue(value=0.5, unit="10*9/L", comparator="<")
-    verdict = compare_numeric(anc, operator=Operator.GTE, threshold=1.5, unit="10*9/L")
+    verdict = compare_numeric(anc, operator=ComparisonOperator.GTE, threshold=1.5, unit="10*9/L")
     assert verdict.verdict is Verdict.FAILS
     assert verdict.refusal is None
 
@@ -244,7 +243,7 @@ def test_a_bound_decides_the_question_when_it_can() -> None:
 def test_a_bound_that_straddles_the_threshold_is_refused() -> None:
     """ "< 0.5" against "at least 0.4" could be either. That is not a comparison."""
     anc = QuantityValue(value=0.5, unit="10*9/L", comparator="<")
-    result = compare_numeric(anc, operator=Operator.GTE, threshold=0.4, unit="10*9/L")
+    result = compare_numeric(anc, operator=ComparisonOperator.GTE, threshold=0.4, unit="10*9/L")
     assert result.verdict is Verdict.REFUSED
     assert result.refusal is Refusal.BOUND_STRADDLES_THE_THRESHOLD
 
@@ -252,7 +251,7 @@ def test_a_bound_that_straddles_the_threshold_is_refused() -> None:
 def test_a_bound_can_also_hold() -> None:
     anc = QuantityValue(value=0.5, unit="10*9/L", comparator="<")
     assert (
-        compare_numeric(anc, operator=Operator.LT, threshold=1.5, unit="10*9/L").verdict
+        compare_numeric(anc, operator=ComparisonOperator.LT, threshold=1.5, unit="10*9/L").verdict
         is Verdict.HOLDS
     )
 
@@ -260,7 +259,7 @@ def test_a_bound_can_also_hold() -> None:
 def test_a_comparison_across_units_is_refused_rather_than_converted() -> None:
     """Section 5.2 puts unit conversion out of scope, so this is not a shortfall."""
     anc = QuantityValue(value=0.5, unit="10*9/L", comparator="<")
-    result = compare_numeric(anc, operator=Operator.GTE, threshold=1500, unit="/uL")
+    result = compare_numeric(anc, operator=ComparisonOperator.GTE, threshold=1500, unit="/uL")
     assert result.verdict is Verdict.REFUSED
     assert result.refusal is Refusal.UNIT_MISMATCH
 
@@ -268,7 +267,7 @@ def test_a_comparison_across_units_is_refused_rather_than_converted() -> None:
 def test_a_record_with_no_unit_against_a_criterion_that_states_one_is_refused() -> None:
     """A bare 1.2 might be 1.2 or 1200 in the criterion's unit. Choosing is conversion."""
     result = compare_numeric(
-        QuantityValue(value=1.2), operator=Operator.GTE, threshold=1.5, unit="10*9/L"
+        QuantityValue(value=1.2), operator=ComparisonOperator.GTE, threshold=1.5, unit="10*9/L"
     )
     assert result.verdict is Verdict.REFUSED
     assert result.refusal is Refusal.UNIT_MISMATCH
@@ -277,11 +276,14 @@ def test_a_record_with_no_unit_against_a_criterion_that_states_one_is_refused() 
 def test_a_criterion_that_states_no_unit_compares_against_a_score() -> None:
     """ECOG has no unit worth matching, and refusing every score would be silly."""
     ecog = QuantityValue(value=1.0, unit="{score}")
-    assert compare_numeric(ecog, operator=Operator.LTE, threshold=1).verdict is Verdict.HOLDS
+    comparison = compare_numeric(ecog, operator=ComparisonOperator.LTE, threshold=1)
+    assert comparison.verdict is Verdict.HOLDS
 
 
 def test_a_qualitative_value_is_never_turned_into_a_number() -> None:
-    result = compare_numeric(CodedValue(text="Positive"), operator=Operator.GTE, threshold=1.0)
+    result = compare_numeric(
+        CodedValue(text="Positive"), operator=ComparisonOperator.GTE, threshold=1.0
+    )
     assert result.verdict is Verdict.REFUSED
     assert result.refusal is Refusal.VALUE_IS_NOT_NUMERIC
 
@@ -289,7 +291,7 @@ def test_a_qualitative_value_is_never_turned_into_a_number() -> None:
 def test_the_comparison_records_what_it_compared() -> None:
     """The trace shows the comparison, so a reader can redo it by hand."""
     anc = QuantityValue(value=0.5, unit="10*9/L", comparator="<")
-    result = compare_numeric(anc, operator=Operator.GTE, threshold=1.5, unit="10*9/L")
+    result = compare_numeric(anc, operator=ComparisonOperator.GTE, threshold=1.5, unit="10*9/L")
     assert result.compared == "<0.5 10*9/L >= 1.5 10*9/L"
 
 
@@ -380,7 +382,7 @@ def test_an_event_with_no_clinical_time_is_refused_and_says_so() -> None:
 
 def test_a_call_and_its_result_become_one_trace_record() -> None:
     """Section 14 records tool calls with their arguments and their results."""
-    result = compare_numeric(1.0, operator=Operator.LTE, threshold=1.0)
+    result = compare_numeric(1.0, operator=ComparisonOperator.LTE, threshold=1.0)
     call = record("compare_numeric", {"value": 1.0, "operator": "<=", "threshold": 1.0}, result)
     assert isinstance(call.outcome, ToolReturned)
     assert json.loads(call.arguments_json)["operator"] == "<="

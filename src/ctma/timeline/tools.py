@@ -33,7 +33,7 @@ from enum import StrEnum
 from pydantic import Field
 
 from ctma.domain.base import Frozen
-from ctma.domain.enums import CriterionCategory, TemporalPrecision
+from ctma.domain.enums import ComparisonOperator, CriterionCategory, TemporalPrecision
 from ctma.domain.expression import AnchorSubstitution, TemporalWindow
 from ctma.domain.timeline import (
     ClinicalInterval,
@@ -88,14 +88,6 @@ class Refusal(StrEnum):
 
     NO_CLINICAL_TIME = "no_clinical_time"
     """The event carries no Clinical Time, so there is nothing to place."""
-
-
-class Operator(StrEnum):
-    LT = "<"
-    LTE = "<="
-    GT = ">"
-    GTE = ">="
-    EQ = "=="
 
 
 class FactQuery(Frozen):
@@ -272,7 +264,7 @@ def find_medication_exposure(
 def compare_numeric(
     value: FactValue | float,
     *,
-    operator: Operator,
+    operator: ComparisonOperator,
     threshold: float,
     unit: str | None = None,
 ) -> Comparison:
@@ -392,18 +384,18 @@ def _bounded(value: QuantityValue) -> _Range:
             return _point(value.value)
 
 
-def _predicate(operator: Operator, threshold: float) -> _Range:
+def _predicate(operator: ComparisonOperator, threshold: float) -> _Range:
     """The set of values that satisfy the criterion's comparison."""
     match operator:
-        case Operator.LT:
+        case ComparisonOperator.LT:
             return (float("-inf"), 0), (threshold, -1)
-        case Operator.LTE:
+        case ComparisonOperator.LTE:
             return (float("-inf"), 0), (threshold, 0)
-        case Operator.GT:
+        case ComparisonOperator.GT:
             return (threshold, 1), (float("inf"), 0)
-        case Operator.GTE:
+        case ComparisonOperator.GTE:
             return (threshold, 0), (float("inf"), 0)
-        case Operator.EQ:
+        case ComparisonOperator.EQ:
             return (threshold, 0), (threshold, 0)
 
 

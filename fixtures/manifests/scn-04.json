@@ -6,6 +6,18 @@
  "assessment_as_of": "2026-06-30",
  "facts": [
   {
+   "fact_id": "Patient/patient-1",
+   "resource_type": "Patient",
+   "resource_id": "patient-1",
+   "json_path": "entry[0].resource.birthDate",
+   "concept": "AGE_YEARS",
+   "value": "59",
+   "status": "active",
+   "clinical_time": "1966-11-08",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
    "fact_id": "Condition/cond-nsclc",
    "resource_type": "Condition",
    "resource_id": "cond-nsclc",

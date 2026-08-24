@@ -17,7 +17,12 @@ from typing import Annotated, Literal, Self
 from pydantic import Field, model_validator
 
 from ctma.domain.base import Frozen
-from ctma.domain.enums import CriterionCategory, CriterionPolarity, ReviewStatus
+from ctma.domain.enums import (
+    ComparisonOperator,
+    CriterionCategory,
+    CriterionPolarity,
+    ReviewStatus,
+)
 
 
 class AuthoringProvenance(Frozen):
@@ -102,6 +107,51 @@ class TemporalWindow(Frozen):
         return self
 
 
+class NumericPredicate(Frozen):
+    """The proposition holds when the recorded value satisfies this comparison."""
+
+    kind: Literal["numeric"] = "numeric"
+    operator: ComparisonOperator
+    threshold: float
+    unit: str | None = None
+
+
+class PresencePredicate(Frozen):
+    """The proposition holds when the concept is documented, or is not.
+
+    `expects: "absent"` is for a criterion phrased as a negative — "no prior
+    systemic anticancer therapy". It does not turn an empty record into a
+    confident negative: with no fact for the concept there is nothing to read,
+    and the proposition is `unknown` with `missing_evidence`. What it decides is
+    the case where a fact *is* there.
+    """
+
+    kind: Literal["presence"] = "presence"
+    expects: Literal["present", "absent"] = "present"
+
+
+Predicate = Annotated[NumericPredicate | PresencePredicate, Field(discriminator="kind")]
+"""What satisfies a proposition, stated by the criterion rather than inferred.
+
+This is a property of the trial text, not of any patient: "ECOG of 0 or 1" says
+what counts as satisfying it, and the patient decides only whether the recorded
+value does. It is authored here for two reasons.
+
+Gold expected states are derived by code from the hidden Scenario Manifest and
+the authored expression, and without this the derivation would have to read the
+proposition's English statement — which is a clinical text parser, and out of
+scope by section 1.
+
+And it keeps the model out of a judgement it should not make twice. The model
+still selects the tool, picks which fact answers, and states the relation; the
+threshold it names is checked against this one, and a disagreement is
+`reasoning_conflict` rather than a silent win for either side.
+
+A proposition with no predicate is not a defect: it is one whose expected state
+cannot be derived, and grading reports it as Coverage-Only rather than scoring
+it."""
+
+
 class AtomicProposition(Frozen):
     """The smallest independently assessable statement in an expression.
 
@@ -113,6 +163,7 @@ class AtomicProposition(Frozen):
     statement: str = Field(min_length=1)
     category: CriterionCategory
     concept: str | None = None
+    predicate: Predicate | None = None
     window: TemporalWindow | None = None
 
     @model_validator(mode="after")
@@ -123,9 +174,19 @@ class AtomicProposition(Frozen):
         and would let an authored artifact promise more than the system does.
         """
         if self.category is CriterionCategory.UNSUPPORTED and (
-            self.concept is not None or self.window is not None
+            self.concept is not None or self.window is not None or self.predicate is not None
         ):
-            msg = "an 'unsupported' proposition must not declare a concept or a window"
+            msg = (
+                "an 'unsupported' proposition must not declare a concept, a predicate, or a window"
+            )
+            raise ValueError(msg)
+        return self
+
+    @model_validator(mode="after")
+    def _a_predicate_needs_something_to_read(self) -> Self:
+        """A predicate with no concept describes a comparison over nothing."""
+        if self.predicate is not None and self.concept is None:
+            msg = "a predicate requires the concept whose facts it reads"
             raise ValueError(msg)
         return self
 

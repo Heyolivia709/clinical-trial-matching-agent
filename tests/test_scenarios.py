@@ -62,6 +62,24 @@ def test_a_scenario_carries_between_thirty_and_forty_five_facts(
 
 
 @pytest.mark.parametrize(("scenario", "manifest"), PAIRS, ids=IDS)
+def test_the_patient_resource_is_authored_as_the_fact_an_age_criterion_reads(
+    scenario: ScenarioInput, manifest: ScenarioManifest
+) -> None:
+    """No tool reaches the `Patient` resource, and a criterion still asks about it.
+
+    The manifest records the age at the Assessment Time rather than the birth
+    date, because that is what a criterion compares. Without it gold derives
+    `missing_evidence` for every age proposition and scores a correct answer as
+    a miss.
+    """
+    demographic = next(fact for fact in manifest.facts if fact.resource_type == "Patient")
+    assert demographic.concept == "AGE_YEARS"
+    assert demographic.value is not None
+    assert demographic.value.isdigit()
+    assert demographic.clinical_time == timeline_of(scenario).demographics.birth_date
+
+
+@pytest.mark.parametrize(("scenario", "manifest"), PAIRS, ids=IDS)
 def test_every_timeline_fact_traces_to_an_authored_resource(
     scenario: ScenarioInput, manifest: ScenarioManifest
 ) -> None:
@@ -94,9 +112,11 @@ def test_an_unusable_authored_fact_is_kept_rather_than_dropped(
     recorded.
     """
     timeline = timeline_of(scenario)
-    present = {item.fact_id for item in (*timeline.facts, *timeline.exposures)} | {
-        f"{item.resource_type}/{item.resource_id}" for item in timeline.unsupported_content
-    }
+    present = (
+        {item.fact_id for item in (*timeline.facts, *timeline.exposures)}
+        | {f"{item.resource_type}/{item.resource_id}" for item in timeline.unsupported_content}
+        | {f"Patient/{timeline.demographics.resource_id}"}
+    )
     for fact in manifest.facts:
         assert fact.fact_id in present, f"{fact.fact_id} vanished during parsing"
 
