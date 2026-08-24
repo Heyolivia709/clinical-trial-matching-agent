@@ -36,6 +36,8 @@ Specification v7 cut candidate retrieval and the inferential-statistics
 apparatus. Both were defensible and neither demonstrated an agent; see
 [ADR 0014](docs/adr/0014-cut-the-research-grade-evaluation-protocol.md).
 
+- [Trace Reports](docs/demo/) — one page per run, generated from frozen artifacts, viewable offline
+- [Development results](docs/evaluation/development-results.md) — every count, with its denominator
 - [MVP specification](docs/specs/phase-1-mvp-specification.md) — source of truth
 - [Implementation sequence](docs/plans/phase-1-implementation-sequence.md) — five gates, core and additive scope marked
 - [Measurement plan](docs/evaluation/phase-1-benchmark-plan.md) — deterministic grading, invariant gates, and what the counts may not claim
