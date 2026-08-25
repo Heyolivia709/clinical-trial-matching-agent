@@ -77,6 +77,15 @@ def answer(state: str, *fact_ids: str, relation: str = "supports") -> dict[str, 
     }
 
 
+def computed_answer(state: str) -> dict[str, Any]:
+    """The answer to a proposition code already did the arithmetic for.
+
+    No citations, because there is nothing citable to name: the reference to the
+    `Patient` resource is built by the loop, not chosen by the model.
+    """
+    return {"state": state, "rationale": "The computed age answers the proposition."}
+
+
 def replay(*calls: RecordedCall) -> FrozenReplayModel:
     return FrozenReplayModel.from_transcript(calls, configuration=REPLAY_CONFIGURATION)
 
@@ -333,15 +342,25 @@ def test_an_unsupported_proposition_is_resolved_without_a_model_call() -> None:
 
 def test_an_age_criterion_is_answered_from_the_birth_date_by_code() -> None:
     """No tool reaches the `Patient` resource, and no model does the arithmetic."""
-    model = replay(
-        call(ModelPurpose.ASSESSMENT, AGE_CRITERION, "P1", answer("met", "Patient/patient-1"))
-    )
+    model = replay(call(ModelPurpose.ASSESSMENT, AGE_CRITERION, "P1", computed_answer("met")))
     assessment = assess("SCN-01", "NCT07349537", AGE_CRITERION, "P1", model)
 
     assert isinstance(assessment, MetAssessment)
     fact = assessment.patient_evidence[0].facts[0]
     assert (fact.resource_type, fact.value) == ("Patient", "64")
     assert "age at 2026-08-04 is 64 years" in model.requests[0].prompt
+
+
+def test_an_age_criterion_does_not_ask_the_model_for_a_citation() -> None:
+    """There is no citable fact to name, so asking produced one of two failures:
+    an invented id that was silently discarded, or — once the prompt admitted
+    that computations are not citable — an empty list that failed the schema."""
+    model = replay(call(ModelPurpose.ASSESSMENT, AGE_CRITERION, "P1", computed_answer("met")))
+    assess("SCN-01", "NCT07349537", AGE_CRITERION, "P1", model)
+
+    prompt = model.requests[0].prompt
+    assert "citations" not in prompt
+    assert "not yours to supply" in prompt
 
 
 def test_a_criterion_is_aggregated_from_its_propositions_and_never_asserted() -> None:

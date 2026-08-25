@@ -33,6 +33,11 @@ TOOL_SELECTION_SCHEMA = """{
   "comparison": null | {"operator": "<|<=|>|>=|==", "threshold": <number>, "unit": <string|null>}
 }"""
 
+COMPUTED_SCHEMA = """{
+  "state": "met" | "not_met" | "not_applicable",
+  "rationale": "<one sentence, explanatory only>"
+}"""
+
 ASSESSMENT_SCHEMA = """{
   "state": "met" | "not_met" | "not_applicable",
   "citations": [{"fact_ids": ["<id from the facts above>"], "relation": "supports"|"contradicts"}],
@@ -87,12 +92,47 @@ def assessment_prompt(
             *(f"- {_fact_line(fact)}" for fact in facts),
             *_computation_block(computations),
             "",
-            "Cite by fact id. Do not restate a value, a date, or a status: the "
-            "citation is filled in from the record. Answer only about this "
-            "proposition, and only from the facts above.",
+            'Cite by fact id, copied exactly as it appears after "fact id" — '
+            "including the resource type before the slash. An id that is not in "
+            "the list above cites nothing. Do not restate a value, a date, or a "
+            "status: the citation is filled in from the record. Answer only "
+            "about this proposition, and only from the facts above.",
             "",
             "Reply with JSON only:",
             ASSESSMENT_SCHEMA,
+        )
+    )
+
+
+def computed_prompt(
+    proposition: AtomicProposition,
+    criterion: EligibilityCriterion,
+    computations: Sequence[str],
+) -> str:
+    """Ask only what the comparison means, when code already did the comparison.
+
+    No citations are requested, because there are none to request: the operand
+    is a computed value and the reference to the record it came from is built
+    here. Asking anyway offered a list of facts that was always empty and then
+    discarded whatever came back — so the model either invented an id or, told
+    honestly that computations are not citable, returned none and failed the
+    schema. Both are the same bug, which is asking for something unusable.
+    """
+    return "\n".join(
+        (
+            "You are assessing one atomic proposition of one clinical trial "
+            "eligibility criterion, for research coordinator review.",
+            "",
+            _criterion_block(criterion),
+            _proposition_block(proposition),
+            *_computation_block(computations),
+            "",
+            "The comparison has already been made. Say what it means for this "
+            "proposition and nothing else. The citation to the patient record is "
+            "filled in here and is not yours to supply.",
+            "",
+            "Reply with JSON only:",
+            COMPUTED_SCHEMA,
         )
     )
 
@@ -159,7 +199,7 @@ def _proposition_block(proposition: AtomicProposition) -> str:
 def _fact_line(fact: CitableFact) -> str:
     """One fact, with everything a reader needs and nothing to retype."""
     coding = fact.code if isinstance(fact, TimelineFact) else fact.medication
-    parts = [f"{fact.fact_id}: {fact.display} [{coding.code}]", f"status {fact.status}"]
+    parts = [f"fact id {fact.fact_id} — {fact.display} [{coding.code}]", f"status {fact.status}"]
     if isinstance(fact, TimelineFact) and fact.value is not None:
         parts.append(f"value {_value(fact)}")
     if fact.time is not None:
@@ -181,4 +221,9 @@ def _value(fact: TimelineFact) -> str:
 def _computation_block(computations: Sequence[str]) -> tuple[str, ...]:
     if not computations:
         return ()
-    return ("", "Deterministic computations already performed:", *(f"- {c}" for c in computations))
+    return (
+        "",
+        "Deterministic computations already performed. These are results, not "
+        "facts: they have no fact id and cannot be cited.",
+        *(f"- {c}" for c in computations),
+    )

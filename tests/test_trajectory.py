@@ -90,10 +90,16 @@ def test_a_step_names_the_criterion_the_state_and_what_it_rests_on() -> None:
 
 
 def test_a_step_shows_the_rejection_and_the_correction_that_followed() -> None:
-    """The catch is the thing a reader came for, so it is not summarised away."""
+    """The catch is the thing a reader came for, so it is not summarised away.
+
+    Both named checks belong here. The citation named an id no tool returned,
+    which is why the state ended up with no evidence behind it — reporting only
+    the second aims the correction at the wrong thing, and a real run spent five
+    of six corrections that way.
+    """
     assert TRAJECTORY[0].verification == (
         "verifier accepted the citation",
-        "verifier rejected the citation: state_without_patient_evidence",
+        "verifier rejected the citation: nonexistent_reference, state_without_patient_evidence",
         "verifier accepted the citation",
     )
 

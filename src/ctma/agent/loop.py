@@ -46,7 +46,12 @@ from ctma.adapters.model import (
     ModelRequest,
     ModelUnavailableError,
 )
-from ctma.agent._packet import assessment_prompt, correction_prompt, tool_selection_prompt
+from ctma.agent._packet import (
+    assessment_prompt,
+    computed_prompt,
+    correction_prompt,
+    tool_selection_prompt,
+)
 from ctma.agent.situation import ToolResult, situation_from
 from ctma.agent.unknown_reason import AgentOutcome, assign_unknown_reason
 from ctma.agent.verifier import verify
@@ -163,6 +168,17 @@ class _Citation(Frozen):
 
     fact_ids: tuple[str, ...] = Field(min_length=1)
     relation: EvidenceRelation
+
+
+class _ComputedAnswer(Frozen):
+    """The answer to a proposition code has already decided the arithmetic for.
+
+    No citations: the evidence reference is built from the record here, so
+    asking for one would be asking the model to name something it cannot see.
+    """
+
+    state: Literal[CriterionState.MET, CriterionState.NOT_MET, CriterionState.NOT_APPLICABLE]
+    rationale: str = Field(min_length=1)
 
 
 class _Answer(Frozen):
@@ -434,7 +450,12 @@ def _answer(
     proposal = _proposal(context, answer, facts)
     if not context.verifier_feedback:
         return _assessment(context, answer, proposal)
-    outcome = verify(proposal, timeline=context.timeline, trial=context.trial)
+    outcome = verify(
+        proposal,
+        timeline=context.timeline,
+        trial=context.trial,
+        unresolved_fact_ids=_unresolved(answer, facts),
+    )
     context.verification.append(outcome)
     if outcome.verdict is VerifierVerdict.ACCEPTED:
         return _assessment(context, answer, proposal)
@@ -461,7 +482,12 @@ def _correct(
         ) from error
 
     proposal = _proposal(context, answer, facts)
-    outcome = verify(proposal, timeline=context.timeline, trial=context.trial)
+    outcome = verify(
+        proposal,
+        timeline=context.timeline,
+        trial=context.trial,
+        unresolved_fact_ids=_unresolved(answer, facts),
+    )
     context.verification.append(outcome)
     if outcome.verdict is VerifierVerdict.ACCEPTED:
         return _assessment(context, answer, proposal)
@@ -504,9 +530,9 @@ def _assess_demographics(context: _Context) -> PropositionAssessment:
         value=str(age),
         display=f"born {demographics.birth_date}",
     )
-    prompt = assessment_prompt(context.proposition, context.criterion, (), context.computations)
+    prompt = computed_prompt(context.proposition, context.criterion, context.computations)
     raw = context.ask(ModelPurpose.ASSESSMENT, prompt)
-    answer = _parse(_Answer, raw)
+    answer = _parse(_ComputedAnswer, raw)
     relation = (
         EvidenceRelation.SUPPORTS
         if answer.state is CriterionState.MET
@@ -543,6 +569,17 @@ _RECORD_BY_STATE: dict[
 }
 
 
+def _unresolved(answer: _Answer, facts: Sequence[CitableFact]) -> tuple[str, ...]:
+    """Cited ids that match no fact, in the order they were cited."""
+    known = {fact.fact_id for fact in facts}
+    return tuple(
+        fact_id
+        for citation in answer.citations
+        for fact_id in citation.fact_ids
+        if fact_id not in known
+    )
+
+
 def _assessment(
     context: _Context, answer: _Answer, proposal: ProposedAssessment
 ) -> PropositionAssessment:
@@ -568,8 +605,9 @@ def _proposal(
 ) -> ProposedAssessment:
     """Expand the model's fact ids into citations, from the record.
 
-    A cited id the tools did not return is dropped rather than invented, which
-    the verifier then sees as a state with no patient evidence.
+    A cited id the tools did not return is dropped rather than invented. What it
+    was is reported separately by `_unresolved`, so the rejection names the id
+    instead of describing the hole it left.
     """
     by_id = {fact.fact_id: fact for fact in facts}
     citations: list[ProposedCitation] = []

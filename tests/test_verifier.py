@@ -221,3 +221,51 @@ def test_a_citation_dated_after_the_assessment_time_is_rejected_on_its_own_terms
     assert fault.proposal.patient_evidence[0].facts[0].clinical_time == dt.date(2026, 7, 15)
     outcome = run(fault)
     assert VerifierRejection.EVIDENCE_AFTER_ASSESSMENT_TIME in outcome.rejections
+
+
+def _citing_nothing() -> tuple[ProposedAssessment, CitationFault]:
+    """A clean proposal with every citation stripped.
+
+    Which is what the loop builds when the model cites ids that match no fact:
+    the ids are dropped, and what reaches the verifier is a state with nothing
+    behind it.
+    """
+    clean = next(fault for fault in FAULTS.citations if fault.expected_rejection is None)
+    return clean.proposal.model_copy(update={"patient_evidence": ()}), clean
+
+
+def test_an_id_that_matches_no_fact_is_named_rather_than_described() -> None:
+    """The rejection a real run needed and did not get.
+
+    A cited id nothing answers to is dropped before a proposal exists, so the
+    only visible symptom is a state with no evidence — and a correction told
+    "you cited nothing" re-sends the same misspelled id. Naming it is what makes
+    the one correction worth spending.
+    """
+    proposal, clean = _citing_nothing()
+    outcome = verify(
+        proposal,
+        timeline=timeline_of(clean.scenario_id),
+        trial=TRIALS[clean.nct_id],
+        unresolved_fact_ids=("cond-nsclc",),
+    )
+    assert outcome.verdict is VerifierVerdict.REJECTED
+    assert VerifierRejection.NONEXISTENT_REFERENCE in outcome.rejections
+    assert outcome.detail is not None
+    assert "'cond-nsclc'" in outcome.detail
+
+
+def test_both_checks_are_reported_when_both_failed() -> None:
+    """Collected rather than stopped at the first, so the correction is aimed at
+    the cause and not at the symptom it produced."""
+    proposal, clean = _citing_nothing()
+    outcome = verify(
+        proposal,
+        timeline=timeline_of(clean.scenario_id),
+        trial=TRIALS[clean.nct_id],
+        unresolved_fact_ids=("cond-nsclc",),
+    )
+    assert set(outcome.rejections) >= {
+        VerifierRejection.NONEXISTENT_REFERENCE,
+        VerifierRejection.STATE_WITHOUT_PATIENT_EVIDENCE,
+    }

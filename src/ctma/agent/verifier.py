@@ -28,7 +28,7 @@ configuration; conflating them would make the grounding comparison meaningless.
 from __future__ import annotations
 
 import datetime as dt
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from typing import NamedTuple
 
 from ctma.domain.aggregation import UnassessedPropositionError, aggregate
@@ -114,9 +114,18 @@ def verify(
     *,
     timeline: PatientTimeline,
     trial: TrialRecord,
+    unresolved_fact_ids: Sequence[str] = (),
 ) -> VerifierOutcome:
-    """Check one Proposed Assessment against the timeline and the snapshot."""
+    """Check one Proposed Assessment against the timeline and the snapshot.
+
+    `unresolved_fact_ids` are ids the caller could not match to a fact it
+    returned. They arrive as an argument because the citation the model wrote is
+    gone by the time a proposal exists — and without them the only visible
+    symptom is an assessment citing nothing, which is a different failure with a
+    different fix.
+    """
     findings = _Findings()
+    _check_unresolved_references(unresolved_fact_ids, findings)
     _check_trial_evidence(proposal, trial, findings)
     _check_state_has_evidence(proposal, findings)
     _check_relations(proposal, findings)
@@ -184,6 +193,21 @@ def _check_trial_evidence(
             VerifierRejection.INVALID_TRIAL_SPAN,
             f"the text at [{evidence.span_start}, {evidence.span_end}) is not what was "
             f"cited: {evidence.source_text!r}",
+        )
+
+
+def _check_unresolved_references(unresolved: Sequence[str], findings: _Findings) -> None:
+    """An id nothing answers to, named so the correction can be aimed at it.
+
+    Reported before the evidence check, because a proposal whose only citation
+    did not resolve also has no patient evidence — and being told "you cited
+    nothing" when the mistake was the spelling of an id sends a correction at
+    the wrong thing. A real run spent five of six corrections that way.
+    """
+    for fact_id in unresolved:
+        findings.add(
+            VerifierRejection.NONEXISTENT_REFERENCE,
+            f"cited fact id {fact_id!r}, which is not among the facts returned",
         )
 
 

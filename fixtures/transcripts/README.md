@@ -26,10 +26,22 @@ on 2026-08-25, recorded in each file.
 They are what [the results](../../docs/evaluation/development-results.md)
 report, and they replay without a key like any other transcript.
 
-`*-hosted-baseline-v1.json` is the superseded first attempt, kept on purpose. 27
-of its 68 replies failed schema validation because the prompt never stated three
-rules the domain enforces. Stating them took the same run to 0 of 68, and the
-pair is the evidence for that.
+`*-v1.json` are superseded first attempts, kept on purpose — both halves have
+one, and each pair is the evidence for a fix.
+
+`*-hosted-baseline-v1.json`: 27 of 68 replies failed schema validation because
+the prompt never stated three rules the domain enforces. Stating them took the
+same run to 0 of 68.
+
+`*-hosted-v1.json`: the agent's first citation was rejected five times out of
+six, because the prompt printed `Condition/cond-nsclc` and said "cite by fact
+id" without saying which part was the id, and the rejection answered with "cites
+no patient evidence" — the symptom, not the cause. Naming the id in the prompt
+and reporting `nonexistent_reference` took the same run to 6 of 6 with no
+corrections spent.
+
+Both are the same lesson twice: an authored transcript cannot find a prompt
+defect, because the hand that wrote the answers already knew the contract.
 
 Decoding is unpinned in all of them: the model rejects a `temperature`
 parameter, so a run cannot be made greedy and the transcript is the only
