@@ -106,11 +106,16 @@ section 15, published as a hosted page and viewable offline.
 - No network fetch at view time; print styles implemented; no blended score anywhere
 - A reader with no domain vocabulary can reach the claim within five minutes
 
-Issues #40, #41 and #42 are met. #45 stays open for the two things a build
-cannot do: switching on GitHub Pages, which is the repository owner's call, and
-timing a reader who has not seen the project, which is what the five-minute
-constraint actually asks for. Both are recorded in
-[the five-minute check](../evaluation/five-minute-check.md).
+Issues #40 through #42 and #45 are met with one exception, recorded rather than
+quietly dropped: **the last exit criterion above is not verified.** The eight
+items are asserted present and reachable by test, and the report is ordered so
+they come first, but no reader who had not seen the project was ever timed
+against it. The claim this repository can make is that the page contains the
+eight items; the claim it cannot make is that a stranger finds them in five
+minutes.
+
+[The five-minute check](../evaluation/five-minute-check.md) carries the mapping,
+the protocol for anyone who wants to run it, and that decision.
 
 ## What was cut
 
