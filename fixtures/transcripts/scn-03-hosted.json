@@ -18,7 +18,7 @@
    "prompt": "You are assessing one atomic proposition of one clinical trial eligibility criterion, for research coordinator review.\n\nCriterion (inclusion, inclusionCriteria, ordinal 2):\n  \"Documented results of the presence of an Epidermal Growth Factor Receptor (EGFR) PACC mutation in tumor tissue or blood from local testing.\"\nAuthored expression (v2, drafted by assistant, review status reviewed):\n  {\"kind\": \"proposition\", \"proposition_id\": \"P1\"}\nProposition P1 (biomarker):\n  A documented EGFR PACC mutation result is present\n  concept: EGFR_PACC_MUTATION\n\nAvailable lookup tools:\n- find_patient_facts\n- get_latest_observation\n\nThe concept is fixed by the authored expression and you do not choose it. Choose the lookup that answers this proposition. If deciding it needs a numeric comparison, state the operator and threshold the criterion text gives; the comparison itself is performed by code.\n\nReply with JSON only:\n{\n  \"lookup\": \"<one of the lookup tools listed above>\",\n  \"comparison\": null | {\"operator\": \"<|<=|>|>=|==\", \"threshold\": <number>, \"unit\": <string|null>}\n}",
    "json_text": "{\"lookup\": \"find_patient_facts\", \"comparison\": null}",
    "measurements": {
-    "latency_ms": 2642,
+    "latency_ms": 2158,
     "model_calls": 1,
     "prompt_tokens": 412,
     "completion_tokens": 24,
@@ -28,12 +28,12 @@
   {
    "key": "assessment|NCT07185997:INC-1|P1|1",
    "prompt": "You are assessing one atomic proposition of one clinical trial eligibility criterion, for research coordinator review.\n\nCriterion (inclusion, inclusionCriteria, ordinal 1):\n  \"Histologically or cytologically documented, locally advanced or metastatic Non-Small Cell Lung Cancer (NSCLC) not amenable to curative surgery or radiotherapy.\"\nAuthored expression (v2, drafted by assistant, review status reviewed):\n  {\"children\": [{\"kind\": \"proposition\", \"proposition_id\": \"P1\"}, {\"children\": [{\"kind\": \"proposition\", \"proposition_id\": \"P2\"}, {\"kind\": \"proposition\", \"proposition_id\": \"P3\"}], \"kind\": \"any_of\"}, {\"kind\": \"proposition\", \"proposition_id\": \"P4\"}], \"kind\": \"all_of\"}\nProposition P1 (disease):\n  Non-small cell lung cancer is histologically or cytologically documented\n  concept: NSCLC\n\nFacts the tools returned:\n- fact id Condition/cond-nsclc — Non-small cell lung cancer [254637007], status confirmed, recorded 2025-05-10 (day precision)\n\nCite by fact id, copied exactly as it appears after \"fact id\" — including the resource type before the slash. An id that is not in the list above cites nothing. Do not restate a value, a date, or a status: the citation is filled in from the record. Answer only about this proposition, and only from the facts above.\n\nReply with JSON only:\n{\n  \"state\": \"met\" | \"not_met\" | \"not_applicable\",\n  \"citations\": [{\"fact_ids\": [\"<id from the facts above>\"], \"relation\": \"supports\"|\"contradicts\"}],\n  \"rationale\": \"<one sentence, explanatory only>\"\n}",
-   "json_text": "{\"state\":\"met\",\"citations\":[{\"fact_ids\":[\"Condition/cond-nsclc\"],\"relation\":\"supports\"}],\"rationale\":\"NSCLC is documented as a confirmed condition.\"}",
+   "json_text": "{\n  \"state\": \"met\",\n  \"citations\": [{\"fact_ids\": [\"Condition/cond-nsclc\"], \"relation\": \"supports\"}],\n  \"rationale\": \"A confirmed NSCLC diagnosis is documented in the patient's record.\"\n}",
    "measurements": {
-    "latency_ms": 2644,
+    "latency_ms": 2375,
     "model_calls": 1,
     "prompt_tokens": 589,
-    "completion_tokens": 69,
+    "completion_tokens": 86,
     "estimated_cost_usd": 0.0
    }
   },
@@ -42,10 +42,34 @@
    "prompt": "You are assessing one atomic proposition of one clinical trial eligibility criterion, for research coordinator review.\n\nCriterion (inclusion, inclusionCriteria, ordinal 3):\n  \"Pathologically documented, locally advanced or metastatic KRAS G12V-mutated solid tumor malignancy.\"\nAuthored expression (v2, drafted by assistant, review status reviewed):\n  {\"children\": [{\"kind\": \"proposition\", \"proposition_id\": \"P1\"}, {\"children\": [{\"kind\": \"proposition\", \"proposition_id\": \"P2\"}, {\"kind\": \"proposition\", \"proposition_id\": \"P3\"}], \"kind\": \"any_of\"}, {\"kind\": \"proposition\", \"proposition_id\": \"P4\"}], \"kind\": \"all_of\"}\nProposition P4 (biomarker):\n  A KRAS G12V mutation is documented\n  concept: KRAS_G12V\n\nAvailable lookup tools:\n- find_patient_facts\n- get_latest_observation\n\nThe concept is fixed by the authored expression and you do not choose it. Choose the lookup that answers this proposition. If deciding it needs a numeric comparison, state the operator and threshold the criterion text gives; the comparison itself is performed by code.\n\nReply with JSON only:\n{\n  \"lookup\": \"<one of the lookup tools listed above>\",\n  \"comparison\": null | {\"operator\": \"<|<=|>|>=|==\", \"threshold\": <number>, \"unit\": <string|null>}\n}",
    "json_text": "{\"lookup\": \"find_patient_facts\", \"comparison\": null}",
    "measurements": {
-    "latency_ms": 1961,
+    "latency_ms": 1970,
     "model_calls": 1,
     "prompt_tokens": 492,
     "completion_tokens": 24,
+    "estimated_cost_usd": 0.0
+   }
+  },
+  {
+   "key": "assessment|NCT07349537:EXC-1|P1|1",
+   "prompt": "You are assessing one atomic proposition of one clinical trial eligibility criterion, for research coordinator review.\n\nCriterion (exclusion, exclusionCriteria, ordinal 1):\n  \"Primary central nervous system (CNS) tumors\"\nAuthored expression (v2, drafted by assistant, review status reviewed):\n  {\"kind\": \"proposition\", \"proposition_id\": \"P1\"}\nProposition P1 (disease):\n  A primary central nervous system tumour is documented\n  concept: PRIMARY_CNS_TUMOR\n\nFacts the tools returned:\n- fact id Condition/cond-cns-primary — Primary malignant neoplasm of brain [93727008], status confirmed, recorded 2025-09-18 (day precision)\n\nCite by fact id, copied exactly as it appears after \"fact id\" — including the resource type before the slash. An id that is not in the list above cites nothing. Do not restate a value, a date, or a status: the citation is filled in from the record. Answer only about this proposition, and only from the facts above.\n\nReply with JSON only:\n{\n  \"state\": \"met\" | \"not_met\" | \"not_applicable\",\n  \"citations\": [{\"fact_ids\": [\"<id from the facts above>\"], \"relation\": \"supports\"|\"contradicts\"}],\n  \"rationale\": \"<one sentence, explanatory only>\"\n}",
+   "json_text": "```json\n{\n  \"state\": \"met\",\n  \"citations\": [{\"fact_ids\": [\"Condition/cond-cns-primary\"], \"relation\": \"supports\"}],\n  \"rationale\": \"A confirmed primary malignant brain neoplasm documents a primary CNS tumor.\"\n}\n```",
+   "measurements": {
+    "latency_ms": 2374,
+    "model_calls": 1,
+    "prompt_tokens": 450,
+    "completion_tokens": 96,
+    "estimated_cost_usd": 0.0
+   }
+  },
+  {
+   "key": "assessment|NCT07349537:INC-1|P1|1",
+   "prompt": "You are assessing one atomic proposition of one clinical trial eligibility criterion, for research coordinator review.\n\nCriterion (inclusion, inclusionCriteria, ordinal 1):\n  \"At least 18 years old and has provided informed consent.\"\nAuthored expression (v2, drafted by assistant, review status reviewed):\n  {\"children\": [{\"kind\": \"proposition\", \"proposition_id\": \"P1\"}, {\"kind\": \"proposition\", \"proposition_id\": \"P2\"}], \"kind\": \"all_of\"}\nProposition P1 (demographic):\n  Age at Assessment Time is at least 18 years\n  concept: AGE_YEARS\n\nDeterministic computations already performed. These are results, not facts: they have no fact id and cannot be cited.\n- age at 2026-08-04 is 56 years\n\nThe comparison has already been made. Say what it means for this proposition and nothing else. The citation to the patient record is filled in here and is not yours to supply.\n\nReply with JSON only:\n{\n  \"state\": \"met\" | \"not_met\" | \"not_applicable\",\n  \"rationale\": \"<one sentence, explanatory only>\"\n}",
+   "json_text": "```json\n{\n  \"state\": \"met\",\n  \"rationale\": \"The patient's age at the assessment time (56 years) is at least 18 years, satisfying the age requirement.\"\n}\n```",
+   "measurements": {
+    "latency_ms": 2417,
+    "model_calls": 1,
+    "prompt_tokens": 375,
+    "completion_tokens": 60,
     "estimated_cost_usd": 0.0
    }
   },
@@ -54,22 +78,10 @@
    "prompt": "You are assessing one atomic proposition of one clinical trial eligibility criterion, for research coordinator review.\n\nCriterion (inclusion, inclusionCriteria, ordinal 2):\n  \"Eastern Cooperative Oncology Group (ECOG) performance status of 0 or 1.\"\nAuthored expression (v2, drafted by assistant, review status reviewed):\n  {\"children\": [{\"kind\": \"proposition\", \"proposition_id\": \"P1\"}, {\"kind\": \"proposition\", \"proposition_id\": \"P2\"}], \"kind\": \"any_of\"}\nProposition P1 (performance_status):\n  ECOG performance status is 0\n  concept: ECOG_SCORE\n\nAvailable lookup tools:\n- get_latest_observation\n- find_patient_facts\n\nThe concept is fixed by the authored expression and you do not choose it. Choose the lookup that answers this proposition. If deciding it needs a numeric comparison, state the operator and threshold the criterion text gives; the comparison itself is performed by code.\n\nReply with JSON only:\n{\n  \"lookup\": \"<one of the lookup tools listed above>\",\n  \"comparison\": null | {\"operator\": \"<|<=|>|>=|==\", \"threshold\": <number>, \"unit\": <string|null>}\n}",
    "json_text": "{\"lookup\": \"get_latest_observation\", \"comparison\": {\"operator\": \"==\", \"threshold\": 0, \"unit\": null}}",
    "measurements": {
-    "latency_ms": 2188,
+    "latency_ms": 2439,
     "model_calls": 1,
     "prompt_tokens": 420,
-    "completion_tokens": 45,
-    "estimated_cost_usd": 0.0
-   }
-  },
-  {
-   "key": "assessment|NCT07349537:INC-1|P1|1",
-   "prompt": "You are assessing one atomic proposition of one clinical trial eligibility criterion, for research coordinator review.\n\nCriterion (inclusion, inclusionCriteria, ordinal 1):\n  \"At least 18 years old and has provided informed consent.\"\nAuthored expression (v2, drafted by assistant, review status reviewed):\n  {\"children\": [{\"kind\": \"proposition\", \"proposition_id\": \"P1\"}, {\"kind\": \"proposition\", \"proposition_id\": \"P2\"}], \"kind\": \"all_of\"}\nProposition P1 (demographic):\n  Age at Assessment Time is at least 18 years\n  concept: AGE_YEARS\n\nDeterministic computations already performed. These are results, not facts: they have no fact id and cannot be cited.\n- age at 2026-08-04 is 56 years\n\nThe comparison has already been made. Say what it means for this proposition and nothing else. The citation to the patient record is filled in here and is not yours to supply.\n\nReply with JSON only:\n{\n  \"state\": \"met\" | \"not_met\" | \"not_applicable\",\n  \"rationale\": \"<one sentence, explanatory only>\"\n}",
-   "json_text": "```json\n{\n  \"state\": \"met\",\n  \"rationale\": \"The patient's age of 56 years at the assessment time meets the criterion of being at least 18 years old.\"\n}\n```",
-   "measurements": {
-    "latency_ms": 2258,
-    "model_calls": 1,
-    "prompt_tokens": 375,
-    "completion_tokens": 58,
+    "completion_tokens": 70,
     "estimated_cost_usd": 0.0
    }
   },
@@ -78,7 +90,7 @@
    "prompt": "You are assessing one atomic proposition of one clinical trial eligibility criterion, for research coordinator review.\n\nCriterion (inclusion, inclusionCriteria, ordinal 2):\n  \"Eastern Cooperative Oncology Group (ECOG) performance status of 0 or 1.\"\nAuthored expression (v2, drafted by assistant, review status reviewed):\n  {\"children\": [{\"kind\": \"proposition\", \"proposition_id\": \"P1\"}, {\"kind\": \"proposition\", \"proposition_id\": \"P2\"}], \"kind\": \"any_of\"}\nProposition P2 (performance_status):\n  ECOG performance status is 1\n  concept: ECOG_SCORE\n\nAvailable lookup tools:\n- get_latest_observation\n- find_patient_facts\n\nThe concept is fixed by the authored expression and you do not choose it. Choose the lookup that answers this proposition. If deciding it needs a numeric comparison, state the operator and threshold the criterion text gives; the comparison itself is performed by code.\n\nReply with JSON only:\n{\n  \"lookup\": \"<one of the lookup tools listed above>\",\n  \"comparison\": null | {\"operator\": \"<|<=|>|>=|==\", \"threshold\": <number>, \"unit\": <string|null>}\n}",
    "json_text": "{\"lookup\": \"get_latest_observation\", \"comparison\": {\"operator\": \"==\", \"threshold\": 1, \"unit\": null}}",
    "measurements": {
-    "latency_ms": 2072,
+    "latency_ms": 2026,
     "model_calls": 1,
     "prompt_tokens": 420,
     "completion_tokens": 45,

@@ -1,8 +1,8 @@
 {
  "scenario_id": "SCN-03",
  "partition": "development",
- "design_intent": "Two hazards about the shape of a fact rather than its value. The only ECOG score is preliminary, and the only EGFR TKI exposure is dated to the year, which straddles the start of a twelve-month window and so answers neither side of it.",
- "bundle_sha256": "ab0e435600f08afff36a82161ac7c2cea7a635916be8a2ecbbd5fe4ccac74773",
+ "design_intent": "Two hazards about the shape of a fact rather than its value. The only ECOG score is preliminary, and the only EGFR TKI exposure is dated to the year, which straddles the start of a twelve-month window and so answers neither side of it. This patient also carries a primary brain tumour, recorded plainly and confirmed, which one trial excludes outright — the one development record that a criterion rules out rather than leaves undecided.",
+ "bundle_sha256": "c5185dc272193194344e6da22777b1c2c8257097948aa13bc53db4ed48005843",
  "assessment_as_of": "2026-08-04",
  "facts": [
   {
@@ -386,6 +386,18 @@
    "value": "9.4 mg/dL",
    "status": "final",
    "clinical_time": "2026-07-30",
+   "precision": "day",
+   "usable_as_evidence": true
+  },
+  {
+   "fact_id": "Condition/cond-cns-primary",
+   "resource_type": "Condition",
+   "resource_id": "cond-cns-primary",
+   "json_path": "entry[34].resource.onsetDateTime",
+   "concept": "PRIMARY_CNS_TUMOR",
+   "value": "Primary malignant neoplasm of brain",
+   "status": "confirmed",
+   "clinical_time": "2025-09-18",
    "precision": "day",
    "usable_as_evidence": true
   }

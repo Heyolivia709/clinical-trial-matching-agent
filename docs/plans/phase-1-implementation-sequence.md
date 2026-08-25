@@ -65,11 +65,13 @@ end. Early Termination is the one supervisor behaviour kept, and it is additive.
 
 All met, issues #25 through #30.
 
-One limitation this gate surfaced, recorded because the numbers will show it: no
-development scenario meets an exclusion criterion of a development trial, because
-the reviewed terminology mapping does not cover the conditions those trials
-exclude. So no development pair produces a blocker, and `early_termination` is
-exercised against a two-criterion trial authored in `tests/builders.py`.
+One limitation this gate surfaced and a later run closed: for a long time no
+development scenario met an exclusion criterion, so no development pair produced
+a blocker and the blocking half of the impact model was exercised only by unit
+tests. SCN-03 now carries a confirmed primary brain tumour, which
+`NCT07349537:EXC-1` excludes outright, and that pair concludes `unlikely_match`.
+`early_termination` is still exercised against a two-criterion trial authored in
+`tests/builders.py`.
 
 ## Gate 4: Measurement — Core ✅
 

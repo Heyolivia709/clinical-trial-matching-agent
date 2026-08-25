@@ -859,6 +859,43 @@
     },
     "date": "2026-07-30T10:30:00Z"
    }
+  },
+  {
+   "resource": {
+    "resourceType": "Condition",
+    "id": "cond-cns-primary",
+    "clinicalStatus": {
+     "coding": [
+      {
+       "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+       "code": "active"
+      }
+     ]
+    },
+    "verificationStatus": {
+     "coding": [
+      {
+       "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+       "code": "confirmed"
+      }
+     ]
+    },
+    "code": {
+     "coding": [
+      {
+       "system": "http://snomed.info/sct",
+       "code": "93727008",
+       "display": "Primary malignant neoplasm of brain"
+      }
+     ],
+     "text": "Primary malignant neoplasm of brain"
+    },
+    "subject": {
+     "reference": "Patient/patient-1"
+    },
+    "onsetDateTime": "2025-09-18",
+    "recordedDate": "2025-09-18"
+   }
   }
  ]
 }

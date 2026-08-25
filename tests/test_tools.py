@@ -415,9 +415,9 @@ def test_an_unmapped_concept_reports_that_nothing_looked_rather_than_that_nothin
     an exclusion the mapping misses would score as correctly resolved, and no
     test would fail. It is caught here, at the seam where the flag exists.
     """
-    result = find_patient_facts(TIMELINE, category=DISEASE, concept="PRIMARY_CNS_TUMOR")
+    result = find_patient_facts(TIMELINE, category=THERAPY, concept="KRAS_G12V_INHIBITOR")
     assert result.mapped is False
     assert result.qualifying == ()
 
-    situation = situation_from(result, category=DISEASE)
+    situation = situation_from(result, category=THERAPY)
     assert assign_unknown_reason(situation) is UnknownReason.CONCEPT_NOT_IN_MAPPING
