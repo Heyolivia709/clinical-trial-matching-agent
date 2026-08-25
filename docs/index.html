@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clinical Trial Matching Agent</title>
+<style>
+:root { color-scheme: light dark; }
+body { margin: 0; font: 15px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+       color: #16181d; background: #fff; }
+main { max-width: 44rem; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+h1 { font-size: 22px; margin: 0 0 .2rem; }
+h2 { font-size: 15px; margin: 2.2rem 0 .6rem; }
+p.sub { font: 12px/1.5 ui-monospace, Menlo, monospace; color: #5c6370; margin-top: 0; }
+a { color: #2f5aa8; }
+ul { padding-left: 1.1rem; }
+li { margin-bottom: .5rem; }
+.lede { font-size: 16px; }
+.note { border: 1px solid #d8dbe2; padding: .8rem 1rem; font-size: 13px; color: #40454e; }
+.disclaimer { border: 1px solid #b8482f; padding: .8rem 1rem; font-size: 13px; }
+@media (prefers-color-scheme: dark) {
+  body { background: #14161a; color: #e6e8ec; }
+  a { color: #8ab0ee; }
+  .note { border-color: #333a45; color: #aeb4be; }
+}
+</style>
+</head>
+<body>
+<main>
+<h1>Clinical Trial Matching Agent</h1>
+<p class="sub">An agent that screens a patient record against trial eligibility criteria,
+one criterion at a time, and shows its work.</p>
+
+<p class="lede">Every assessment cites the patient fact it rests on and the exact trial
+sentence it answers. A deterministic verifier checks each citation before it reaches the
+output, and anything it cannot verify is reported as <code>unknown</code> with the reason
+it could not be resolved — never as a guess.</p>
+
+<h2>The reports</h2>
+<p>One self-contained page per screening run. They open offline and fetch nothing.</p>
+<ul>
+<li><a href="demo/scn-01-development.html">SCN-01</a> — the resolvable patient</li>
+<li><a href="demo/scn-02-development.html">SCN-02</a> — a retracted result, and two
+performance scores from the same day that disagree</li>
+<li><a href="demo/scn-03-development.html">SCN-03</a> — a preliminary status, and a drug
+dated only to the year</li>
+<li><a href="demo/scn-04-development.html">SCN-04</a> — an order never administered, a
+result recorded after screening, and a stain standing in for a different test</li>
+<li><a href="demo/scn-04-failing.html">SCN-04, a run that fails</a> — the agent cites a
+fact no tool returned, is rejected, corrects itself, and is rejected again</li>
+</ul>
+
+<h2>The write-ups</h2>
+<ul>
+<li><a href="https://github.com/Heyolivia709/clinical-trial-matching-agent/blob/main/docs/evaluation/development-results.md">Development results</a>
+— every count the measurement plan asks for, with its denominator</li>
+<li><a href="https://github.com/Heyolivia709/clinical-trial-matching-agent/blob/main/docs/evaluation/five-minute-check.md">The five-minute check</a>
+— what was verified about the report, and what was not</li>
+<li><a href="https://github.com/Heyolivia709/clinical-trial-matching-agent/blob/main/docs/specs/phase-1-mvp-specification.md">Specification</a>
+· <a href="https://github.com/Heyolivia709/clinical-trial-matching-agent/blob/main/docs/adr/">Decision records</a>
+· <a href="https://github.com/Heyolivia709/clinical-trial-matching-agent">Source</a></li>
+</ul>
+
+<h2 style="margin-top:2.4rem">Read these two things before the numbers</h2>
+<p class="note"><strong>The runs replay authored transcripts, not a recorded model run.</strong>
+A scripted answerer reads the packets the loop builds and replies by rule. The counts
+therefore measure the harness rather than a model, and the agent's agreement with the
+expected labels is consistent by construction. A result about model behaviour has to be
+re-recorded through a real adapter, and every run records which one produced it.</p>
+<p class="disclaimer"><strong>Screening workflow labels only.</strong> This project does not
+diagnose, determine clinical eligibility, recommend treatment, or enrol patients. The
+patients are synthetic. Recruiting status, site availability, and actual eligibility must
+be verified through ClinicalTrials.gov and the study team.</p>
+</main>
+</body>
+</html>
