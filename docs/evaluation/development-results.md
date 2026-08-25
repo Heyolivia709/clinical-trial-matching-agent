@@ -79,7 +79,8 @@ Per state, never as one aggregate.
 
 | | Agent | One-shot baseline |
 | --- | --- | --- |
-| Unknown Reason agreement over expected `unknown` | 110 of 110 | 46 of 110 |
+| Unknown Reason agreement, over propositions either variant could look up | 50 of 50 | **14 of 50** |
+| Propositions neither variant could look up | 60 of 110 | 60 of 110 |
 
 The agent agrees with gold on all 120 propositions. Two things stop that from
 being the headline it looks like.
@@ -92,11 +93,20 @@ attempts has not been measured against much.
 better model — it is the same model given a prompt that says what an id is. A
 number that moves this far on a prompt edit is a number about the prompt.
 
-**The agent never gave a right answer for a wrong reason.** 110 of 110 on reason
-agreement against the baseline's 46 of 110. The baseline got the state right 78
-times and the reason right 46 times, so on roughly 32 propositions it said "we
-cannot tell" for a reason that would send a coordinator to the wrong place —
-ordering a test that already exists, or chasing a date instead of a conflict.
+**The reason denominator is 50, not 110, and both variants share it.** 60 of the
+110 expected-`unknown` propositions name a concept outside the reviewed
+terminology mapping, so nothing looked them up. Gold describes the record and
+knows nothing about what this system covers, so there is no diagnosis to compare
+— one side is talking about a patient and the other about a terminology table.
+Those 60 are dropped from the reason denominator for **both** variants and
+counted on their own line, because dropping them from only the variant that
+reports the limit would compare two different question sets.
+
+That exclusion made the comparison harsher, not kinder. Over the 50 propositions
+that were actually looked up, the baseline gets the diagnosis right **14 times**.
+Its earlier 46 of 110 was carried by easy `missing_evidence` calls on concepts
+nobody could look up. The agent is 50 of 50 — it never gave a right answer for a
+wrong reason, on the propositions where a reason could be checked.
 
 `not_applicable` has no observations, and that is a finding rather than a gap:
 an expected `not_applicable` needs a conditional whose antecedent is
@@ -229,10 +239,25 @@ Reproduce either with `uv run python scripts/score_run.py hosted` or
 ## Limitations that belong beside any of these numbers
 
 **Terminology coverage.** The reviewed mapping covers eight concepts; the four
-trials name roughly thirty. Every criterion naming an uncovered concept reports
-`missing_evidence`, which is a property of the authoring budget and not of the
-patient. It also means no development scenario meets an exclusion criterion of a
-development trial, so no development pair produces a blocker.
+trials name thirty-one. A criterion naming an uncovered concept now reports
+`concept_not_in_mapping` — 60 of 110 expected-`unknown` propositions — which is a
+property of the authoring budget and not of the patient.
+
+Until this run it reported `missing_evidence` instead, and that was worse than
+imprecise. It told a coordinator to search a chart nothing had searched, and it
+hid a real hole: a record that *does* hold the finding produces the same label
+and the same silence, so a scenario planting an exclusion the mapping misses
+would have scored as correctly resolved with no test failing.
+`test_an_unmapped_concept_reports_that_nothing_looked_rather_than_that_nothing_exists`
+now covers that seam.
+
+Expanding the mapping would not move any number here on its own: none of the
+four scenarios contains a fact for any of the sixteen uncovered concepts, so a
+lookup that ran would find nothing and report `missing_evidence` anyway. What is
+binding is scenario content, not terminology coverage — and no development
+scenario meets an exclusion criterion, so **no development pair has ever produced
+a blocker**. The blocking half of the impact model is exercised only by unit
+tests.
 
 **Scope refusals.** Line-of-therapy derivation, regimen grouping, cross-unit
 conversion, and TNM-to-stage derivation are out of scope and yield `unknown`. A

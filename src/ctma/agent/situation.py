@@ -39,6 +39,8 @@ def situation_from(
     """
     if window is not None and not window.anchor_is_resolvable:
         return EvidenceSituation(category=category, anchor_was_not_operationalized=True)
+    if not result.mapped:
+        return EvidenceSituation(category=category, concept_is_not_in_the_mapping=True)
 
     match result:
         case FactQuery():
