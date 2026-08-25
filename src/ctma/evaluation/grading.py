@@ -46,6 +46,7 @@ from ctma.domain.trial import TrialRecord
 from ctma.evaluation.baseline import BaselineAnswers
 from ctma.evaluation.cases import EvalCase
 from ctma.evaluation.gold import ExpectedProposition
+from ctma.timeline._terminology import codes_for_concept
 from ctma.timeline.build import build
 
 REFERENCE_REJECTIONS = frozenset(
@@ -83,6 +84,14 @@ class GradedProposition(Frozen):
     expected_state: CriterionState | None = None
     expected_reason: UnknownReason | None = None
     scorable: bool = False
+    gradable_reason: bool = True
+    """False when the reviewed mapping does not cover this proposition's concept.
+
+    A property of the proposition and the mapping, not of the variant, so both
+    variants drop the same propositions from the reason denominator. Excluding
+    only the one that reports the coverage limit would compare two different
+    question sets, which is the confound this comparison exists to avoid.
+    """
     grading: VerifierOutcome
     """The offline verdict on the final output. Never fed back."""
 
@@ -149,6 +158,25 @@ class InvariantResult(Frozen):
     detail: str = Field(min_length=1)
 
 
+def _reason_is_gradable(criterion_id: str, proposition_id: str, trial: TrialRecord) -> bool:
+    """Whether a diagnosis for this proposition can be graded at all.
+
+    Gold describes the record; it knows nothing about what this system covers.
+    So for a concept outside the reviewed mapping there is no diagnosis to
+    compare — one side is talking about a patient and the other about a
+    terminology table.
+    """
+    criterion = next((item for item in trial.criteria if item.criterion_id == criterion_id), None)
+    if criterion is None:
+        return True
+    proposition = next(
+        (item for item in criterion.propositions if item.proposition_id == proposition_id), None
+    )
+    if proposition is None or proposition.concept is None:
+        return True
+    return codes_for_concept(proposition.concept) is not None
+
+
 def grade_run(
     run: MatchingRun,
     *,
@@ -206,6 +234,9 @@ def grade_baseline(
                     expected_state=gold.state if gold else None,
                     expected_reason=gold.reason if gold else None,
                     scorable=bool(gold and gold.scorable),
+                    gradable_reason=_reason_is_gradable(
+                        answer.criterion_id, proposal.proposition_id, trial
+                    ),
                     grading=verify(proposal, timeline=timeline, trial=trial),
                 )
             )
@@ -291,6 +322,7 @@ def _graded(
         expected_state=gold.state if gold else None,
         expected_reason=gold.reason if gold else None,
         scorable=bool(gold and gold.scorable),
+        gradable_reason=_reason_is_gradable(criterion_id, assessment.proposition_id, trial),
         grading=verify(as_proposal(assessment), timeline=timeline, trial=trial),
         runtime_verdicts=tuple(outcome.verdict for outcome in assessment.verification),
     )

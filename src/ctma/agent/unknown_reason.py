@@ -80,6 +80,11 @@ class EvidenceSituation(Frozen):
     """Every candidate sits in a resource type section 5 does not treat as
     evidence-bearing — a `MedicationRequest` cited as exposure, say."""
 
+    concept_is_not_in_the_mapping: bool = False
+    """The reviewed terminology mapping does not cover this concept and
+    category, so no lookup ran. Distinct from finding nothing, and the tools
+    have always carried the flag — nothing read it."""
+
     anchor_was_not_operationalized: bool = False
     """The criterion names an anchor, threshold, or concept the expression could
     not operationalize, and declares no substitution."""
@@ -166,6 +171,10 @@ def _the_criterion_could_not_be_operationalized(situation: EvidenceSituation) ->
     return situation.anchor_was_not_operationalized
 
 
+def _the_concept_was_never_looked_up(situation: EvidenceSituation) -> bool:
+    return situation.concept_is_not_in_the_mapping
+
+
 def _no_fact_exists_for_the_concept(situation: EvidenceSituation) -> bool:
     return situation.facts_for_the_concept == 0
 
@@ -194,13 +203,19 @@ def _every_qualifying_fact_is_out_of_window(situation: EvidenceSituation) -> boo
 STAGE_2: tuple[Row, ...] = (
     Row(UnknownReason.UNSUPPORTED_EVIDENCE_TYPE, _nothing_here_can_be_evidence),
     Row(UnknownReason.AMBIGUOUS_CRITERION, _the_criterion_could_not_be_operationalized),
+    Row(UnknownReason.CONCEPT_NOT_IN_MAPPING, _the_concept_was_never_looked_up),
     Row(UnknownReason.MISSING_EVIDENCE, _no_fact_exists_for_the_concept),
     Row(UnknownReason.UNUSABLE_STATUS, _every_fact_for_the_concept_is_disqualified),
     Row(UnknownReason.CONFLICTING_EVIDENCE, _qualifying_facts_disagree),
     Row(UnknownReason.INSUFFICIENT_PRECISION, _the_date_is_coarser_than_the_comparison),
     Row(UnknownReason.STALE_EVIDENCE, _every_qualifying_fact_is_out_of_window),
 )
-"""The seven rows of specification section 8.0, in specification order.
+"""The rows of specification section 8.0, in specification order.
+
+`concept_not_in_mapping` sits immediately before `missing_evidence` because it
+is the stronger claim of the two: an unmapped concept has no facts *because
+nothing looked*, and letting the weaker row match first would report the
+consequence and hide the cause.
 
 Order is load-bearing: the first matching row wins, and rows do overlap. An
 `unsupported` proposition also has no facts, so rows 1 and 3 both match and row

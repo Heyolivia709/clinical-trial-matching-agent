@@ -95,17 +95,22 @@ def test_row_7_every_qualifying_fact_falls_outside_the_window() -> None:
 # --- Stage 2 precedence ------------------------------------------------------
 
 
+MISSING_EVIDENCE_ROW = next(row for row in STAGE_2 if row.reason is UnknownReason.MISSING_EVIDENCE)
+"""Found by reason rather than by index, so inserting a row above it is not a
+change every overlap test has to be edited for."""
+
+
 def test_an_unsupported_proposition_outranks_having_no_facts() -> None:
     """Both rows match: an unsupported proposition is never looked up."""
     unsupported = EvidenceSituation(category=CriterionCategory.UNSUPPORTED)
-    assert STAGE_2[2].applies(unsupported), "row 3 also matches, so this is a real overlap"
+    assert MISSING_EVIDENCE_ROW.applies(unsupported), "that row matches too: a real overlap"
     assert assign_unknown_reason(unsupported) is UnknownReason.UNSUPPORTED_EVIDENCE_TYPE
 
 
 def test_an_unoperationalized_anchor_outranks_having_no_facts() -> None:
     """The criterion could not be read, which is prior to what the record holds."""
     ambiguous = situation(anchor_was_not_operationalized=True)
-    assert STAGE_2[2].applies(ambiguous)
+    assert MISSING_EVIDENCE_ROW.applies(ambiguous)
     assert assign_unknown_reason(ambiguous) is UnknownReason.AMBIGUOUS_CRITERION
 
 
@@ -187,14 +192,18 @@ def test_a_completed_assessment_leaves_stage_2_standing() -> None:
 # --- Coverage of the vocabulary ----------------------------------------------
 
 
-def test_stage_2_produces_exactly_the_evidence_derived_reasons() -> None:
+def test_stage_2_produces_the_authorable_reasons_and_one_that_is_not() -> None:
     """`enums.EVIDENCE_DERIVED_REASONS` names the seven a scenario can author.
 
-    If a row went missing, or a reason arrived that no authored scenario can
-    produce, the benchmark plan's balance requirement would be checking a set
-    that does not match the table.
+    `concept_not_in_mapping` is the one row no scenario can produce: it depends
+    on what this system covers, not on what an author wrote into a record. It
+    belongs in the table and outside that set, and keeping the two apart is what
+    stops the benchmark plan's balance requirement from demanding a scenario
+    that would have to be authored against the mapping itself.
     """
-    assert {row.reason for row in STAGE_2} == EVIDENCE_DERIVED_REASONS
+    assert {row.reason for row in STAGE_2} == EVIDENCE_DERIVED_REASONS | {
+        UnknownReason.CONCEPT_NOT_IN_MAPPING
+    }
 
 
 def test_every_unknown_reason_is_reachable() -> None:
@@ -207,8 +216,21 @@ def test_every_unknown_reason_is_reachable() -> None:
     assert reachable == set(UnknownReason)
 
 
-def test_the_table_has_exactly_the_seven_rows_of_section_8_point_0() -> None:
-    assert len(STAGE_2) == 7
+def test_the_table_has_the_seven_rows_of_section_8_point_0_and_the_coverage_row() -> None:
+    assert len(STAGE_2) == 8
+    assert MISSING_EVIDENCE_ROW is STAGE_2[3]
+
+
+def test_an_unmapped_concept_outranks_having_no_facts() -> None:
+    """Both match, and the order is the whole point.
+
+    An unmapped concept has no facts *because nothing looked*. Letting
+    `missing_evidence` match first reports the consequence and hides the cause,
+    which is how a coordinator ends up searching a chart nothing searched.
+    """
+    unmapped = situation(concept_is_not_in_the_mapping=True)
+    assert MISSING_EVIDENCE_ROW.applies(unmapped)
+    assert assign_unknown_reason(unmapped) is UnknownReason.CONCEPT_NOT_IN_MAPPING
 
 
 def test_every_reason_a_planted_distractor_expects_is_reachable() -> None:

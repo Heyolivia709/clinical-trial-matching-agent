@@ -97,6 +97,18 @@ class ReportedCounts(Frozen):
 
     state_agreement: Mapping[CriterionState, Count]
     reason_agreement: Count
+    """Over the propositions this variant actually looked up.
+
+    A proposition it reports as `concept_not_in_mapping` is excluded, because
+    grading a diagnosis against a record the system never consulted scores it
+    for not having a mapping — and gold, correctly, knows nothing about what
+    this system covers. They are counted on their own line instead of vanishing.
+    """
+
+    not_looked_up: Count
+    """Expected-`unknown` propositions the variant declined to look up, because
+    the reviewed mapping does not cover the concept."""
+
     cost: CostCounts
 
     def sample_sentence(self) -> str:
@@ -125,6 +137,8 @@ def report_counts(
     """Every number the measurement plan asks for, for one variant."""
     scorable = [item for item in graded if item.scorable]
     unknowns = [item for item in scorable if item.expected_state is CriterionState.UNKNOWN]
+    unmapped = [item for item in unknowns if not item.gradable_reason]
+    looked_up = [item for item in unknowns if item.gradable_reason]
     return ReportedCounts(
         variant=variant,
         partition=partition,
@@ -154,9 +168,10 @@ def report_counts(
             for state in CriterionState
         },
         reason_agreement=Count(
-            numerator=sum(1 for item in unknowns if item.reason_agrees),
-            denominator=len(unknowns),
+            numerator=sum(1 for item in looked_up if item.reason_agrees),
+            denominator=len(looked_up),
         ),
+        not_looked_up=Count(numerator=len(unmapped), denominator=len(unknowns)),
         cost=CostCounts(
             model_calls=cost.model_calls,
             prompt_tokens=cost.prompt_tokens,

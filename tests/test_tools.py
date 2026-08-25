@@ -12,7 +12,14 @@ import json
 
 import pytest
 
-from ctma.domain.enums import ComparisonOperator, CriterionCategory, TemporalPrecision
+from ctma.agent.situation import situation_from
+from ctma.agent.unknown_reason import assign_unknown_reason
+from ctma.domain.enums import (
+    ComparisonOperator,
+    CriterionCategory,
+    TemporalPrecision,
+    UnknownReason,
+)
 from ctma.domain.expression import TemporalWindow
 from ctma.domain.timeline import ClinicalInterval, CodedValue, PatientTimeline, QuantityValue
 from ctma.domain.trace import ToolCall, ToolReturned
@@ -398,3 +405,19 @@ def test_no_tool_changes_the_timeline() -> None:
     find_medication_exposure(TIMELINE, concept="EGFR_TKI", window=FOURTEEN_DAYS)
     assert TIMELINE.model_dump_json() == before
     assert PatientTimeline.model_validate_json(before) == TIMELINE
+
+
+def test_an_unmapped_concept_reports_that_nothing_looked_rather_than_that_nothing_exists() -> None:
+    """The failure this was silent about for four gates.
+
+    A record that *does* hold the finding produces the same `missing_evidence`
+    as one that does not, because the lookup never ran — so a scenario planting
+    an exclusion the mapping misses would score as correctly resolved, and no
+    test would fail. It is caught here, at the seam where the flag exists.
+    """
+    result = find_patient_facts(TIMELINE, category=DISEASE, concept="PRIMARY_CNS_TUMOR")
+    assert result.mapped is False
+    assert result.qualifying == ()
+
+    situation = situation_from(result, category=DISEASE)
+    assert assign_unknown_reason(situation) is UnknownReason.CONCEPT_NOT_IN_MAPPING

@@ -81,6 +81,10 @@ print(
     f"  {'reason agreement':16} agent {agent_counts.reason_agreement.rendered():18} "
     f"baseline {baseline_counts.reason_agreement.rendered()}"
 )
+print(
+    f"  {'not looked up':16} {agent_counts.not_looked_up.rendered()} of the expected-unknown "
+    f"propositions, concept outside the reviewed mapping"
+)
 
 print("\nTrack 4: cost")
 for label, counts in (("agent", agent_counts), ("baseline", baseline_counts)):

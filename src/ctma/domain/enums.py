@@ -91,8 +91,16 @@ class UnknownReason(StrEnum):
     `MISSING_EVIDENCE` on purpose. A disqualified fact, an imprecise date, and a
     concept nobody looked for are three different diagnoses, and collapsing them
     makes the failure taxonomy unable to tell planted hazards apart.
+
+    `CONCEPT_NOT_IN_MAPPING` is the fourth of those, and it is about this system
+    rather than about the patient: the reviewed terminology mapping does not
+    cover the concept, so no lookup ran. Reported as `missing_evidence` it told
+    a coordinator to go and search a chart for something nothing had searched
+    for — and it hid a real hole, because a record that *does* hold the finding
+    produces the same label and the same silence.
     """
 
+    CONCEPT_NOT_IN_MAPPING = "concept_not_in_mapping"
     MISSING_EVIDENCE = "missing_evidence"
     UNUSABLE_STATUS = "unusable_status"
     INSUFFICIENT_PRECISION = "insufficient_precision"
