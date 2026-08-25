@@ -21,7 +21,7 @@
   {
    "key": "assessment|NCT07349537:INC-1|P1|1",
    "prompt": "You are assessing one atomic proposition of one clinical trial eligibility criterion, for research coordinator review.\n\nCriterion (inclusion, inclusionCriteria, ordinal 1):\n  \"At least 18 years old and has provided informed consent.\"\nAuthored expression (v1, drafted by assistant, review status reviewed):\n  {\"children\": [{\"kind\": \"proposition\", \"proposition_id\": \"P1\"}, {\"kind\": \"proposition\", \"proposition_id\": \"P2\"}], \"kind\": \"all_of\"}\nProposition P1 (demographic):\n  Age at Assessment Time is at least 18 years\n  concept: AGE_YEARS\n\nFacts the tools returned:\n\nDeterministic computations already performed:\n- age at 2026-06-30 is 59 years\n\nCite by fact id. Do not restate a value, a date, or a status: the citation is filled in from the record. Answer only about this proposition, and only from the facts above.\n\nReply with JSON only:\n{\n  \"state\": \"met\" | \"not_met\" | \"not_applicable\",\n  \"citations\": [{\"fact_ids\": [\"<id from the facts above>\"], \"relation\": \"supports\"|\"contradicts\"}],\n  \"rationale\": \"<one sentence, explanatory only>\"\n}",
-   "json_text": "{\"state\": \"met\", \"citations\": [{\"fact_ids\": [\"Patient/patient-1\"], \"relation\": \"supports\"}], \"rationale\": \"The recorded birth date puts the patient over the threshold.\"}"
+   "json_text": "{\"state\": \"met\", \"rationale\": \"The recorded birth date puts the patient over the threshold.\"}"
   },
   {
    "key": "tool_selection|NCT07185997:INC-2|P1|1",

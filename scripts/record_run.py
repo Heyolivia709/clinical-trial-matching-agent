@@ -57,7 +57,7 @@ def configuration(prompt_version: str) -> ModelConfiguration:
     )
 
 
-AGENT_PROMPTS = "agent-prompts-v1"
+AGENT_PROMPTS = "agent-prompts-v2"
 BASELINE_PROMPTS = "baseline-prompt-v2"
 """No temperature and no top_p: this model rejects both outright, so the run
 cannot be pinned by asking for greedy decoding. That is what the transcript is

@@ -38,25 +38,28 @@ were written to satisfy them.
 
 | Measure | Agent | One-shot baseline |
 | --- | --- | --- |
-| Citation validity where the variant committed to an answer | **1 of 6 (16.7%)** | 97 of 120 (80.8%) |
+| Citation validity where the variant committed to an answer | 6 of 6 | 97 of 120 (80.8%) |
 | Assessments resting on a citation that cannot establish them | 0 of 120 | 0 of 120 |
-| Verification-induced `unknown` | 4 of 120 (3.3%) | not applicable |
-| Corrections spent | 5 of 6 (83.3%) | not applicable |
+| Verification-induced `unknown` | 0 of 120 | not applicable |
+| Corrections spent | 0 of 6 | not applicable |
 
-**The agent's first citation was wrong five times out of six.** That single
-number is what the whole architecture exists for, and no authored transcript
-could have produced it — the authored agent cited correctly 6 times out of 6,
-because the same hand wrote both sides.
+Six of six, over six propositions. That denominator is the number to look at:
+the agent commits to an answer only where code has established that the record
+can answer, so almost everything here is `unknown` and only six propositions
+were ever citable.
 
-What happens next is the point. The verifier rejects the citation, one
-correction is spent, and what still cannot be verified is degraded: 4 of 120
-propositions ended as `unknown` because the evidence would not stand up. None of
-the 120 final assessments rests on a citation that cannot establish it.
+**The first recorded run scored 1 of 6, and every one of those five failures was
+this repository's fault.** The section below has the details; the short version
+is that the prompt printed a fact as `Condition/cond-nsclc` and said "cite by
+fact id" without saying which part was the id, and the verifier answered the
+resulting mistake with "met cites no patient evidence" — a true statement about
+the symptom and the wrong diagnosis, which sent the one correction at the wrong
+thing five times.
 
 The baseline's 97 of 120 is the same measurement without a verifier in the way:
 **23 invalid citations would have reached a coordinator**. Both denominators are
-stated and they differ — the agent commits to an answer only where code has
-established the record can answer, and refuses the rest with a reason.
+stated and they differ — the agent commits only where the record can answer, and
+refuses the rest with a reason.
 
 Post-correction reference validity is not compared. It is 100% because the
 verifier degrades whatever it cannot verify, so comparing it against a variant
@@ -69,8 +72,8 @@ Per state, never as one aggregate.
 
 | Expected state | Agent | One-shot baseline |
 | --- | --- | --- |
-| `met` | 6 of 9 | 5 of 9 |
-| `not_met` | **0 of 1** | 1 of 1 |
+| `met` | 9 of 9 | 5 of 9 |
+| `not_met` | 1 of 1 | 1 of 1 |
 | `unknown` | 110 of 110 | 78 of 110 |
 | `not_applicable` | 0 of 0 | 0 of 0 |
 
@@ -78,12 +81,16 @@ Per state, never as one aggregate.
 | --- | --- | --- |
 | Unknown Reason agreement over expected `unknown` | 110 of 110 | 46 of 110 |
 
-Three things here, and one of them is bad news.
+The agent agrees with gold on all 120 propositions. Two things stop that from
+being the headline it looks like.
 
-**The agent missed the only true negative.** Expected `not_met`, and it did not
-produce it — the baseline did. A system this conservative refuses where it
-should contradict, and on a screening workflow that is the cheaper direction to
-fail in, but it is a failure and one observation is not a rate.
+**The denominators are tiny.** Nine `met` and one `not_met` across four
+scenarios. A system that answered every citable proposition correctly out of ten
+attempts has not been measured against much.
+
+**The first recorded run scored 6 of 9 and 0 of 1**, and the difference is not a
+better model — it is the same model given a prompt that says what an id is. A
+number that moves this far on a prompt edit is a number about the prompt.
 
 **The agent never gave a right answer for a wrong reason.** 110 of 110 on reason
 agreement against the baseline's 46 of 110. The baseline got the state right 78
@@ -102,10 +109,10 @@ confident negative, so the branch is unreachable by construction. Shown as
 
 | | Criterion assessments | Model calls | Tokens | Calls per criterion |
 | --- | --- | --- | --- | --- |
-| Agent | 68 | 31 | 18,226 | 0.46 |
+| Agent | 68 | 26 | 13,235 | 0.38 |
 | One-shot baseline | 68 | 68 | 253,260 | 1.00 |
 
-**The agent spent 14 times fewer tokens than the baseline**, and fewer than one
+**The agent spent 19 times fewer tokens than the baseline**, and fewer than one
 model call per criterion. Not a tuning result: the baseline is handed the entire
 patient record on every call because it has no tools, while the agent sends one
 proposition and the facts a tool returned for it. Most criteria never reach the
@@ -116,28 +123,75 @@ Cost is published beside the grounding number it purchased. Here the cheaper
 variant is also the better-grounded one, which is not a general law and should
 not be read as one.
 
-## What a real run cost that the authored one hid
+## What the real run found, all of it in this repository
 
-Recording this exposed a defect in the harness that authored transcripts could
-never have shown, because the same hand wrote the answers and the checks.
+Three defects, none of them about the model. Every one was invisible to the
+authored transcripts, because the same hand wrote the answers and the checks.
 
-**27 of 68 baseline replies were unusable, and it was the prompt's fault.** The
-schema shown to the model listed the fields but never stated three rules the
-domain enforces: that `reason` is set exactly when the state is `unknown`, that
-`clinical_time` is a date copied from the record with no "unknown" option, and
-that `code` is copied from the record. The model broke all three. After the
-rules were written into the prompt, the same run produced **0 unusable replies
-of 68**.
+### The prompt never said what a fact id was
 
-Publishing the first number as "the baseline fails 40% of the time" would have
-been blaming a model for a contract nobody told it. The superseded transcripts
-are kept as `*-hosted-baseline-v1.json` so the before and after can both be
-read.
+The assessment prompt printed a fact as
 
-The agent's prompt had no such failures — 31 calls, 0 unusable. It asks for less:
-a state from three options and which fact ids support it, with every code, date
-and precision filled in by code. Everything a model can get wrong about the
-record is not asked of the model.
+```
+- Condition/cond-nsclc: Non-small cell lung cancer [254637007], status confirmed, ...
+```
+
+and then said "Cite by fact id". Nothing said which part of that line *was* the
+id. The model tried `cond-nsclc` three times, `Condition/cond-nsclc` once, and
+once quoted a computed sentence — `"age at 2026-08-04 is 64 years"` — as though
+it were an id.
+
+### The rejection named the symptom instead of the cause
+
+An id that matches no fact is dropped before a proposal is built, so what
+reached the verifier was an assessment citing nothing, and the correction prompt
+said **"met cites no patient evidence"**. That is true and useless: the model had
+cited evidence, with the wrong identifier. Told it had cited nothing, it
+re-sent the same id with a reworded rationale — and in one case changed
+`contradicts` to `supports`, making the answer worse.
+
+Five of six corrections were spent this way. The rejection vocabulary already
+had `nonexistent_reference` for exactly this; the loop threw away the
+information before the verifier could use it.
+
+### One proposition had nothing to cite at all
+
+Age is computed from the birth date by code, and the `Patient` resource is not
+reachable by any tool. The demographics path asked the model for citations from
+a fact list that was always empty, then discarded whatever came back and
+attached its own reference. So the model either invented an id or, once the
+prompt honestly said computations are not citable, returned an empty list and
+failed the schema. Both are the same bug: asking for something unusable.
+
+### What the fixes were worth
+
+Same model, same scenarios, same corpus. The prompt now names the id and says
+what is not citable; the verifier reports `nonexistent_reference` with the id in
+it; the demographics path asks only for a state.
+
+| | `agent-prompts-v1` | `agent-prompts-v2` |
+| --- | --- | --- |
+| Citation validity before correction | 1 of 6 (16.7%) | 6 of 6 |
+| Corrections spent | 5 of 6 | 0 of 6 |
+| Verification-induced `unknown` | 4 of 120 | 0 of 120 |
+| `met` | 6 of 9 | 9 of 9 |
+| `not_met` | 0 of 1 | 1 of 1 |
+| Model calls | 31 | 26 |
+| Tokens | 18,226 | 13,235 |
+
+The superseded transcripts are kept as `*-hosted-v1.json`, so both runs can be
+read. **This is what a benchmark number is worth before anyone has looked at the
+prompts**: the earlier table would have been published as an agent that
+mis-cites five times out of six, and the finding would have been about a model.
+
+### The same thing happened to the baseline
+
+27 of 68 baseline replies failed schema validation, and the schema block never
+stated three rules the domain enforces: that `reason` is set exactly when the
+state is `unknown`, that `clinical_time` is a date copied from the record with
+no "unknown" option, and that `code` is copied too. Writing them into the prompt
+took the same run to **0 of 68**. Those transcripts are kept as
+`*-hosted-baseline-v1.json`.
 
 ## The held-out half has not been assessed
 
