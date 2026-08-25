@@ -28,14 +28,21 @@ Trace Report.
 
 The reports at
 [heyolivia709.github.io/clinical-trial-matching-agent](https://heyolivia709.github.io/clinical-trial-matching-agent/)
-are generated from frozen artifacts and open offline. They replay **authored transcripts** rather than a recorded model
-run, so the counts in their section 8 measure the harness rather than a model —
-`fixtures/transcripts/README.md` says so, and a published result is recorded from
-the hosted or local adapter with the run naming which one produced it.
+are generated from frozen artifacts and open offline. They replay **one recorded
+`claude-sonnet-5` run**, committed as transcripts that replay without an API key.
+Decoding is unpinned — the model rejects a temperature parameter — so the
+transcript is the reproducibility, and no count is an expected value across runs.
+The authored transcripts are still in the repository, for the tests: a test that
+needs a key is a test nobody runs.
 
 Specification v7 cut candidate retrieval and the inferential-statistics
 apparatus. Both were defensible and neither demonstrated an agent; see
 [ADR 0014](docs/adr/0014-cut-the-research-grade-evaluation-protocol.md).
+Retrieval was built separately instead, so it can be judged on recall and
+ranking rather than on whether the agent downstream reached the right
+conclusion: **[clinical-trial-retrieval](https://github.com/Heyolivia709/clinical-trial-retrieval)**
+— hybrid BM25, local embeddings, and reciprocal-rank fusion over 400 frozen
+records, with grounded answers whose citations are checked against the corpus.
 
 - **[Live demo](https://heyolivia709.github.io/clinical-trial-matching-agent/)** — five Trace Reports, one per run, generated from frozen artifacts and viewable offline
 - [Development results](docs/evaluation/development-results.md) — every count, with its denominator
@@ -44,6 +51,7 @@ apparatus. Both were defensible and neither demonstrated an agent; see
 - [Measurement plan](docs/evaluation/phase-1-benchmark-plan.md) — deterministic grading, invariant gates, and what the counts may not claim
 - [Product and technical constraints](docs/requirements/product-and-technical-constraints.md)
 - [Report design](docs/design/) — interface design, semantic encoding rules, and known gaps
+- [clinical-trial-retrieval](https://github.com/Heyolivia709/clinical-trial-retrieval) — the companion retrieval half, deliberately a separate repository
 - [Domain glossary](CONTEXT.md)
 - [Decision records](docs/adr/)
 
