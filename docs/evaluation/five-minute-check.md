@@ -33,17 +33,26 @@ anywhere.
 Items 3, 4, 6, 7 and 8 sit in sections 2 to 4, which is the first thing after
 the plain-language summary. Items 1 and 2 are further down, in sections 5 and 7.
 
-## Not checked
+## Not checked, and not going to be
 
-**No reader has been timed.** Section 3 asks for the eight items to be verified
-against someone who has not seen the project, and that has not happened. The
-mechanical check above proves the items are present and reachable; it does not
-prove they are *understood*, and those are different claims.
+**No reader has been timed, and none will be.** That is a decision rather than
+an omission, so the acceptance criterion in section 3 is not met and this file
+says so instead of leaving the gap for someone to notice.
 
-What a real check would need: one person with no clinical or agent-engineering
-vocabulary, the hosted page, a stopwatch, and a record of which of the eight
-they found, which they misread, and where they stopped. The result belongs in
-this file whether or not it is flattering.
+The mechanical check above proves the eight items are present and reachable. It
+does not prove they are *understood*, and those are different claims. Nothing in
+this repository establishes the second one.
+
+What the difference costs is worth being concrete about. A test asserts that a
+string appears on the page; it cannot see a reader skim past section 3, or read
+*Supported* as a recommendation, or give up in the criterion tables. The two
+defects that publishing the page did surface — a grid that never collapsed, and
+an index that filled the first screen of a phone — were both invisible to a
+green test suite and to a desktop window. A timed reader is the instrument for
+the rest of that class, and it has not been pointed at this page.
+
+The protocol below stays because it costs nothing to keep and five minutes to
+run. Anyone who wants the claim can have it.
 
 ## The protocol, ready to run
 
@@ -84,7 +93,7 @@ Write the result into the section below whether or not it is flattering.
 
 ## Result
 
-Not yet run.
+Not run, by decision. See above.
 
 ## Publishing
 
