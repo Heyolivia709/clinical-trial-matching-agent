@@ -38,12 +38,12 @@ were written to satisfy them.
 
 | Measure | Agent | One-shot baseline |
 | --- | --- | --- |
-| Citation validity where the variant committed to an answer | 6 of 6 | 97 of 120 (80.8%) |
+| Citation validity where the variant committed to an answer | 7 of 7 | 100 of 120 (83.3%) |
 | Assessments resting on a citation that cannot establish them | 0 of 120 | 0 of 120 |
 | Verification-induced `unknown` | 0 of 120 | not applicable |
-| Corrections spent | 0 of 6 | not applicable |
+| Corrections spent | 0 of 7 | not applicable |
 
-Six of six, over six propositions. That denominator is the number to look at:
+Seven of seven, over seven propositions. That denominator is the number to look at:
 the agent commits to an answer only where code has established that the record
 can answer, so almost everything here is `unknown` and only six propositions
 were ever citable.
@@ -72,20 +72,20 @@ Per state, never as one aggregate.
 
 | Expected state | Agent | One-shot baseline |
 | --- | --- | --- |
-| `met` | 9 of 9 | 5 of 9 |
+| `met` | 10 of 10 | 6 of 10 |
 | `not_met` | 1 of 1 | 1 of 1 |
-| `unknown` | 110 of 110 | 78 of 110 |
+| `unknown` | 109 of 109 | 78 of 109 |
 | `not_applicable` | 0 of 0 | 0 of 0 |
 
 | | Agent | One-shot baseline |
 | --- | --- | --- |
-| Unknown Reason agreement, over propositions either variant could look up | 50 of 50 | **14 of 50** |
-| Propositions neither variant could look up | 60 of 110 | 60 of 110 |
+| Unknown Reason agreement, over propositions either variant could look up | 53 of 53 | **15 of 53** |
+| Propositions neither variant could look up | 56 of 109 | 56 of 109 |
 
 The agent agrees with gold on all 120 propositions. Two things stop that from
 being the headline it looks like.
 
-**The denominators are tiny.** Nine `met` and one `not_met` across four
+**The denominators are tiny.** Ten `met` and one `not_met` across four
 scenarios. A system that answered every citable proposition correctly out of ten
 attempts has not been measured against much.
 
@@ -119,10 +119,10 @@ confident negative, so the branch is unreachable by construction. Shown as
 
 | | Criterion assessments | Model calls | Tokens | Calls per criterion |
 | --- | --- | --- | --- | --- |
-| Agent | 68 | 26 | 13,235 | 0.38 |
+| Agent | 68 | 27 | 13,825 | 0.40 |
 | One-shot baseline | 68 | 68 | 253,260 | 1.00 |
 
-**The agent spent 19 times fewer tokens than the baseline**, and fewer than one
+**The agent spent 18 times fewer tokens than the baseline**, and fewer than one
 model call per criterion. Not a tuning result: the baseline is handed the entire
 patient record on every call because it has no tools, while the agent sends one
 proposition and the facts a tool returned for it. Most criteria never reach the
@@ -251,13 +251,21 @@ would have scored as correctly resolved with no test failing.
 `test_an_unmapped_concept_reports_that_nothing_looked_rather_than_that_nothing_exists`
 now covers that seam.
 
-Expanding the mapping would not move any number here on its own: none of the
-four scenarios contains a fact for any of the sixteen uncovered concepts, so a
-lookup that ran would find nothing and report `missing_evidence` anyway. What is
-binding is scenario content, not terminology coverage — and no development
-scenario meets an exclusion criterion, so **no development pair has ever produced
-a blocker**. The blocking half of the impact model is exercised only by unit
-tests.
+Expanding the mapping alone would not move any number here: none of the four
+scenarios contained a fact for any of the sixteen uncovered concepts, so a
+lookup that ran would find nothing and report `missing_evidence` anyway. **What
+is binding is scenario content, not terminology coverage** — and that was tested
+rather than argued.
+
+Until this run no development scenario met an exclusion criterion, so no
+development pair had ever produced a blocker and the blocking half of the impact
+model was exercised only by unit tests. SCN-03 now carries a confirmed primary
+brain tumour and `PRIMARY_CNS_TUMOR` was added to the mapping. That pair
+concludes `unlikely_match`, and its report is the first to say **"A criterion
+rules this patient out"**.
+
+It took **one concept and one recorded fact** — not the twenty-three the
+coverage gap suggested — because the gap was never what was stopping it.
 
 **Scope refusals.** Line-of-therapy derivation, regimen grouping, cross-unit
 conversion, and TNM-to-stage derivation are out of scope and yield `unknown`. A

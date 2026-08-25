@@ -42,6 +42,7 @@ code would miss the same drug recorded in another strength."""
 _MAPPING: dict[str, _Concept] = {
     "NSCLC": _Concept(CriterionCategory.DISEASE, frozenset({"254637007"})),
     "BRAIN_METASTASIS": _Concept(CriterionCategory.DISEASE, frozenset({"94225005"})),
+    "PRIMARY_CNS_TUMOR": _Concept(CriterionCategory.DISEASE, frozenset({"93727008"})),
     "PD_L1_EXPRESSION": _Concept(CriterionCategory.BIOMARKER, frozenset({"83052-1"})),
     "EGFR_L858R": _Concept(CriterionCategory.BIOMARKER, frozenset({"55766-0"})),
     "ALK_REARRANGEMENT": _Concept(CriterionCategory.BIOMARKER, frozenset({"78205-2"})),

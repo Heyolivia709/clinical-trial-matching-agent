@@ -294,3 +294,33 @@ def test_a_criterion_state_is_never_read_off_a_skipped_criterion() -> None:
                 assert not hasattr(criterion, "state")
             else:
                 assert isinstance(criterion.state, CriterionState)
+
+
+def test_the_one_development_pair_a_criterion_rules_out() -> None:
+    """The blocking half of the impact model, on a record rather than a builder.
+
+    Until SCN-03 carried a primary brain tumour, every development pair ended
+    `insufficient_information` and the whole blocking path — `met` on an
+    exclusion becoming `blocking`, and the conclusion flipping because of it —
+    was exercised only by unit tests over hand-built criteria.
+    """
+    scenario = load_scenario_input("SCN-03")
+    run = match(
+        scenario_id="SCN-03",
+        bundle_json=scenario.bundle_json,
+        assessment_as_of=scenario.assessment_as_of,
+        trials=TRIALS,
+        model=load_transcript("scn-03-development").replay(REPLAY_CONFIGURATION),
+        partition=Partition.DEVELOPMENT,
+        run_id="scn-03-development",
+    )
+    assessment = next(item for item in run.trial_assessments if item.nct_id == "NCT07349537")
+    assert assessment.conclusion is MatchConclusion.UNLIKELY_MATCH
+
+    blocking = [
+        criterion
+        for criterion in assessment.criteria
+        if isinstance(criterion, AssessedCriterion) and criterion.impact is CriterionImpact.BLOCKING
+    ]
+    assert [criterion.criterion_id for criterion in blocking] == ["NCT07349537:EXC-1"]
+    assert blocking[0].state is CriterionState.MET, "an exclusion that is met is what blocks"
