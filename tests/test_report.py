@@ -81,6 +81,19 @@ def test_the_page_fetches_nothing_at_view_time() -> None:
     assert not re.search(r'(src|href)="https?://', PAGE)
 
 
+def test_one_column_below_a_phone_width() -> None:
+    """A two-column grid at 375px squeezes the text to about ten characters wide.
+
+    Which makes the page unreadable on the device a reviewer is most likely to
+    open a link on, and an unreadable page cannot be read in five minutes.
+    """
+    assert "@media (max-width: 52rem)" in PAGE
+    collapsed = PAGE.split("@media (max-width: 52rem)")[1].split("}\n@media print")[0]
+    assert "grid-template-columns: minmax(0, 1fr)" in collapsed
+    assert "position: static" in collapsed, "a sticky index costs a phone a third of its screen"
+    assert "overflow-x: auto" in collapsed, "wide tables scroll rather than crushing the prose"
+
+
 def test_print_styles_exist_and_the_disclaimer_survives_them() -> None:
     assert "@media print" in PAGE
     assert DISCLAIMER in PAGE

@@ -56,6 +56,13 @@ details > summary { cursor: pointer; font-family: var(--mono); font-size: 12px;
 ol.calls { font-family: var(--mono); font-size: 12px; padding-left: 1.2rem; }
 ol.calls li { margin-bottom: .4rem; }
 .legend { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: .75rem; }
+@media (max-width: 52rem) {
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; padding: 1.25rem 1rem 4rem; }
+  nav.index { position: static; border-bottom: 1px solid var(--rule); padding-bottom: 1rem; }
+  nav.index ol { columns: 2; font-size: 11px; }
+  table { display: block; overflow-x: auto; }
+  blockquote { margin-left: 0; }
+}
 @media print {
   .layout { display: block; max-width: none; padding: 0; }
   nav.index { display: none; }
@@ -199,7 +206,7 @@ unfavourable.</p>
 <th>Completion tokens</th><th>Latency (ms)</th></tr></thead><tbody><tr><td><code>NCT07185997</code></td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td><code>NCT07349537</code></td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
 <tr><td><strong>run</strong></td><td>0</td>
 <td>0</td><td>0</td>
-<td>1</td></tr></tbody></table>
+<td>2</td></tr></tbody></table>
 </section>
 <section id="s10"><h2>10. Reproducibility</h2><p class="meta">identities, hashes, frozen versions</p>
 <table><tbody><tr><th>run id</th><td><code>scn-02-development</code></td></tr><tr><th>scenario</th><td><code>SCN-02</code></td></tr><tr><th>bundle sha256</th><td><code>4cf5a5ab9895c3a0b98ec0fac70ed12745dbdc0f0c1b4cbb2fe0f423e2824a0a</code></td></tr><tr><th>snapshot</th><td><code>gate1-trial-fixtures-v1</code></td></tr><tr><th>snapshot sha256</th><td><code>53c21a4c02436f1292957367d9b6d0d46dc20de05def1faf3dffbd33635c9a99</code></td></tr><tr><th>assessment as of</th><td><code>2026-07-20</code></td></tr><tr><th>partition</th><td><code>development</code></td></tr><tr><th>model adapter</th><td><code>frozen_replay</code></td></tr><tr><th>model</th><td><code>frozen-replay (transcript)</code></td></tr><tr><th>decoding</th><td><code>temperature 0.0, top_p 1.0</code></td></tr><tr><th>prompt version</th><td><code>agent-prompts-v1</code></td></tr><tr><th>schema version</th><td><code>proposed-assessment-v1</code></td></tr><tr><th>tool version</th><td><code>timeline-v1+terminology-v1</code></td></tr><tr><th>evaluator version</th><td><code>gate3-match-v1</code></td></tr><tr><th>supervisor</th><td><code>order_criteria off, early_termination off</code></td></tr><tr><th>seed</th><td><code>0</code></td></tr><tr><th>hardware</th><td><code>unrecorded</code></td></tr></tbody></table>
