@@ -37,16 +37,28 @@ from ctma.match import match
 ENDPOINT = "https://api.anthropic.com/v1/messages"
 MODEL_ID = "claude-sonnet-5"
 
-CONFIGURATION = ModelConfiguration(
-    adapter=ModelAdapter.HOSTED,
-    model_id=MODEL_ID,
-    revision="2026-08-25",
-    temperature=None,
-    top_p=None,
-    max_output_tokens=4000,
-    prompt_version="agent-prompts-v1",
-    schema_version="proposed-assessment-v1",
-)
+
+def configuration(prompt_version: str) -> ModelConfiguration:
+    """The configuration one half of the run was made under.
+
+    The prompt version differs between the halves and has to, because the two
+    prompts are edited independently — stamping both with one string would make
+    a transcript recorded before a prompt fix indistinguishable from one after.
+    """
+    return ModelConfiguration(
+        adapter=ModelAdapter.HOSTED,
+        model_id=MODEL_ID,
+        revision="2026-08-25",
+        temperature=None,
+        top_p=None,
+        max_output_tokens=4000,
+        prompt_version=prompt_version,
+        schema_version="proposed-assessment-v1",
+    )
+
+
+AGENT_PROMPTS = "agent-prompts-v1"
+BASELINE_PROMPTS = "baseline-prompt-v2"
 """No temperature and no top_p: this model rejects both outright, so the run
 cannot be pinned by asking for greedy decoding. That is what the transcript is
 for — reproducibility here is the recorded exchange, not a seed.
@@ -85,10 +97,10 @@ scenarios = sys.argv[1:] or sorted({case.scenario_id for case in eval_cases(Part
 money, so it takes an argument rather than always doing all of them."""
 
 
-def hosted() -> RecordingModel:
+def hosted(prompt_version: str) -> RecordingModel:
     return RecordingModel(
         HostedModel(
-            configuration=CONFIGURATION,
+            configuration=configuration(prompt_version),
             endpoint=ENDPOINT,
             api_key=KEY,
             timeout_s=120.0,
@@ -108,6 +120,7 @@ def write(transcript_id: str, scenario_id: str, recorder: RecordingModel) -> Non
         scenario_id=scenario_id,
         trials=tuple(trial.nct_id for trial in TRIALS),
         provenance=PROVENANCE,
+        configuration=recorder.configuration,
         calls=tuple(recorder.calls),
     )
     path = TRANSCRIPTS / f"{transcript_id}.json"
@@ -125,7 +138,7 @@ for scenario_id in scenarios:
 
     if "agent" in PARTS:
         print(f"{scenario_id}: agent")
-        recorder = hosted()
+        recorder = hosted(AGENT_PROMPTS)
         run = match(
             scenario_id=scenario_id,
             bundle_json=scenario.bundle_json,
@@ -144,7 +157,7 @@ for scenario_id in scenarios:
 
     if "baseline" in PARTS:
         print(f"{scenario_id}: one-shot baseline")
-        baseline = hosted()
+        baseline = hosted(BASELINE_PROMPTS)
         timeline = timeline_for(scenario_id)
         failures = [
             failure

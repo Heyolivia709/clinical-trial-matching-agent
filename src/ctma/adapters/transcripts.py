@@ -40,8 +40,28 @@ class Transcript(Frozen):
     provenance: AuthoringProvenance
     calls: tuple[RecordedCall, ...] = Field(min_length=1)
 
-    def replay(self, configuration: ModelConfiguration) -> FrozenReplayModel:
-        return FrozenReplayModel.from_transcript(self.calls, configuration=configuration)
+    configuration: ModelConfiguration | None = None
+    """What produced these answers, when a real model did.
+
+    A replayed run reported the replay adapter's own configuration until this
+    field existed, so a report built from a captured transcript told its reader
+    the model was `frozen-replay` with temperature 0.0 — which describes the
+    playback, not the run, and is the exact provenance claim this project exists
+    to get right. Authored transcripts leave it unset, and the replay
+    configuration then describes them correctly.
+    """
+
+    def replay(self, configuration: ModelConfiguration | None = None) -> FrozenReplayModel:
+        """Replay under the configuration that produced the answers.
+
+        The recorded one wins. An argument is only used when there is none,
+        which is the authored case.
+        """
+        chosen = self.configuration or configuration
+        if chosen is None:
+            msg = f"{self.transcript_id} records no configuration and none was given"
+            raise TranscriptError(msg)
+        return FrozenReplayModel.from_transcript(self.calls, configuration=chosen)
 
 
 def load_transcript(transcript_id: str) -> Transcript:
