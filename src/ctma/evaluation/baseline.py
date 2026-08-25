@@ -59,7 +59,16 @@ RESPONSE_SCHEMA = """{
       "rationale": "<one sentence>"
     }
   ]
-}"""
+}
+
+Three rules the reply is checked against:
+- "reason" is set when and only when "state" is "unknown". Every other state
+  carries a null reason.
+- "clinical_time" is a date copied from the record above, in YYYY-MM-DD form.
+  There is no "unknown" date: if you cannot point at a dated fact, the state is
+  "unknown" with a reason and no citations.
+- "code" and "resource_id" are copied from the record above. The code is the
+  value in square brackets after the display name."""
 
 
 class BaselineAnswers(Frozen):

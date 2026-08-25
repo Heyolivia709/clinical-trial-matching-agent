@@ -25,13 +25,13 @@ offline with no network fetch.</p>
 verifier rejecting a citation that cannot carry the claim, and puts the agent beside a
 one-shot baseline that was handed the whole patient record.</p>
 <ul>
-<li><a href="scn-01-development.html">SCN-01</a> — the resolvable patient: every oncology
+<li><a href="scn-01-hosted.html">SCN-01</a> — the resolvable patient: every oncology
 fact is final, dated to the day, and says what it appears to say.</li>
-<li><a href="scn-02-development.html">SCN-02</a> — a retracted PD-L1 result, and two ECOG
+<li><a href="scn-02-hosted.html">SCN-02</a> — a retracted PD-L1 result, and two ECOG
 scores from the same day that disagree.</li>
-<li><a href="scn-03-development.html">SCN-03</a> — a preliminary performance status, and a
+<li><a href="scn-03-hosted.html">SCN-03</a> — a preliminary performance status, and a
 drug administration dated only to the year.</li>
-<li><a href="scn-04-development.html">SCN-04</a> — an order that was never administered, a
+<li><a href="scn-04-hosted.html">SCN-04</a> — an order that was never administered, a
 result recorded after screening, and a protein stain standing in for a different test.</li>
 <li><a href="scn-04-failing.html">SCN-04, failing run</a> — the agent cites a fact no tool
 returned, is rejected, corrects itself, and is rejected again. The criterion ends as
@@ -42,9 +42,11 @@ denominator — are in
 <a href="https://github.com/Heyolivia709/clinical-trial-matching-agent/blob/main/docs/evaluation/development-results.md">development-results.md</a>,
 and what the five-minute check did and did not verify is in
 <a href="https://github.com/Heyolivia709/clinical-trial-matching-agent/blob/main/docs/evaluation/five-minute-check.md">five-minute-check.md</a>.</p>
-<p class="note">These runs replay authored transcripts rather than a recorded model run,
-so the counts in section 8 measure the harness rather than a model. A published result is
-recorded from a hosted or local adapter, and every run records which one produced it.</p>
+<p class="note">These are one recorded <code>claude-sonnet-5</code> run, replayed from
+committed transcripts. Decoding is unpinned — the model rejects a temperature parameter —
+so the transcript is the reproducibility, and no count here is an expected value across
+runs. The agent's first citation was rejected five times out of six; what the reports show
+is what the verifier did about it.</p>
 </main>
 </body>
 </html>
