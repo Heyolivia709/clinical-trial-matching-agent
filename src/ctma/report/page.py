@@ -136,8 +136,10 @@ ol.calls li { margin-bottom: .4rem; }
 .legend { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: .75rem; }
 @media (max-width: 52rem) {
   .layout { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; padding: 1.25rem 1rem 4rem; }
-  nav.index { position: static; border-bottom: 1px solid var(--rule); padding-bottom: 1rem; }
-  nav.index ol { columns: 2; font-size: 11px; }
+  nav.index { position: static; border-bottom: 1px solid var(--rule); padding-bottom: .75rem;
+              display: flex; flex-wrap: wrap; gap: .3rem .9rem; }
+  nav.index .title { width: 100%; margin-bottom: .1rem; }
+  nav.index a { display: inline; font-size: 11px; }
   table { display: block; overflow-x: auto; }
   blockquote { margin-left: 0; }
 }
