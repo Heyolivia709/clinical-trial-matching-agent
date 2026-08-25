@@ -95,9 +95,18 @@ The reports are generated into `docs/demo/`, with a landing page at
 uv run python scripts/build_reports.py docs/demo
 ```
 
-GitHub Pages serves `docs/` from the default branch. `.nojekyll` is present so
-the HTML is served exactly as generated rather than passed through a site
-builder.
+GitHub Pages serves `docs/` from the default branch, at
+<https://heyolivia709.github.io/clinical-trial-matching-agent/>. `.nojekyll` is
+present so the HTML is served exactly as generated rather than passed through a
+site builder.
+
+Opening the published page at 375px found two defects that a desktop check would
+never have surfaced: the two-column grid did not collapse, squeezing the prose to
+about ten characters wide, and the section index then filled the whole first
+screen. Both are fixed and covered by a test. It is worth saying where they came
+from — the constraint is that a reader reaches the claim in five minutes, and
+neither vocabulary nor ordering gets a chance to matter on a page that cannot be
+read at all.
 
 The pages are self-contained either way: opening `docs/index.html` from a local
 checkout gives exactly what the hosted copy does.
