@@ -91,6 +91,7 @@ def test_one_column_below_a_phone_width() -> None:
     collapsed = PAGE.split("@media (max-width: 52rem)")[1].split("}\n@media print")[0]
     assert "grid-template-columns: minmax(0, 1fr)" in collapsed
     assert "position: static" in collapsed, "a sticky index costs a phone a third of its screen"
+    assert "flex-wrap: wrap" in collapsed, "ten stacked index lines push the verdict off screen one"
     assert "overflow-x: auto" in collapsed, "wide tables scroll rather than crushing the prose"
 
 
