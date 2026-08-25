@@ -61,6 +61,11 @@ PLAIN_LANGUAGE = (
 
 FAILING_TRANSCRIPT = "scn-04-failing"
 
+AGENT_SUFFIX = "hosted"
+BASELINE_SUFFIX = "hosted-baseline"
+"""The recorded run. The authored transcripts stay in the repository for the
+tests, but a published report is built from a real one."""
+
 
 def main(output: Path) -> None:
     output.mkdir(parents=True, exist_ok=True)
@@ -81,7 +86,7 @@ def _write(
     *,
     transcript: str | None = None,
 ) -> Path:
-    name = transcript or f"{scenario_id.lower()}-development"
+    name = transcript or f"{scenario_id.lower()}-{AGENT_SUFFIX}"
     run = _run(scenario_id, name)
     timeline = timeline_for(scenario_id)
     trials = load_trial_fixtures(Partition.DEVELOPMENT)
@@ -131,7 +136,9 @@ def _baseline_rows(
         criterion,
         timeline=timeline,
         trial=trial,
-        model=load_transcript(f"{scenario_id.lower()}-baseline").replay(REPLAY_CONFIGURATION),
+        model=load_transcript(f"{scenario_id.lower()}-{BASELINE_SUFFIX}").replay(
+            REPLAY_CONFIGURATION
+        ),
     )
     graded = {
         item.proposition_id: item
@@ -222,7 +229,7 @@ def _results_section(cases: tuple[EvalCase, ...]) -> ResultsSection:
     agent = [
         run_agent(
             case,
-            model=load_transcript(f"{case.scenario_id.lower()}-development").replay(
+            model=load_transcript(f"{case.scenario_id.lower()}-{AGENT_SUFFIX}").replay(
                 REPLAY_CONFIGURATION
             ),
         )
@@ -231,7 +238,7 @@ def _results_section(cases: tuple[EvalCase, ...]) -> ResultsSection:
     baseline = [
         run_one_shot(
             case,
-            model=load_transcript(f"{case.scenario_id.lower()}-baseline").replay(
+            model=load_transcript(f"{case.scenario_id.lower()}-{BASELINE_SUFFIX}").replay(
                 REPLAY_CONFIGURATION
             ),
         )
@@ -286,9 +293,10 @@ def _results_section(cases: tuple[EvalCase, ...]) -> ResultsSection:
             ),
         ),
         worked_failures=(
-            "Both variants replay authored transcripts rather than a recorded model run, "
-            "so these counts measure the harness and not a model. A published result is "
-            "recorded from the hosted or local adapter.",
+            "These counts are from one recorded claude-sonnet-5 run, replayed from "
+            "committed transcripts. Decoding is unpinned because the model rejects a "
+            "temperature parameter, so the transcript is the reproducibility and no count "
+            "here should be read as an expected value across runs.",
             "No development scenario meets an exclusion criterion of a development trial, "
             "because the reviewed terminology mapping does not cover the conditions those "
             "trials exclude. Every criterion naming an uncovered concept reports "

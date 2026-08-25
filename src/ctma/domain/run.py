@@ -128,8 +128,13 @@ class ModelConfiguration(Frozen):
     adapter: ModelAdapter
     model_id: str = Field(min_length=1)
     revision: str = Field(min_length=1)
-    temperature: float = Field(ge=0)
-    top_p: float = Field(gt=0, le=1)
+    temperature: float | None = Field(default=None, ge=0)
+    """`None` means decoding was not pinned, which is not the same as pinning it
+    to zero. Some endpoints reject the parameter outright, and a run recording
+    `0.0` for a request that never carried it would be describing a determinism
+    it does not have."""
+
+    top_p: float | None = Field(default=None, gt=0, le=1)
     max_output_tokens: int = Field(ge=1)
     prompt_version: str = Field(min_length=1)
     schema_version: str = Field(min_length=1)

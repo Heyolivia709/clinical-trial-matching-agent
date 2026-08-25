@@ -136,6 +136,22 @@ class FrozenReplayModel:
         return cls({call.key: call for call in calls}, configuration=configuration)
 
 
+def _decoding(configuration: ModelConfiguration) -> dict[str, Any]:
+    """The decoding parameters that were actually requested, and no others.
+
+    A configuration with no temperature sends none. Sending a default instead
+    would make the request differ from what the run records, and some endpoints
+    reject the parameter outright — a 400 that looks exactly like a malformed
+    body until the response is read.
+    """
+    requested: dict[str, Any] = {}
+    if configuration.temperature is not None:
+        requested["temperature"] = configuration.temperature
+    if configuration.top_p is not None:
+        requested["top_p"] = configuration.top_p
+    return requested
+
+
 class HostedModel:
     """A hosted chat endpoint, spoken to over plain HTTP.
 
@@ -150,23 +166,30 @@ class HostedModel:
         endpoint: str,
         api_key: str,
         timeout_s: float = 60.0,
+        pace_s: float = 0.0,
     ) -> None:
         self._configuration = configuration
         self._endpoint = endpoint
         self._api_key = api_key
         self._timeout_s = timeout_s
+        self._pace_s = pace_s
+        """Seconds to wait before each call. A recording run walks a whole
+        scenario back to back, and firing every request as fast as urllib can
+        open a socket is what turns a working endpoint into a row of reset
+        connections."""
 
     @property
     def configuration(self) -> ModelConfiguration:
         return self._configuration
 
     def complete(self, request: ModelRequest) -> ModelResponse:
-        payload = {
+        if self._pace_s:
+            time.sleep(self._pace_s)
+        payload: dict[str, Any] = {
             "model": self._configuration.model_id,
             "max_tokens": self._configuration.max_output_tokens,
-            "temperature": self._configuration.temperature,
-            "top_p": self._configuration.top_p,
             "messages": [{"role": "user", "content": request.prompt}],
+            **_decoding(self._configuration),
         }
         headers = {
             "content-type": "application/json",
@@ -179,6 +202,7 @@ class HostedModel:
         blocks = [cast(Mapping[str, Any], part) for part in content if isinstance(part, dict)]
         text = "".join(str(block.get("text", "")) for block in blocks).strip()
         usage = cast(Mapping[str, Any], body.get("usage") or {})
+        _refuse_if_truncated(body.get("stop_reason"), where="hosted")
         return _response(text, usage, started, where="hosted")
 
 
@@ -223,6 +247,19 @@ class LocalModel:
         return _response(str(message.get("content", "")).strip(), usage, started, where="local")
 
 
+TRANSPORT_ATTEMPTS = 4
+"""How many times a dropped connection is retried before it becomes a failure.
+
+Transport flakiness is a property of the network between here and the endpoint,
+not of the model. A run reporting every reset connection as an Infrastructure
+Failure would be publishing a measurement of someone's wifi; a run that retried
+forever would hide a real outage. Four attempts with backoff is the line.
+
+A refusal from the endpoint itself is never retried. An HTTP error means the
+request arrived and was rejected, and sending it again changes nothing.
+"""
+
+
 def _post_json(
     endpoint: str,
     payload: Mapping[str, Any],
@@ -237,17 +274,48 @@ def _post_json(
         headers=dict(headers),
         method="POST",
     )
-    try:
-        with urllib.request.urlopen(request, timeout=timeout_s) as response:
-            return cast(Mapping[str, Any], json.loads(response.read().decode()))
-    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as error:
+    for attempt in range(1, TRANSPORT_ATTEMPTS + 1):
+        try:
+            with urllib.request.urlopen(request, timeout=timeout_s) as response:
+                return cast(Mapping[str, Any], json.loads(response.read().decode()))
+        except urllib.error.HTTPError as error:
+            detail = error.read().decode(errors="replace")[:300]
+            raise ModelUnavailableError(
+                InfrastructureFailure(
+                    kind=FailureKind.MODEL_UNAVAILABLE,
+                    detail=f"HTTP {error.code}: {detail}",
+                    where=where,
+                )
+            ) from error
+        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as error:
+            if attempt == TRANSPORT_ATTEMPTS:
+                raise ModelUnavailableError(
+                    InfrastructureFailure(
+                        kind=FailureKind.MODEL_UNAVAILABLE,
+                        detail=f"{type(error).__name__} after {attempt} attempts: {error}",
+                        where=where,
+                    )
+                ) from error
+            time.sleep(2.0 * attempt)
+    raise AssertionError("unreachable")  # pragma: no cover
+
+
+def _refuse_if_truncated(stop_reason: object, *, where: str) -> None:
+    """A reply cut off at the token limit is not a reply.
+
+    Left alone it arrives downstream as malformed JSON, and the failure reads as
+    "the model cannot produce valid output" when the real cause is a budget this
+    code set. Naming it keeps a configuration mistake from being published as a
+    model finding.
+    """
+    if stop_reason == "max_tokens":
         raise ModelUnavailableError(
             InfrastructureFailure(
                 kind=FailureKind.MODEL_UNAVAILABLE,
-                detail=f"{type(error).__name__}: {error}",
+                detail="the reply hit max_output_tokens and is incomplete",
                 where=where,
             )
-        ) from error
+        )
 
 
 def _response(text: str, usage: Mapping[str, Any], started: float, *, where: str) -> ModelResponse:
@@ -270,6 +338,40 @@ def _response(text: str, usage: Mapping[str, Any], started: float, *, where: str
             ),
         ),
     )
+
+
+class RecordingModel:
+    """Wraps a real adapter and writes down every exchange it makes.
+
+    A run against a hosted endpoint is worth nothing to a reader without a key
+    unless it leaves a transcript, and the transcript format is the one
+    `FrozenReplayModel` already reads — so a recorded run replays through the
+    same path as an authored one, and every test, grading pass and report works
+    on it unchanged.
+
+    Failures are not recorded. A call that raised has no response to replay, and
+    a transcript that pretended otherwise would turn an outage into an answer.
+    """
+
+    def __init__(self, inner: ModelClient) -> None:
+        self._inner = inner
+        self.calls: list[RecordedCall] = []
+
+    @property
+    def configuration(self) -> ModelConfiguration:
+        return self._inner.configuration
+
+    def complete(self, request: ModelRequest) -> ModelResponse:
+        response = self._inner.complete(request)
+        self.calls.append(
+            RecordedCall(
+                key=request.key,
+                prompt=request.prompt,
+                json_text=response.json_text,
+                measurements=response.measurements,
+            )
+        )
+        return response
 
 
 REPLAY_CONFIGURATION = ModelConfiguration(

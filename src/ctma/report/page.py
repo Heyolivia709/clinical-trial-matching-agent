@@ -44,7 +44,7 @@ from ctma.domain.enums import (
 )
 from ctma.domain.evidence import PatientEvidence
 from ctma.domain.expression import EligibilityCriterion
-from ctma.domain.run import MatchingRun
+from ctma.domain.run import MatchingRun, ModelConfiguration
 from ctma.domain.timeline import MedicationExposure, TimelineFact
 from ctma.domain.trace import ToolOutcome
 from ctma.report.inputs import DISCLAIMER, FaultRow, ReportInputs
@@ -192,6 +192,20 @@ frozen Matching Run.</p>
 </body>
 </html>
 """
+
+
+def _decoding_line(model: ModelConfiguration) -> str:
+    """What decoding was requested, saying so when none was.
+
+    "temperature 0.0" on a run that never sent the parameter would claim a
+    determinism the run does not have.
+    """
+    parts = [
+        f"{name} {value}"
+        for name, value in (("temperature", model.temperature), ("top_p", model.top_p))
+        if value is not None
+    ]
+    return ", ".join(parts) if parts else "decoding not pinned"
 
 
 def esc(value: object) -> str:
@@ -728,7 +742,7 @@ def _reproducibility(inputs: ReportInputs) -> str:
             ("model", f"{configuration.model.model_id} ({configuration.model.revision})"),
             (
                 "decoding",
-                f"temperature {configuration.model.temperature}, top_p {configuration.model.top_p}",
+                _decoding_line(configuration.model),
             ),
             ("prompt version", configuration.model.prompt_version),
             ("schema version", configuration.model.schema_version),
